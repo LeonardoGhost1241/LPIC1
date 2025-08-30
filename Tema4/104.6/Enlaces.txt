@@ -1,0 +1,70 @@
+Crear y cambiar enlaces fisicos y simbolicos 
+
+
+Hay dos tipos de enlaces en un sistema linux 
+
+Enlaces simbolicos (Enlaces suaves): Apunta a la ruta de otro archivo, Si se borra el archivo al que apunta el enlace (llamado target), el enlace seguira existiendo, pero "deja de funcionar", ya que ahora apunta a "nada"
+
+Enlaces duros:Piense en un enlace fisico como un segundo nombre para el archivo original. No son duplicados, sino que son una entrada adicional en el sistema de archivos que apunta al mismo lugar (inodo) en el disco 
+
+
+Tip
+Un inodo es una estructura de datos que almacena atributos para un objeto (como un archivo o directorio) en un sistema de archivos. Entre esos atributos están los permisos, la propiedad y en qué bloques del disco se almacenan los datos del objeto. Piense en ello como una entrada en un índice, de ahí el nombre, que proviene de “index node”.
+
+
+
+
+TRABAJAR CON ENLACES DUROS  
+Creacion de enlaces duros, el comando para crear un enlace fisico en ln es: ln target link_name (donde target ya debe de existir ya que este archvio es al que apuntara el enlace )
+(Si se omite el ultimo parametro, link_name, se creara un vinculo con el mismo nombre que el objetivo en el directorio actual)
+
+
+Gestion de enlaces duros 
+Tenga en cuenta que cada enlace fijo que apunta a un archivo aumenta el conteo de enlaces del archivo. Este es el número justo después de los permisos en la salida de ls -l. 
+De forma predeterminada, cada archivo tiene un recuento de enlaces de 1 (los directorios tienen un recuento de 2), y cada vínculo físico a él aumenta el recuento en uno. 
+Entonces, esa es la razón del recuento de enlaces de 2 en los archivos de la lista anterior.
+
+A diferencia de los enlaces simbólicos, solo puede crear enlaces físicos a archivos, y tanto el enlace como el destino deben residir en el mismo sistema de archivos.
+
+
+Mover y eliminar enlaces duros
+Dado que los enlaces duros se tratan como archivos normales, se pueden eliminar con rm y renombrarlos o moverlos por el sistema de archivos con mv. Y dado a que un enlace fijo apunto al mismo inodo del 
+objetivo, se puede mover libremente, sin miedo a "romper" el enlace 
+
+
+
+TRABAJAR CON ENLACES SIMBOLICOS 
+Creacion de enlaces simbolicos, se usa el mismo comando pero se usa el parametro -s (softlink), como: $ ln -s target.txt /home/carol/Documents/softlink
+
+Al igual que con los enlaces fisicos, puede omitir el nombre del enlace para crear un enlace con el mismo nombre que el destino en el directorio actual
+
+Gestion de enlaces simbolicos 
+Los enlaces simbolicos apuntan a otra ruta en el sistema de archivos. Puedes crear enlaces suaves a archivos y directorios, incluso en diferentes particiones. Es bastante facil detectar un enlace simbolico con la salida del comando ls
+$ ls -lh
+total 112K
+-rw-r--r-- 1 carol carol 110K Jun  7 10:13 target.txt
+lrwxrwxrwx 1 carol carol   12 Jun  7 10:14 softlink -> target.txt
+
+Tenga en cuenta que en los listados de archivos y ddirectorios, los enlaces suaves siempre muestran los permiso rwx para el usuario, el grupo y otros, pero en la practica los permisos de acceso para ellos son los mismos que los del objeto 
+
+
+Mover y eliminar enlaces simbolicos 
+Al igual que los enlaces físicos, los enlaces simbólicos pueden eliminarse usando rm y moverse o renombrarse usando mv. 
+Sin embargo, se debe tener especial cuidado al crearlos, para evitar “romper” el enlace si se mueve de su ubicación original.
+
+Al crear enlaces simbólicos, debe tener en cuenta que, a menos que se especifique completamente una ruta, la ubicación del objetivo se interpreta como relativa a la ubicación del enlace. 
+Esto puede crear problemas si se mueve el vínculo o el archivo al que apunta.
+
+La forma de evitar esto es especificar siempre la ruta completa al destino al crear el enlace: ejem: $ ln -s /home/carol/Documents/original.txt softlink
+
+De esta manera, no importa donde mueva el enlace, seguira funcionando, por que apunta a la ubicacion absoluta del objetivio, lo podemos comprobar con el comando ls, como el siguiente ejemplo
+$ ls -lh
+total 112K
+lrwxrwxrwx 1 carol carol   40 Jun  7 19:34 softlink -> /home/carol/Documents/original.txt
+
+
+
+
+
+
+

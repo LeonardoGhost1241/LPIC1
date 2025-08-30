@@ -1,0 +1,174 @@
+Controlar el montaje y desmontaje de sistemas de archivos 
+
+Montaje y desmontaje de sistemas de archivos 
+
+mount -t TYPE DEVICE MOUNTPOINT 
+	ejem: para montar una unidad exfat, usaremos mount -t exfat /dev/sdb1 ~/flash/
+
+
+Listado de sistemas de archivos montados 
+si se telcea el comando mount solo, se obtendra una lista de todos los sistemas de archivos actualmnte montados en su sistema, ouedes filtrar la salida con el parametro -t, si quieres todos
+los dispositivos montados que sean ext4, usaremos:
+	mount -t ext4
+puedes especificar mas de un sistema de archivos ejem:
+	mount -t ext4,fuseblk
+
+Parametros de mount:
+-a	Esto montara todos los sistemas de arhcivos listados en el archivos /etc/fstab 
+-o o --options	Esto pasara una lista de opciones de montaje separadas por comas al comando de montaje, que puede cambiar como se montara el sistema de archivos. Estos tambien se discutiran junto con /etc/fstab
+-r o -ro	Esto montara el sistema de arshicvos como de solo lectura
+-w o -rw	Estohara que el sistema de archivos de montaje sea escribible 
+
+Para desmontar un sistema de archivos, se usa el comando mount, seguido del punto de montaje
+	ejem: umount /dev/sdb1 o umount ~/flash 
+
+Algunos de los parametros para desmontar son:
+-a	Esto desmontara todos los sistemas de archivos listados en /etc/fstab 
+-f	Esto forzara el desmontaje de un sistema de archivos. Esto puede ser util si ha montado un sistema de archivos remoto que se ha vuelto inalcanzable 
+-r	Si el sistema de archivos no se puede desmontar, esto intentara convertirlo en solo lectura 
+
+
+
+Tratamiento de archivos abiertos 
+En caso de que queramos desmontar el disposutivo y nos diga "target is busy", podemos ver los procesos que estan ligados a este con el siguiente comando
+lsof nos permite ver la lista de procesos que acceden a el y que archivos estan abiertos.
+
+ejem: lsof /dev/sdb1
+
+donde commadn es el nombre del ejecutable que abrio el archivo, el pid es el numero del proceso y name el nombre del archivo si es el caso
+
+
+Donde montar???
+En cualquier lugar pero hay buenas practicas 
+Tradicionalmente, /mnt era el directorio en el que se montarían todos los dispositivos externos y una serie de “puntos de anclaje” preconfigurados para dispositivos comunes, como unidades de CD-ROM (/mnt/cdrom) y disquetes. (/mnt/floppy) existían en él
+
+Eso fue remplazado por /media
+
+En la mayoria de distros modernas, los dispositivos extraibles se montan automaticamente en /media/USER/LABEL
+Dicho esto, siempre que necesite montar manualmente un sistema de archivos, es una buena práctica montarlo en /mnt.
+
+
+
+Montaje de sistemas de archivos en el arranque 
+Esto se hace en el arcivo /etc/fstab siguiendo el siguiente formato 
+
+FILESYSTEM MOUNTPOINT TYPE OPTIONS DUMP PASS
+
+FILESYSTEM    El dispositivo que contiene el sistema de archivos que se va a montar. En lugar del dispositivo, puede especificar el UUID o etiqueta de la partición, algo que discutiremos más adelante.
+MOUNTPOINT    Dónde se montará el sistema de archivos.
+TYPE	      El tipo de sistema de archivos.
+OPTIONS	      Opciones de montaje que se pasarán a mount.
+DUMP	      Indica si cualquier sistema de archivos ext2, ext3 o ext4 debe considerarse para la copia de seguridad mediante el comando dump. Por lo general, es cero, lo que significa que deben ignorarse.
+PASS	      Cuando es distinto de cero, define el orden en el que se comprobarán los sistemas de archivos durante el arranque. Normalmente es cero.
+
+Algunas de las opciones en el apartado de OPTIONS son:
+atime y noatime: Por defecto, cada vez que se lee un archivo, se actualiza la información de tiempo de acceso. Deshabilitar esto (con noatime) puede acelerar la E/S del disco. No confunda esto con la hora de modificación, que se actualiza cada vez que se escribe un archivo
+auto y noauto: Si el sistema de archivos puede (o no) montarse automáticamente con mount -a
+defaults: Esto pasara las opciones rw, suid,dev,exec,auto,nouser y async al comando  mount 
+dev y nodev: Si deben interpretarse los dispositivos de caracteres o bloques en el sistema de archivos montado.
+exec y noexec: Permitir o denegar el permiso para ejecutar binarios en el sistema de archivos.
+user y nouser:   Permite (o no) a un usuario normal montar el sistema de archivos.
+group: Permite a un usuario montar el sistema de archivos si el usuario pertenece al mismo grupo que posee el dispositivo que lo contiene.
+owner: Permite a un usuario montar un sistema de archivos si el usuario posee el dispositivo que lo contiene.
+suid y nosuid: Permite, o no, que los bits SETUID y SETGID surtan efecto.
+ro y rw: Montan un sistema de archivos como de solo lectura o de escritura.
+remount: Esto intentará volver a montar un sistema de archivos ya montado. Esto no se usa en /etc/fstab, sino como un parámetro para mount -o. Por ejemplo, para volver a montar la partición /dev/sdb1 ya montada como de solo lectura, puede usar el comando mount -o remount,ro /dev/sdb1. Al volver a montar, no es necesario especificar el tipo de sistema de archivos, solo el nombre del dispositivo o el punto de montaje.
+sync y async: Realizar todas las operaciones de E/S en el sistema de archivos de forma sincrónica o asincrónica. async suele ser el predeterminado. La página del manual de mount advierte que el uso de sync en medios con un número limitado de ciclos de escritura (como unidades flash o tarjetas de memoria) puede acortar la vida útil del dispositivo.
+
+
+
+Uso de UUID y etiquetas 
+A veces el uso de /dev/sdcX puede depender del puerto al que se conecta, por lo que especificarlo con el UUID o la LABEL puede evitar probelas de montaje 
+
+Para consultar la informacion sobre un sistema de archivos y averiguar la etiqueta y el UUID asociado, use el parametro -f, seguido del dispositivo
+ejem: lsblk -f /dev/sdbX
+
+NAME: Nombre del dispositivo que contiene el sistema de archivos.
+FSTYPE: Tipo de sistema de archivos.
+LABEL:  Etiqueta del sistema de archivos.
+UUID: Identificador único universal (UUID) asignado al sistema de archivos.
+FSAVAIL: Cuánto espacio hay disponible en el sistema de archivos.
+FSUSE%: Porcentaje de uso del sistema de archivos.
+MOUNTPOINT: Dónde está montado el sistema de archivos
+
+
+
+
+en el archivo fstab se puede especificar por el UUID=UID o con  label como LABEL=label
+UUID=6e2c12e3-472d-4bac-a257-c49ac07f3761  /  ext4  noatime,errors
+LABEL=homedisk  /home ext4  defaults
+
+Se puede usar la misma sintaxis con el comando mount 
+mount -t ntfs UUID=56C11DCC5D2E1334 /mnt/external
+
+
+Montaje con SystemD
+El systemd es responsable de generar otros proceso, inicar servicio y arrancar el sistema, ademas se puede usar para gestionar el montaje y montaje automatico de sistemas de archivos 
+Se debe de crear un archivo de configuracion llamdo mount unit. CADA VOLUMEN DEBE DE TENER SU PROPIA UNIDAD DE MONTAJE y se deben de colocar en /etc/systemd/system
+
+Las unidades de montaje son archivos de texto simples con la extension .mount. El formato basico es:
+[Unit]
+Description= 
+
+[Mount]
+What=
+Where=
+Type=
+Options=
+
+[Install]
+WantedBy=
+
+
+
+Description= Breve descripción de la unidad de montaje, algo así como Monta el disco de respaldo.
+What=  Qué se debe montar. El volumen debe especificarse como /dev/disk/by-uuid/VOL_UUID donde VOL_UUID es el UUID del volumen.
+Where= Debe ser la ruta completa hacia donde se debe montar el volumen.
+Type= El tipo de sistema de archivos.
+Options= Las opciones de montaje que desee pasar, son las mismas que se utilizan con el comando mount o en /etc/fstab.
+WantedBy=    Se utiliza para la gestión de dependencias. En este caso, usaremos multi-user.target, lo que significa que siempre que el sistema se inicie en un entorno multiusuario (un inicio normal), se montará la unidad.
+
+ejemplo:
+[Unit]
+Description=External data disk
+
+[Mount]
+What=/dev/disk/by-uuid/56C11DCC5D2E1334
+Where=/mnt/external
+Type=ntfs
+Options=defaults
+
+[Install]
+WantedBy=multi-user.target
+
+Pero aún no hemos terminado. Para que funcione correctamente, la unidad de montaje debe tener el mismo nombre que el punto de montaje. En este caso, el punto de montaje es /mnt/external, por lo que el archivo debe llamarse mnt-external.mount
+
+Despues de eso, debe de reiniciar el demonio
+# systemctl daemon-reload #para cargar los demonios nuevos 
+# systemctl start mnt-external.mount
+
+si quieres habilitarlo en el inicio del sistema, lo puedes hacer con systemctl enable mnt-external.mount
+
+
+Montaje automatico de una unidad de montaje
+Las unidades de montaje se puedne montar automaticamente siempre que se acceda al punto de montaje. Para hacer esto, necesita un archivo .automount, junto con el archivo .mount que describe la unidad.
+El formato basico es 
+
+[Unit]
+Description=
+
+[Automount]
+Where=
+
+[Install]
+WantedBy=multi-user.target
+
+Guarde el archivo con el mismo nombre que el punto de montaje (en este caso, mnt-external.automount), vuelva a cargar systemd e inicie la unidad
+# systemctl daemon-reload
+# systemctl start mnt-external.automount
+
+Ahora, siempre que se acceda al directorio /mnt/external, se montara el disco. Y para habilitar el montaje automatico en cada arranque del sistema usaremos
+systemctl enable mnt-external.automount 
+
+
+

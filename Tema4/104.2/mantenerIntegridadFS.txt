@@ -1,0 +1,147 @@
+Comprobacion del uso del disco duro 
+
+du -uso del disco
+este comando es de naturaleza recursiva (en su forma basica, solo nos dice cuantos bloques de 1KB estan siendo usadas en el directorio actual con todo y sus directorios)
+
+du -h	Salida entendible por humanos 
+Por defecto, du solo muestra el recuento de uso de los directoios (Considerando todos los archivos y subdirectrios que contiene)
+
+du -ah	Mostrar un recuento individual de todos los archivos en el directorio, use el parametro -a 
+
+du -Sh	Espacio excluyendo los subdirectorios
+
+du -c	Espacio total final (funciona a nivel de archivos)
+
+resumen:
+-h	muestra el tamanio en un formato legible
+-s	Muestra el total para cada argumento en lugar de listar todos los arhcivos y subdirectorios 
+-c	Muestra un total acomulado al final de la salida 
+-d N	Profundidad de la raiz ejem: -d 1 mostrara el directoio actual y sus subdirectorios, pero no los subdirectorios de esos 
+--exclude="PATTERN"	Donde pattern es el patron con el que deseas comparar  ejem: du -ah --exclude="*.bin"   nota:El total ya no refleja el tamanio de los archivos excluidos 
+
+
+
+df - espacio libre
+Proporciona una lista de todos los sitemas de archivos disponibles(ya montados) en su sistema
+
+-h	muestra el resultado mas legible (sin este parametro)
+-i	para mostrar inodos usados/disponibles en lugar de bloques 
+-T	imprimira el tipo de cada sistema de archivos 
+-t Type	mostrara solo los un un tipo dado ejem: -t ext (mostrara todos los que son ext4)
+-x Type	excluira todos los de el sistema type ejem: du -hT -x tmpfs (excluira todos los que son tmpfs)
+
+Se puede personalizar la salida con la opcion --output= seguido de una lista de campos separados por comas
+algunos de los campos son:
+
+source	El dispositivo correpsondiente al sistema de archivos 
+fstype  El tipo de sistema de archivos.
+size    El tamaño total del sistema de archivos.
+used    Cuánto espacio se está utilizando.
+avail   Cuánto espacio hay disponible.
+pcent   El porcentaje de uso.
+target  Dónde está montado el sistema de archivos (punto de montaje
+
+ejem: df -h --output=target,source, fstype,pcent
+ejem:df -hx tmpfs --output=source,target,pcent
+
+Para trabajar con nodos con --output=
+itotal	numeo total de inodos en el sistema de archivos 
+iused   El número de inodos usados en el sistema de archivos.
+iavail  El número de inodos disponibles en el sistema de archivos.
+ipcent  El porcentaje de inodos usados en el sistema de archivos.
+
+ejem: df --output=source,fstype,itotal,iused,ipcent
+
+
+
+MANTENIMIENTO DE LOS SISTEMAS DE ARCHIVOS EXT2,EXT3 Y EXT4
+Para comprobar un sistema de archivos en busca de errores (y con suerte corregirlos) usamos fsck
+
+fsck - filesystem check busca y corrige errores
+
+si se ejecuta sin opciones, solo llamara la utilidad apropiada para el tipo de archivos correspondiente
+	Dado a que no se llamo con parametros asumio un sistema de archivos ext2/3/4 por defecto y  llamo a e2fsck
+	ejem:si es un tipo de archivo ext* llamara a e2fsck
+
+Para especificar un sistema de arcivos usa la opcion -t
+	ejem: fsck -t vfat /dev/sdc
+Alternativamente puede llamar directamente la utilidad especifica del sistema de arhcivos, como fsck.msdos para archivos FAT
+
+NUNCA EJECUTAR FSCK EN UN SISTEMA DE ARCHIVOS MONTADO
+
+opciones mas comunes:
+-A	Comprobara todos los sistemas de archivos listados en /etc/fstab
+-C	Muestra una barra de proraso al comprobar un sistema de achivos. Actualmente solo funciona en sistemas de archivos ext2/3/4
+-N	Esto imprimira lo que se haria y saldra, sin realmente verificar el sistema de archivos 
+-R	Cuando se usa junto con -A, esto omitira la verificacion del sistema de archivo raiz
+-V	Modo detallado, imprime mas informacion d elo habitual durante el funcionamiento. Es util para depurar 
+
+La utilidad usada para ext2/3/4 es e2fsck que es lo mismo que (fsck.ext2,fsck.ext3, etc)
+
+Cuando se encuentra un error en el sistema de archivos, se detiene y le pregunta al usuario que hacer
+El usuario deb escribir:
+y para slucionar el problema
+n para dejarlo sin arreglar
+a para solucionar el problema actual y todos los posteriores
+
+Sin embargo el tiempo vale mucho y no podemos quedarnos a picar yes o no, por lo que
+e2fsck tiene opciones que se ejecutan en modo NO interactivo
+
+
+-p    Esto intentará corregir automáticamente cualquier error encontrado. Si se encuentra un error que requiere la intervención del administrador del sistema, e2fsck proporcionará una descripción del problema y saldrá.
+-y    Esto responderá y (sí) a todas las preguntas.
+-n    Lo contrario de -y. Además de responder n (no) a todas las preguntas, esto hará que el sistema de archivos se monte como de solo lectura, por lo que no se puede modificar.
+-f    Obliga a e2fsck a comprobar un sistema de archivos incluso si está marcado como “clean”, es decir, se ha desmontado correctamente.
+
+
+
+AJUSTES DE UN SISTEMA DE ARCHIVOS EXT (tune2fs)
+Los fileSystem tienen una serie de parametros que el administrador del sistema puede ajustar o "afinar" para adaptarse mejor a las necesidades del sistema
+La utilidad para esto es tune2fs
+
+-l	ver parametros actuales, seguido de la particion 
+
+Los sistemas de archivos ext tienen conteos de omntajes, el recuento aumenta 1 cada vez que se monta el sistema
+y cuando se alcanza el umbral  del recuento mazio, el sistema se comprobara automaticamwnte con e2fsck 
+
+-c N	Establece el numero maximo de montajes sin comprobarlo
+-C N	Establece el numero de veces que se ha montado el sistema en el valor de N
+-i	Definimos un intervalo de tiempo entre comprobaciones, ejem:-d 10d, el sistem se comprobara cada 10 dias, se pueden usar m para meses y "y" para anios (Utilice cero como valor para desactivar esta funcion)
+-L	Se puede establecer una etiqueta para el sistema de archivos (hasta 16 carcateres)
+-U	Establece el UUID para el sistema de archivos (como la etiiqueta como el uuid pueden usarse en lugar del nombre del dispositivo)
+
+-e BEHAVIOUR	Define el comportamiento del kernel cuando se encuentra un error en el sistema de arhcivos 
+	donde BEHAVIOUR:
+		continue	Continuara la ejecucion normalemtne
+		ramount-ro	Volvera a montar el sistema de archivos como de solo lectura
+		panic		Causara kernel panic
+		(EL COMPORTAMIENTO PREDETEMRINADO ES CONTINUAR)
+		remount-ro puede ser util para aplicaciones sensibles a los datos
+Los sistemas de archivos ext3 son basicamente sistemas de archivos ext2 con journal
+puedes usar tune2fs para agregar journaling a un sistema ext2 convirtiendolo en ext3
+
+-j	agregar journaling ejem: tune2fs -j /dev/sda1
+Cuando el sistema de archivos registrados por journal, el parametro -J permite usar parametros adicionales como
+-J size=	establece tamanio de journal (en mehabytes)
+-J location=	especificar donde se almacenara el journal (ya sea en un bloque especifico o en una posicion espcifica en el disco con sifijos como M oG)
+-J device=	Poner un dispositivo externo con -J device=
+
+
+
+MANTENIMIENTO DE SISTEMAS DE ARCHIVOS XFS 
+El equivalente de fsck en sistemas xfs es xfs_repair
+-n	comprobara el sistema de archivos, se informaran los errores pero no se realizaran comprobaciones eje: xfs_repair -n /dev/sdXX
+
+-l LOGDEV y -r RTDEV	Estos son necesarios si el sistema de archivos tiene un registro externo y secciones en tiempo real. En este caso, reemplace LOGDEV y RTDEV con los dispositivos correspondientes.
+-m N			Se utiliza para limitar el uso de memoria de xfs_repair a N megabytes, algo que puede ser útil en la configuración del servidor. Según la página del manual, de forma predeterminada, xfs_repair escalará su uso de memoria según sea necesario, hasta el 75% de la RAM física del sistema.
+-d			El modo “dangerous” permitirá la reparación de sistemas de archivos que estén montados como de solo lectura.
+-v			Puede que lo haya adivinado: modo detallado. Cada vez que se usa este parámetro, la “verbosidad” aumenta (por ejemplo,-v -v imprimirá más información que solo -v
+
+xfs_repair no puede reparar sistemas con un registro sucio. Puede "poner cero" un registro corrupto con el parametro -L (este es un ultimo recurso ya que puede provocar la corrupcion del sistema de archivos y perdida de datos)
+
+Para depurar un sistema como xfs, puede usar xfs_db, ejem: xfs_db /dev/sdb1. Se usa para inspeccionar varios elementos y parametros del sistema de archivos 
+
+xfs_frs, se usa para reorganizar "desfragmentar" un sistema de archivos XFS. Cuando se ejecuta sin ningun argumento se ejecutara durante dos horas e intentara desfragmentar todos los distemas de archivos XFS montados y escribibles, enumerados en el archivos /etc/mtab
+	/etc/mtab tiene informacion de los sitemas actualmente montados
+
+

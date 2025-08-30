@@ -1,0 +1,195 @@
+# Buscar archivos del sistema y colocar archivos en la ubicacion correcta 
+
+
+Segun el estandar de la jerarquia del sistema de archivos (FHS), la estrcutura basica de directorios es la siguiente:
+
+/	Directorio raiz
+/bin	Binarios esenciles, disponibles para todos los usuarios 
+/boot	Archivos necesarios para el proceso de arranque, incluido el disco RAM inicial (initrd) y el propio kernel de linux 
+/dev	Archivos de dispositvo. Estos pueden ser dispositivos fisicos conectados al sistema, como /dev/sda o dispositivos virtuales proporcionados por el kernel 
+/etc	Archivos de configuracion especificos del host, aqui se encuentran los archivos de condiguracion, los programas instalados tienen aqui su configuracion 
+/home
+/lib	Se necesitan bibliotecas compartidad para arrancar el sistema operativo y ejecutar los archivos binarios en /bin y /sbin
+/media	los dispositivos extraible se montan aqui
+/opt	Paquetes de software de aplicacion 
+/root	Directorio de inicio del superusuario (root)
+/run	Datos variables en tiempo de ejecucion
+/sbin	binarios del sistema 
+/srv	Datos servidos por el sistema. Por ejemplo, paginas servidas por un servidor web podrian almacenarse en  /srv/www
+/tmp	Archivos temporales
+/urs	Datos de usuario de solo lectura, incluidos datos que necesitan algunas palicaciones y utilidades secundarias 
+/proc	Sistema de archivos virtual que contiene datos relacionados con los procesos en ejecucion
+/var	Datos variables escritos durante el funcionamiento del sitema, incluida la cola de impresion, datos de registro, buzones de correo, archivos temporales, cache del navegador, etc
+
+Tenga en cuenta que algunos de esos directorios, como /etc, /usr y /var, contienen una jerarquía completa de subdirectorios debajo de ellos.
+
+ARCHVIOS TEMPORALES 
+Estos son archivos que utilizan los programas para almacenar datos que solo se necesitan dutan un periodo breve. Estos pueden ser los datos de procesos en ejecucion, registros de fallos, archivos temporales de un guardado automatico, archivos intermediarios utilizados durante una conversion de archivos, archivos de cache, etc 
+
+Ubicacion de los archivos temporales
+la version 3.0 del Fylesystem Hierarchy Standard (FHS) define unicaciones estandares para archivos temporales en sistemas Linux
+
+/tmp	Segun la FHS los programas no deben asumir que los archivos escritos se conservaran aqui. La recomandacion es que este directorio se borre , aunque esto no sea obligatorio 
+/var/tmp	Otra ubicacion de archivos temporales, pero esta no debe borrarse durante el arranque del sistema. Los archivos almacenados aqui generalmente persistiran entre reinicios 
+/run	Contiene datos variables en tiempo de ejecucion que utilizan los procesos en ejecucion, como los archivos de identificacion de proceso (.pid). Los programas que necesitan más de un archivo en tiempo de ejecución pueden crear subdirectorios aquí. Esta ubicación debe borrarse durante el arranque del sistema. El propósito de este directorio alguna vez fue servido por /var/run, y en algunos sistemas /var/run puede ser un enlace simbólico a /run.,
+
+enga en cuenta que no hay nada que impida que un programa cree archivos temporales en otra parte del sistema, pero es una buena práctica respetar las convenciones establecidas por la FHS.
+
+
+
+BUSCAR ARCHIVOS 
+El mejor comando para buscar es fin, este comando necesita de de dos parametros, un punto de partida y que buscar 
+
+ejem:	Buscar todos los archivos en el directorio actual y subdirectorios cuyos nombres terminan en  .jpg, se puede usar
+	find . -iname '*.jpg'
+
+
+La expresion * .jpg debe de colocarse entre comillas simples, para evitar que el shell inteprete el patron en si
+
+De forma predeterminada find comenzara a descende a travez de los subdirectorios, puede restringir este comportamiento con los parametros -maxdepth N, donde N es el numero maximo de niveles
+Para buscar solo en el directorio actual usaremos: 	find . -iname '*.jpg' -maxdepth 1 
+
+El parametro -mount puede usarse para evitar que find caiga dentro de los sitemas de archivos montados. Tambien puede restringir la busqueda a tipos especificos de sistemas de arhcivos usando el parametro -fstype. Asi que find / mnt -fstype exfat -iname "\ report", solo buscara dentro de los sitemas de arhcvios exFAT montados en /mnt
+find /mnt -fstype exfat -iname "\ report" --> Solo buscara dentro de los sistemas de archivos exFAT montados en  /mnt
+
+BUSQUEDA POR ATRIBUTOS 
+Puede buscar archivos dependiendo de los atributos que pueda tener, por ejemplo (los usuarios que puede escribir, conjunto especifico de permisos o tamanio determinado)
+-user USERNAME:    Coincide con los archivos propiedad del usuario USERNAME.
+-group GROUPNAME:    Coincide con archivos propiedad del grupo GROUPNAME.
+-readable:    Coincide con archivos que son legibles por el usuario actual.
+-writable:    Coincide con archivos en los que el usuario actual puede escribir.
+-executable:   Busca archivos que son ejecutables por el usuario actual. En el caso de directorios, esto coincidirá con cualquier directorio que el usuario pueda ingresar (permiso x).
+-perm NNNN:    Esto coincidirá con cualquier archivo que tenga exactamente el permiso NNNN. Por ejemplo, -perm 0664 coincidirá con cualquier archivo que el usuario y el grupo puedan leer y escribir y que otros puedan leer (o rw-rw-r--)
+-empty;    Coincidirá con archivos y directorios vacíos.
+-size N:    Coincidirá con cualquier archivo de tamaño N, donde N por defecto es un número de bloques de 512 bytes. Puede agregar sufijos a N para otras unidades: Nc contará el tamaño en bytes, Nk en kibibytes (KiB, múltiplos de 1024 bytes), NM en mebibytes (MiB, múltiplos de 1024 * 1024) y NG para gibibytes (GiB, múltiplos de 1024 * 1024 * 1024)
+
+Tanto para size o para perm puede agregar un prefijo donde especifique lo grande o lo pequeño que puede ser el archvio
+por ejemplo, para el atributo de permisos, puede hacer esto -perm -644, donde el - antes del numero, especifica archivos iguales o menores a ese
+en el ejemplo de size, podriamos tener por ejemplo el prefijo + o - ( aqui significa mas grande o mas pequeño que) para buscar tamaños relativos , por ejemplo -size -10M coincidira con cualquier archivos de menos de 10 MiB de tamaño 
+
+
+
+
+Por ejemplo, para buscar archivos en su directorio de inicio que contengan el patrón report sin distinguir entre mayúsculas y minúsculas en cualquier parte del nombre, tengan permisos 0644, hayan sido accedidos hace 10 días y cuyo tamaño sea de al menos 1 Mib, podría utilizar
+$ find ~ -iname "*report*" -perm 0644 -atime 10 -size +1M
+
+
+BUSQUEDA POR TIEMPO 
+Además de buscar atributos, también puede realizar búsquedas por tiempo, encontrando archivos a los que se accedió, se les cambiaron los atributos o se modificaron durante un período de tiempo específico
+
+La busqueda por tiempo en find, permite encontrar archivos segun
+-tiempo de acceso (-amin, -atime)
+-tiempo de cambio de atributos (-cmin, -ctime)
+-tiempo de modificacion (-mmin, -mtime)
+
+Los parametros pueden ser
+N minutos atras (-amin, -cmin, -mmin)
+N*24 horas atrás (-atime, -ctime, -mtime)
+
+-mtime N: Archivos modificados exactamente hace N*24 horas
+-mtime +N: Archivos modificados hace más de N*24 horas
+-mtime -N: Archivos modificados hace menos de N*24 hora
+
+
+USANDO LOCATE Y UPDATEDB 
+son comandos que pueden usarse para encnontrar rapidamente un archivo que coincida con un patron dato en un sistema Linux
+
+locate a diferencia de find, no buscara el patron en el sistema de archivos, en su lugar, buscara en una base de datos construida ejecutando el comando updatedb. Esto le dara resultados muy rapidos, pero pueden ser impresisos dependiendo de cuando se actualizo la base de datos por ultima vez
+ejem: para encontrar todas las imagenes jpeg en el sistema, usaria locate jpg
+
+importante: Este comando le mostrara todo lo que contenga este patron, puede mostrarnos incluso un archivo que contenga jpg_specs.doc, pero no tiene la extension .jpeg
+
+RECUERDE que con locate  esta haciendo coincidir patrones, no extensiones de archivo
+
+Por defecto, el patron distingue entre mayusculas y minusculas, por lo que no se mostraran los archivos que contienen .JPG ya que el patron esta en minusculas,
+para evitar eso, usamos el paramtro -i a locate como:
+	locate -i .jpg
+
+Puede pasar varios patrones para locate, simplemente separelos con espacios.
+ejem: El siguiente comando hara una busqueda que no distingue entre mayusculas y minusculas para cualquier archivo que coincida con los patrones zip y jpg
+	locate -i zip jpg 
+
+Coincidir con todos los patrones
+Cuando usamos varios patrones, podemos solicitar la ubicacion para mostrar solo los archivos que coincidan con todos. Esto se hace con la opcion -A
+Ejem: El siguiente comando mostrara cualquier archivo que coincida con los patrones .jpg y los patrones .zip
+	locate -A .jpg .zip
+		$ locate -A .jpg .zip
+		/home/carol/Downloads/Pentaro.jpg.zip
+
+Si desea contar el numero de archivos que coincidan con un patron dado, en lugar de mostrar la ruta completa, podemos usar la opcion -c 
+ejem: para contar el numero de archvios .jpg en un sistema:
+	locate -c .jpg
+	1174
+
+
+
+
+Un problema con locate es que solo muestra las entradas presentes en la base de datos generada por updatedb (ubicada en /var/lib/mlocate.db). 
+Si la base de datos está desactualizada, la salida podría mostrar archivos que se han eliminado desde la última vez que se actualizó. 
+Una forma de evitar esto es agregar el parámetro -e, que hará que verifique si el archivo todavía existe antes de mostrarlo en la salida.
+Por supuesto, esto no resolverá el problema de los archivos creados después de que la última actualización de la base de datos 
+no aparezca. Para ello tendrá que actualizar la base de datos con el comando updatedb. 
+El tiempo que llevará esto dependerá de la cantidad de archivos de su disco.
+
+
+El comportamiento de updatedb puede ser controlado por el archivos /etc/updatedb.conf
+PRUNEFS=    Cualquier tipo de sistema de archivos indicado después de este parámetro no será escaneado por updatedb. La lista de tipos debe estar separada por espacios y los tipos en sí no distinguen entre mayúsculas y minúsculas, por lo que NFS y nfs son lo mismo.
+PRUNENAMES=    Esta es una lista de nombres de directorios separados por espacios que no deberían ser escaneados por updatedb.
+PRUNEPATHS=    Esta es una lista de nombres de ruta que deben ser ignorados por updatedb. Los nombres de las rutas deben estar separados por espacios y especificados de la misma manera que se mostrarían con updatedb (por ejemplo, /var/spool/media)
+PRUNE_BIND_MOUNTS=    Esta es una variable simple sí o no. Si se establece en yes, los montajes de enlace (los directorios montados en otro lugar con el comando mount --bind) serán ignorados.
+
+
+BUSQUEDA DE BINARIOS, PAGINAS DEL MANUAL Y CODIGO FUENTE 
+whihc es un comanodo muy util que muestra la ruta completa a un ejecutable
+ejem:
+	which bash
+	/usr/bin/bash 
+
+Si se agrega la opcion -a, el comando mostrara todos los nombres de ruta que coincidan con el ejecutable
+Con a muestra todas las coincidencias que se encuentran en el PATH
+
+Para encontrar que directorios estan en el PATH use el comando echo $PATH. Esto imprimira echo, el contenido de la variable PATH ($PATH) en su terminal 
+
+
+type es un comando similar que mostrara informacion sobre un binario, incluyendo donde se encuentra y su tipo
+	ejem: type locate 
+
+el parametro -a funciona de la misma manera que en withc, mostrando todos los nombres de ruta que coinciden con el ejecutable
+	type -a locate 
+
+El parametro -t mostrara el tipo de archivo del comando, que puede ser alias, keyword, function, builtin o file, ejem:
+$ type -t locate
+file
+
+$ type -t ll
+alias
+
+$ type -t type
+type is a built-in shell command
+
+
+
+El comando whereis es mas versatil y ademas de los binarios, se puede usar para mostrar la ubicacion de las paginas de man o incluso el codigo fuente del programa (si esta disponible en el sistema)
+ejem:	whereis locate 
+
+Puede usar los parametros -b y -s
+-b	limitara solo los binarios
+-m 	solo a paginas de manual
+-s	Limitara solo al codigo fuente
+
+$ whereis -b locate
+locate: /usr/bin/locate
+
+$ whereis -m locate
+locate: /usr/share/man/man1/locate.1.gz
+
+
+
+
+
+
+BUSQUEDA POR ATRIBUTOS 
+BUSQUEDA POR TIEMPO 
+USANDO LOCATE Y UPDATEDB 
+BUSQUEDA DE BINARIOS, PAGINAS DEL MANUAL Y CODIGO FUENTE 
+

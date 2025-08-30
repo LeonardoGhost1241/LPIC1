@@ -1,0 +1,480 @@
+REACION DE PARTICIONES Y SISTEMAS DE ARCHIVOS 
+
+En cualquier SO, es neceario particionar un disco antes de poder usarlo
+-Una particion es un subconjunto logico del disco fisico y la informacion sobre las particiones se almacena en una tabla de particiones 
+
+
+COMPRENSION DE MBR Y GPT 
+
+MBR (MASTER BOOT RECORD)
+La tabla de particiones se almacena en el primer sector del disco, llamado Boot Sector, junto con un cargador de arranque, que en los sistemas Linux suele ser el GRUB. Pero MBR tiene una serie de limitaciones que dificultan su uso en sistemas modernos, como la imposibilidad de utilizar discos de más de 2 TB de tamaño y el límite de solo 4 particiones primarias por disco
+
+
+GPT (GUID PARTITION TABLE)
+No existe un límite práctico en el tamaño del disco, y el número máximo de particiones está limitado solo por el propio sistema operativo. Se encuentra más comúnmente en máquinas más modernas que usan UEFI en lugar del antiguo BIOS de PC
+
+
+--------------------------------------
+GESTION DE PARTICIONES MBR CON FDIKS 
+-------------------------------------
+**La utilidad estandar para administtrar particiones MBR en linux es fdisk
+
+Para usarlo usamos fdisk dispositivo
+ejem: fdisk /dev/sda
+
+*Se pueden crear, editar, eliminar o eliminar particiones, pero no se ecribira nada en el disco a menos que se use el comando write (w)
+
+
+p - se usa para imprimir la tabla de particiones actual
+
+#En un disco MBR, puede tener 2 tipos principales de particiones, primarias y extendidas. Como dijimos antes, solo puede tener 4 particiones primarias en el disco, y si desea que el disco sea “de arranque”, la primera partición debe ser primaria.
+
+#Una forma de evitar esta limitación es crear una partición extendida que actúe como contenedor de particiones lógicas. Podría tener, por ejemplo, una partición primaria, una partición extendida que ocupa el resto del espacio en disco y cinco particiones lógicas dentro de ella.
+
+#Para un sistema operativo como Linux, las particiones primarias y extendidas se tratan exactamente de la misma manera, por lo que no hay “ventajas” de usar una sobre la otra
+
+
+n - crear una marticion (de froma predeterminada sera al comienzo del espacio asignado del primer sector)
+			-Se le pedira el tipo de particion (primeria o extendida), primer sector y ultimo sector
+
+puede especificar el ultimo sector seguido de las letras (K, M, G, T, o P)
+
+
+Comprobacion de espacio asignado
+F - Ver espacio disponible  en el disco
+
+Eliminar particiones
+d - Se le pedira el numero de la particion, a menos que haya solo una particion en el disco, en ese caso la primera particion sera eliminada inmediatamente (si se elimina la particion primaria, se eliminaran las particiones extendidas que hay dentro de ella)
+
+**Hay limitaciones al crear nuevas particiones en un disco utilizando fdisk, ya que el tamaño de una nueva particion sta restringido por el espacio contiguo no asignado disponible
+
+
+
+ambiar el tipo de particion
+t - nos pedira el numero de la particion, y se especifica por codigo hexadecimal correspondiente
+l - ver lista de codigos validos 
+
+**No confundir el tipo de particion con el sistema de archivos que se utiliza en ella (las particiones linux son del tipo 83, las linux swap son 82)
+
+esumen de Fdisk
+p- imprimir estrcutura del disco duro
+n - crear particion en disco
+F - Comprobar el espacio disponible en el disco
+d - Eliminar una particion
+t - Cambiar tipo de particion (nada que ver con el ssitema de arcjvso)
+l - listar los tipos 
+
+
+
+--------------------------------------
+ADMINISTRAR PARTICIONES GUID CON GDISK 
+--------------------------------------
+la utilidad gdisk es el equivalnte a fdisk cuando se trata de particionados GPT
+
+p - imprimir tabla de particion actual
+
+n - crear una particion, hasta 128 articiones primarias 
+
+d -eliminar particiones (a diferencia de fdisk, la primera particion no se seleccionara automaticamente si es la unica en el disco)
+
+s - Reordenar En los discos GPT, as particiones se pueden reordenar u 'ordenar' facilmente para evitar huecos en la secuencia de  numeracion. Para hacer esto, simplemnte use el comando s
+
+
+
+Cada disco tiene un identificador de disco (GUID) único. Este es un número hexadecimal de 128 bits, asignado al azar cuando se crea la tabla de particiones.
+
+
+f - No es necesrio el F para ver cuanto espacio queda, se muestra al final de la entrada de 'p'
+
+
+A diferencia de los discos MBR, al crear una particion en disco GPT, el tamaño no esta limitado por la cantidad mazima de espacio contiguo no asignado, puede utilizar hasta el ultimo bit de un sector libre, sin importar donde se encuentre en el disco
+
+
+
+OPCIONES DE RECUPERACION 
+Los discos GPT almacenan copias de seguridad del encabezado GPT y la tabla de particiones, lo que facilita la recuperacion de discos en caso de que estos datos se hayan dañado.
+
+Para acceder al modo recovery usamos r el cual nos dirigira a un prompt con mas opciones de recovery
+
+r - Para acceder al modo recovery 
+	b - Recontruir un encabezado GPT principal corrupto 
+	c- Recontruir una tabla de particiones
+	Usar el encabezado principal y la tabla para recontruir una copia de seguridad con 'd' y 'e'
+	Convertir un MBR a GPT con 'f' o hacer lo contrario con 'g'
+
+
+CREACION DE SISTEMAS DE ARCHIVOS EXT2,3,4
+-El sistema de archivos ext fue el primero siste de arcvios, y a travez de los anios fue remplazado por ext2, ext3 y ext4 (sistema predeterminado para muchos sistemas linux)
+
+-Las utilidades mkfs.ext2,3,4 son enlaces simbolicos a otra utilidad llamada mke2fs.
+
+mke2fs modifica sus valores predeterminados de acuerdo con el nombre que se llama 
+
+sintaxis: mkfs.ext2 TARGET - donde target es el nombre de la particion 
+
+O en lugar de usar el comando correspoendiente al sistema de archivos , puede usar el parametro -t con mke2fs
+
+mkfs.ext4 /dev/sdb1   ===  mke2fs -t ext4 /dev/sdb1
+
+algunos de los parametros que acepta mke2fs y tambien los comandos mkfs.ext2,3,4 son:
+	
+	-b SIZE   Establece el tamabio de los bloques de datos en dispositibos en SIZE, que puede ser de 1024, 2048 o 4096 bytes por bloque 
+
+Investigacion del parametro "-b"
+Un bloque de datos es la unidad minima de almacenamiento que el sistema de archivos puede manejar. Todo archivo que se almacene en el dispositivo usara almenos un bloque, aunque sea mas pequenio. Por ejemplo, si el tamanio del bloque es de 4096 bytes (4 KB), cualquier archivo ocupara como minimo 4KB, incluso si solo pesa 1KB
+
+Tamanio de bloque de 1024 bytes (1 KB)
+	Ventajas: Maor aprovechamiento del espacio si hay muchos archivos PEQUENIOS
+	Desventaja: Mas bloques por archivo grande lo que se traduce en mas operaciones de lectura/escritura
+
+Tamanio de bloque de 2048 bytes (2KB)
+	Ventajas:Compromiso entre eficienciia y espacio
+	Desventaja: Puede haber algo mas de desperdicio con archivos pequenios
+
+Tamanio de bloques de 4096 bytes (4 KB)
+	Ventajas:Mas rapido con archivos grandes y lectura/escritura secuencial
+	Desventajas: Mayor desperdicio de espacio si hay muchos archivos pequenios
+
+
+
+Esto es importante ya que ingluye en el rendimiento, aprovechamiento del espacio de almacenamiento y fragmentacion de archivos 
+
+
+Recomendacion general
+-Para archivos grandes (videos,bases de datos): 4096 bytes
+-Para archivos pequenios (logs, texto, configuraciones): 1024 o 2048
+***PARA COMPROBAR EL TAMANIO DEL BLOUE USAMOS STAT 
+	stat -f /montaje/de/la/unidad  --> debe de estar montada la unidad para ver el tamanio del bloque verdadero 
+
+
+	-c comprueba el dispositivo de destino en busca de bloques defectuosos, para ejecutar una comprobacion mas lenta, pero mas efectiva, ponemos dos veces el parametro como (-c -c )
+
+	-d DIRECTORY   Copia el contenido del directorio especificado en la raiz del nuevo sistema
+
+	-F esta opcion forzara mke2fs a crear un sistema de arcivo. Si se especifica dos veces (como en -F -F), incluso se puede usar para crear un sistema de archivos en un disposi
+
+	-L VOLUME_LABEL  Establece la etiqueta de volumen, debe de tener un maximo de 16 carcateres
+
+	-n Esta opcion SIMULA y muestra la creacion de un sistema de archivos como se fuera real. A veces es bueno comprobar las cosas antes de realizar cambios en el disco
+
+	-q Modo silencion, mke2fs se ejecutara normalmente, pero no producira ninguna salida en la temrinal. (Podria servir en un script)
+
+	-U ID Esto establecerá el UUID (Universally Unique Identifier) de una partición en el valor especificado como ID. En lugar de un ID, también puede especificar parámetros como clear para borrar el UUID del sistema de archivos, random, para usar un UUID generado aleatoriamente o time para crear un UUID basado en el tiempo
+
+
+
+CREACION DE SISTEMAS DE ARCHVIO
+Un sistema de archivos controla como se almacenan los datos y como se acceden a ellos en el disco
+	**La herramienta estandar usada para crear un sistema dea rchivos es mkfs
+
+
+
+
+CREACION DE UN SISTEMA DE ARCHIVOS XFS 
+-Sistema de alto rendimiento, por lo que se usa en servidores y otros entornos que requieren un ancho de banda alto
+-las herramientas para administrar sistemas de archivos XFS son parte del paquete xfsprogs y no esta predenetmindao en sistemas linux a excepcion de red hat, el cual lo usna como predeterminado 
+-XFS ganó popularidad cuando se introdujo porque podía gestionar eficazmente dispositivos de mayor capacidad y organizar rápidamente grandes cantidades de datos
+
+mas info (https://recoverit.wondershare.es/linux-recovery/xfs-file-system.html)
+
+Los sistemas de archivos XFS se dividen en al menos 2 partes, una sección de registro donde se mantiene un registro de todas las operaciones del sistema de archivos (comúnmente llamado Journal) y la sección de datos. La sección de registro puede estar ubicada dentro de la sección de datos (el comportamiento predeterminado), o incluso en un disco separado por completo, para un mejor rendimiento y confiabilidad.
+
+
+mkfs.xfs target - crea un sistem xfs en target
+	-b size=VALUE	Establece el bloque en el sistema de archvios, en bytes, al especificado en value -->valor rpedeterminado es 4096, (min es 512KiB y el max es 65536KiB)
+	-m crc=VALUE	Los parametros que comienzan con -m SON METADADOS, en este caso crc es CRC32c para verificar la integridad de todos los metadatos del dicso (values es 1 o 0) 
+	-m uuid=VALUE	Establece un UUID de la particion al especificado como VALUE. los uuid son numeros de 32 carcateres 128bits 8-4-4-4-12 (separados por guiones)
+	-f		Forza la creacion del sistema de archivos
+	-l logdev=DEVICE Colocara la seccion de registro del sistema de archivos en el dispositivo especificado, en lugar de dentro de la seccion de datos
+	-l size=VALUE	Esto establecerá el tamaño de la sección de registro en el especificado en VALUE. El tamaño se puede especificar en bytes y se pueden utilizar sufijos como m o g. -l size=10m, por ejemplo, limitará la sección de registro a 10 Megabytes.
+	-q	modo silencioso, no imprimira nada 
+	-L LABEL	Establece la etiqueta del sistema de archivos, puede tener un maximo de 12 carcateres
+	-N		Imprimira los parametros de la creacion, pero SIN CREARLO, modo prueba
+
+**Puedes comprobar despues los arametros usados con xfs_info
+
+
+
+
+CREACION DE UN SISTEMA DE ARCHIVOS FAT O VFAT
+-VFAT Es una extension del formato FAT16 que admite nombres de archivo largos
+-son manejados por las misma utilidad, mkfs.fat, mkfs.vfat es un alias
+-Tiene el inconveniente de que restringe su uso en discos grandes, por lo que se suele usar en unidades flash de hasta 2GB de tamanio
+
+mkfs.fat target - donde target es el dispositviso
+	-c	Comprueba el dispositivo destino en busca de bloques defectuosos antes de crear el sistema de archivos
+	-C FILENAME BLOCK_COUNT	reará el archivo especificado en FILENAME y luego creará un sistema de archivos FAT dentro de él, creando efectivamente una “imagen de disco” vacía, que luego puede escribirse en un dispositivo usando una utilidad como dd o montarse como un loopback dispositivo. Al usar esta opción, el número de bloques en el sistema de archivos (BLOCK_COUNT) debe especificarse después del nombre del dispositivo.
+	-F SIZE	  Selecciona el tamanio de la FAT (File Allocation Table), entre 12, 16 o 32, es decir FAT12, FAT 16 o FAT32	
+	-n NAME	  Establece la etiqueta del volumen (hasta 11 carcateres)
+	-v 	modo detallado, imprime mas informacion 
+	(mkfs.fat no puede crear un sistema de archivos "de arranque")
+
+
+ 
+CREACUIB DEL SISTEMA DE ARCHVIOS exFAT
+-Aborda limitaciones mas importantes de fat32, el tamaño del archivo y del disco
+-Buena opcion dnde se necesita interoperabilidad, como unidades flash de gran capacidad, tarjetas de memoria y discos externos
+-La utilidad predeterminada es mkfs.exfat, el cual es el enlace a mkexfatfs
+
+
+mkfs.exfat target -donde target es el dispositivo
+
+-A diferencia de las otras utilidades discutidas, esta tiene muy pocas opciones, las cuales son:
+
+	i VOL_ID	Establece el ID de volumen en el valor especificado. Si no se establece una ID se basa en la hora actual
+	-n NAME 	Establece la etiqueta de volumen o el nombre (15 caracteres)
+	-p SECTOR 	Especifica el primer sector de la primera particion (valor predetemrinado 0)
+	-s SECTORS	Define el numero de sectores fisicos por grupo de asignacion, debe ser una portencia de dos, como 2,4,6,8,etc
+	
+
+
+
+FAMILIARIZACION CON EL SISTEMA DE ARCHIVOS BTRFS 
+-Comun en sistemas modernos donde hay grandes cantidades de almacenamiento
+-creacion de raids, snapshots 
+-Si no tienes la utilidad de btrfs debes de instalarla con btrfs-progs 
+
+Creacion de un sistema de archivos 
+mkfs.btrfs /dev/sdx
+	-L Establece una etiqueta a la particion ejem:mkfs.btrfs -L "partizione 1 " /dev/sdb1
+
+Se puede pasar mas de una particion al comando, lo que es similar a una configuiracion RAID o LVM 
+
+	-m Para especificar como se distribuiran los metadatos en la matriz de los discos, los parametros pueden ser (raid0,raid1, raid5, raid6, raid10, single y dup)
+		Por ejemplo para crear un sistema de archivos  que abarque /dev/sdb1 y /dev/sdc1, concatendando las dos particiones en una gran particion use:
+		ejem: mkfs.btrfs -d single -m single /dev/sdb /dev/sdc 
+		Nota:-m se usa para definir la configuracion de los metadatos
+		     -d se usa para especificar la configuracion de los datos 
+
+Los sistemas de archivos que abarcan varias particiones, como el anterior, pueden parecer ventajosos al principio, pero no son una buena idea desde el punto de vista de la seguridad de los datos, ya que una falla en un solo disco de la matriz significa cierta pérdida de datos. El riesgo aumenta a medida que utiliza más discos, ya que también tiene más puntos posibles de falla
+
+
+SUBVOLUMENES (BTRFS)
+
+-Crear un subvolumen
+btrfs subvolume create /ruta/Particion/NombreSubvolumen
+
+-Listar todos los subvolumenes dentro de la particion
+btrfs subvolume list /ruta/Particion
+
+-Ver informacion del subvolumen 
+
+btrfs subvolume show /ruta/Particion/subvolumen
+
+-Montar un subvolumen 
+mount -t btrfs -o subvol=nombreSubvlumen /particion/del/sistemaArchivos /ruta/a/montar
+otra forma es ingresar el ID a la opcion de subvol, como -o subvol=IDnumber, el id number se obtiene con la salida de lista de subvolumnes 
+
+
+SNAPSHOTS (BTRFS)
+-Las instantaneas son como subvolumenes, pero rellenadas previamente con el contenido del vlumen desde el que se tomo la instantanea 
+-Cuando se crea, una instantanea y el volumen original  tienen exactamente el mismo contenido. Pero apartir de ese momento divergiran
+
+Una instantanea no duplica los arhivos e inicialmente casi no ocupa espacio en el disco. Por lo que los cambios realizados en el volumen original (como archivos agregados, renombrados o eliminados) no se reflejaran en la insrancia y viceversa
+
+Nota:Una instantanea no duplica los archivos e inicialmente casi no ocupa espacio en el disco. Simplemente duplica el arbol del sistema de archivos, mientras apunta a los datos originales 
+
+El siguiente comando creara una instantanea del sistem de archivos btrfs montado en /mnt/disk en /mnt/disk/snap
+
+btrfs subvolume snapshot /mnt/disk /mnt/disk/snap 
+
+-Si quieres saber que snapshot pertenece a cada un volumen, es necesario con que solamente 
+
+-Crear una snapshot
+btrfs subvolume snapshot /ruta/al/subvolumen /ruta/donde/guardar/snapshot 
+
+Si quieres crear snapshots de solo lectura, solo es necesario gregar una -r de solo read como:
+btrfs subvolume snapshot -r /mnt/disk /mnt/disk/snap
+
+
+Si quieres compresion de archivos, puedes usar la opcion -o compress, el algoritmo de compresion por defecto es ZLIB, pero tambien puedes elegir entre LZO o ZSTD
+
+
+ADMINISTRAR PARTICIONES CON GNU PARTED 
+-Funciona con discos GPT y MBR
+-
+
+Nota:A diferencia de fdisk o gdisk, este comando hace los cambios INMEDIATAMENTE, por lo que es vital siempre asegurarse de apuntarlo al disco correcto y hacer las operaciones correctas 
+
+
+Iniciar parted con un disco, podemos cambiar de disco usando el comando (select Device)
+parted /dev/sdX
+
+Obtener informacion del disco
+print 
+
+Lista de dispositivos de vloque conectados 
+print devices / print all y para saber cuanto espacio libre hay en cada uno de ellos, usar print free
+
+
+Crear una tabla de particiones en un disco vacio (mklabel)
+ya sea gpt o mbr, el comando es 
+mklabel msdos / mklabel gpt
+
+Crear una particion 
+sintaxis: mkpart partType Fstype Start End, donde 
+partType, es el tipo de particion, primaria, logica o extendida en caso de que se utilice una tabla de particiones MBR
+FStype, especifica el sistema de archivos que susara la particion (no creara el sistema de archivos), solo es una marca
+Start: puede especificar cualquiera de las tres siguientes:
+	2s refieirndose al segundo sector del disco
+	1m se refiere al comienzo del primer megabyte
+	algunas otras como B(bytes) y % (porcentaje del disco)
+End: si ponemos por ejemplo 100m, la particion finalizara 100MB despues del inicio del disco, se usan las mismas unidades que start
+
+ejemplo: mkpart primary ext4 1m 100m 
+
+
+Eliminar una particion 
+Se usa el comando rm, seguido del numero de la particion(se obtiene con el comando print)
+
+ejem: rm 1 o rm 2 
+
+Recuperaciob de particiones
+Para recuperarlo, puedes utilizar el comando recue, con la sintaxis de rescue Start End, donde los valores start y end es la ubicacion aproximada 
+Nota:Esto recuperara la particion y su contenido. Tenga en cuenta que rescue solo puede recuperar particiones que tengan un sistema de archivos instalado. No se detectan particiones vacias 
+
+
+CAMBIAR EL TAMANIO DE LAS PARTICIONES EXT2/3/4
+parted puede hacer mas grabdes o pequeñas las particiones, algunas advertencias son:
+	-Durante el proceso, la particion debe de estar SIN USAR y SIN MONTAR
+	-Necesita suficiente espacio libre despues de la particion para hacerla crecer al tamaño que desee
+
+la sintaxis es resizepart NumerParticion NuevoTamanio, si por ejemploi tenemos
+
+
+El proceso va a variar segun sea el caso, si aumentamos o disminuimos
+Veamoslo como dos cajas, donde la caja exterior es el tamaño de la partciion y el sistema de archivos 
+es la caja inferior; para exapandir el almacenamiento, debemos de modificar la caja exterior pegandole 
+otra parte de caja y despues pegar otro pedazo a la caja inferior(sistema de archivos) de modo que:
+Para aumentar tamaño:
+	-primero debemos de usar parted para extender el elmacenamiento
+	-Despues usamos size2fs para extender el sistema de archivos
+
+En cambio para reducir el tamaño, primero debemos de cortar parte de la caja inferior, de modo que no supere
+la caja exterior y despues cortar la caja superior, por lo que:
+Para reducir el tamaño:
+	-Usar size2fs para reducir el tamaño del sistema de archivos
+	-Despues usar parted para reducir el tamaño de la particion
+
+
+Para aumentar tamaño
+tamaño de la particion:2000MB
+Tamaño del sistema de arhciovs: 2000MB (ocupa todo el espacio de la particion)
+Espacio libre en el disco: 3000MB
+
+sudo parted /dev/sdX resizepart 1 4000MB
+sudo resize2fs /dev/sdX1
+
+Resultado
+    Tamaño de la Partición: 4000 MB
+    Tamaño del Sistema de Archivos: 4000 MB (ahora ocupa todo el espacio de la partición)
+
+
+
+Para reducir el tamaño
+tamaño de la particion:4000MB
+Tamaño del sistema de arhivos:4000MB(ocupa todo el espacio de la aprticion)
+Espacio libre en el Disco: 2000MB
+
+sudo resize2fs /dev/sdX1 2500MB
+sudo parted /dev/sdX resizepart 1 3000MB
+
+Resultado
+    Tamaño de la Partición: 3000 MB
+    Tamaño del Sistema de Archivos: 2500 MB (ahora ocupa menos espacio que la partición)
+
+
+NOTA IMPORTANTE:
+LOS VALORES CUANDO SE REDUCE ES DE (2500MB Y 3000MB)
+sudo resize2fs /dev/sdX1 2500MB
+sudo parted /dev/sdX resizepart 1 3000MB
+
+ES POR QUE EL VALOR DEL SISTEMA DE ARCHIVO DEBE DE SER MENOR O IGUAL AL VALOR DE LA PARTICION
+Y EL VALOR DE LA PARTICION DEBERA DE SER MAYOR O IGUAL QUE EL TAMAÑO DEL SISTEMA DE ARCHIVOS, ASI NO 
+QUEDA FUERA EL SISTEMA DE ARCHIVOS QUE ES LO QUE DARIA PROBLEMA, ASI QUE TRANQUILAMENTE PODEMOS USAR TAMBIEN:
+
+sudo resize2fs /dev/sdX1 2500MB
+sudo parted /dev/sdX resizepart 1 2500MB
+
+O en lugar de adivinar el tamaño que debemos de poner en resize2fs, podemos usar el parametro -M
+
+
+ejemplo visual
+root@kali:/home/kali# fdisk -l /dev/sdb
+Disk /dev/sdb: 8 GiB, 8589934592 bytes, 16777216 sectors
+Disk model: VBOX HARDDISK   
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: 99994A7D-8530-4072-90EF-813C77A54E60
+
+Device     Start     End Sectors  Size Type
+/dev/sdb1   2048 5273437 5271390  2.5G Linux filesystem
+                                                                                                                                                                                                                   
+root@kali:/home/kali# sudo parted /dev/sdb resizepart 1 7000m
+Information: You may need to update /etc/fstab.
+
+                                                                                                                                                                                                                   
+root@kali:/home/kali# fdisk -l /dev/sdb                      
+Disk /dev/sdb: 8 GiB, 8589934592 bytes, 16777216 sectors
+Disk model: VBOX HARDDISK   
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: 99994A7D-8530-4072-90EF-813C77A54E60
+
+Device     Start      End  Sectors  Size Type
+/dev/sdb1   2048 13671875 13669828  6.5G Linux filesystem
+                                                                                                                                                                                                                   
+root@kali:/home/kali# sudo resize2fs /dev/sdb1 6500m
+resize2fs 1.47.2 (1-Jan-2025)
+Resizing the filesystem on /dev/sdb1 to 1664000 (4k) blocks.
+The filesystem on /dev/sdb1 is now 1664000 (4k) blocks long.
+
+- - - - - - -- - - - - - - - - - - - - - --  -- - - - - - -
+O con el parametro -M
+root@kali:/home/kali# sudo resize2fs -M /dev/sdb1      
+resize2fs 1.47.2 (1-Jan-2025)
+Resizing the filesystem on /dev/sdb1 to 28383 (4k) blocks.
+The filesystem on /dev/sdb1 is now 28383 (4k) blocks long.
+
+
+
+CREACION DE PARTICIONES DE INTERCAMBIO 
+Para configurarla en forma de particion, primero debemos de crear una particion, lo podemos hacer con
+	-fdisk, usando el comando t, seleccione la particion donde se usara y el tipo es 82 y para salir solo con w
+	-gdisk, Para cambiar el tipo de particion es t, pero el codigo es 8200. Para escribir los cambios en el disco usamos w
+
+Si estamos en parted, el tipo de sistema de arhcivo sera linux-swap
+
+ejm: (parted) mkpart primary linux-swap 301m 800m
+
+o desde la terminal;
+sudo parted /dev/sdb mkpart linux-swap 7001m 8000m (valores dependiendo del contexto)
+
+Despues para "formatearlo" como particion de swap, simplemente usamos mkswap
+ejem: sudo mkswap /dev/sdb2
+
+Despues para habilitarlo/deshabilitarlo dentro del sistema usamos usamos:
+	- swapon    para encender el swap
+	- swapoff   para apagar el swap	
+
+Una forma de saber que hay de swap es usando el comando
+swapon --show 
+
+
+SWAP con file 
+para crear un arhcivo swap podesmo hacer los siguiente
+dd=/dev/zero of=/swapFile bs=1M count=1024
+
+despues 
+mkswap swapFile
+swapon swapFile
+
+para ver todos los swap, usamos swapon --show 
+
+Nota:Tanto mkswap como swapon se quejarán si su archivo de intercambio tiene permisos inseguros. El indicador de permiso de archivo recomendado es 0600. El propietario y el grupo deben ser root.
+
+Si quieres hacer testeos en el sistema, puedes usar stress o stress-ng o dd

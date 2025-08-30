@@ -1,0 +1,155 @@
+# Administrar os permisos y la propiedad de los archivos 
+
+
+Consultar informacion sobre archivos y directorios 
+
+
+El comando para ver los permisos es  ls -l 
+
+Ejem:
+
+$ ls -l
+total 536
+drwxrwxr-x 2 carol carol   4096 Dec 10 15:57 Another_Directory
+-rw------- 1 carol carol 539663 Dec 10 10:43 picture.jpg
+-rw-rw-r-- 1 carol carol   1881 Dec 10 15:57 text.txt
+
+Cada columna de la salida anterior tiene un significado. Echemos un vistazo a las columnas relevantes para esta lección.
+
+    La primera columna de la lista muestra el tipo de archivo y los permisos. Por ejemplo, en drwxrwxr-x:
+
+        El primer caracter, d, indica el tipo de archivo.
+
+        Los siguientes tres caracteres, rwx, indican los permisos del propietario del archivo, también conocido como user o u.
+
+        Los siguientes tres caracteres, rwx, indican los permisos del grupo propietario del archivo, también denominado g.
+
+        Los últimos tres caracteres, r-x, indican los permisos para cualquier otra persona, también conocidos como otros u o.
+
+	Las columnas tercera y cuarta muestran información de propiedad: respectivamente, el usuario y el grupo que posee el archivo.
+
+	La séptima y última columna muestra el nombre del archivo
+
+Los numeros 2, 1 y 1 que estan en la segunda columna,indican el numero de enlaces fisiscos que apuntan a ese archivo
+
+Para los diretorios debemos de usar el parametro -d, para evitar que nos muestre el contenido del directorio al que seleccionamos, ejem: ls -ld dir/
+
+Archivos ocultos
+Para ver archvios ocultos usaremos -a ejem: ls -la, en linux, los arhcivos y directorios ocultos comienzan con un .
+Sin embargo es importante no confundir los directoios . y ..
+. es un puntero al directorio padre (directorio actual)
+.. es un puntero al directorio principal, el que contienen el actual (directorio anterior)
+
+Lo puedes comprobar viendo los inodos de . y ..
+
+Tipos de archivos
+Cuando listamos los archivos, podemos ver el tipo de arhcivo dependiendo del signo o letra que inicia como:
+ 
+- (archivo normal): Un archivo puede contener datos de cualquier tipo y ayudar a gestionar estos datos. Los archivos se pueden modificar, mover, copiar y eliminar.
+d (directorio): Un directorio contiene otros archivos o directorios y ayuda a organizar el sistema de archivos. Técnicamente, los directorios son un tipo especial de archivo.
+l (enlace simbólico): Este “archivo” es un puntero a otro archivo o directorio en otra ubicación del sistema de archivos.
+
+Además de estos, hay otros tres tipos de archivos que al menos debería conocer, pero que están fuera del alcance de esta lección:
+
+b (dispositivo de bloque): Este archivo representa un dispositivo virtual o físico, generalmente discos u otros tipos de dispositivos de almacenamiento, como el primer disco duro que podría estar representado por /dev/sda.
+c (dispositivo de caracteres):  Este archivo representa un dispositivo físico o virtual. Los terminales (como el terminal principal en /dev/ttyS0) y los puertos serie son ejemplos comunes de dispositivos de caracteres.
+s (socket): Los sockets sirven como “conductos” para pasar información entre dos programas
+
+
+
+Comprension de permisos
+-Permisos para archivos
+r read, valor octal de 4, permiso para abrir un arhcivo y leer su contenido
+w write, valor octal de 2, permiso para editar o eliminar un archivo
+x execute, valor octal de 1, puede ejecutarse como ejecutable o script 
+
+Permisos para direcotrio
+r read, permiso para leer su contendio del directorio, como nombres de archivos, pero no se puede leer los archivos, valor octal de 4
+w write, permiso para crear o borrar archivos en un directorio,NO PUEDES HACER ESTOS CAMBIOS SOLO CON PERMISOS DE ESCRITURA, SINO QUE TAMBIEN NECESITAS PERMISOS DE EJECUCION (X) PARA CAMBIAR EL DIRECTORIO, valor octal de 2
+x execute, tienes permisos para ingresar a un directorio, pero no para listar sus archvios (para eso necesitas r)
+
+
+MODIFICACION DE PERMISOS DE ARCHIVOS 
+Hay dos formas de cambiarlos, de forma simbolica o de forma ocaral
+
+forma simbolica 
+ejem: chmod ug+rw-x,o-rwx text.txt   si quieres establecer los mismos permisos para todos, puedes ocupar chmod a+rw file.txt o chmod a=rw+, por decir un ejemeplo
+
+forma octal
+ejem: chmod 660 text.txt
+
+los dos dan los mismos permisos 
+
+otro ejemplo usando el = --> chmod u=rw+,g=x+ file.sh ,chmod a=rw+ file.txt 
+
+Si quieres cambiar los permisos para todos los que estan dentro del directorio, puedes usar la opcion de recursividad -R, ejemplo chmod -R u=rw+,g=x- file.txt 
+
+WARNING=Tenga cuidado y piénselo dos veces antes de usar el modificador -R, ya que es fácil cambiar los permisos en archivos y directorios que no desea cambiar, especialmente en directorios con una gran cantidad de archivos y subdirectorios.
+
+
+????????????
+¿Qué sintaxis debería utilizar? Se recomienda el modo octal si desea cambiar los permisos a un valor específico, por ejemplo, 640 (rw- r-- ---).
+El modo simbólico es más útil si desea invertir solo un valor específico, independientemente de los permisos actuales para el archivo. Por ejemplo, puede agregar permisos de ejecución para el usuario usando solo chmod u+x script.sh sin tener en cuenta, o incluso tocar, los permisos actuales para el grupo y otros.
+
+
+MODIFICAR LA PROPIEDAD DEL ARCHIVO 
+Sintaxis: chown username:groupname filename 
+
+Tenga en cuenta que el usuario propietario de un archivo no necesita pertenecer al grupo propietario de un archivo. En el ejemplo anterior, el usuario carol no necesita ser miembro del grupo estudiantes
+
+si queremos cambiar solo el usuario, el comando seria chown  carl: text.txt o simplemente chown carl fiile.0txt
+alternativamente puede cambiar el grupo con chgrp estudientes text.txt
+
+
+CONSULTAR GRUPOS 
+Para ver los grupos existentes puede usar getent group 
+
+Si quiere saber a que grupos pertenece un usuario, agregue el nombre de usuario al comando groups 
+	ejem: groups leonardo 
+
+si quiere hacer lo contrario, que usuario pertenecen a un grupo, puede usar groupmems, con el parametro -g y -l 
+	ejem: groupmems -g cdrom -l 
+
+
+
+PERMISOS PREDETERMINADOS 
+Cuando creamos un direcotrio o un archivo, se crean con permisos por defecto, por lo que si estamos administrando un sistema, es de vital importancia, el poder modificarlos 
+Puede coomprobar los permisos actuales cone el comando user mask o umask 
+
+Podemos hacer una relacion entre el comanso chmod y el comando umask, el comando chmod agrega los permisos, por ejemplo 777, agrega permisos de rw- para archivos y rwx para directorios y 
+el comando umaks, los quita, por lo que si pasamos umask 777, al crear un archivo nos dara los permisos --- y para directorios --- por defecto
+
+podemos ver lo spermisos en formato simbolico, con umaks -S, vermeos una salida como u=rwx,g=rw,o=r
+
+
+ARCHIVOS ESPECIALES 
+ademas de los permisos para usuario, grupo y otros, cada archivo puede tener otros tres permisos especiales, que puede alterar la forma en que funciona un directorio o como se ejecuta un programa.
+Lo puedes especificar en modo simbolico u octal 
+
+
+
+Bit Ashesivo, llamado bandera de eliminacion restringida, tiene valor octal 1 y en modo simbolico esta representado por una t dentro de los permisos del otro y no tienen ningun efecto sobre los arhcivos normales 
+En linux evita que los usuarios eliminen o cambien el nombre de un archivo en un directorio a menos que sean propietarios de ese archivo o directorio 
+Los directorios con el bit adhesivo establecido muestran una t remplazando la x en los permisos de otros, ejem: drwxr-xr-t 2 carol carol 4096 Dec 20 18:46 Sample_Directory/
+en la forma octal, esto se especifica como:	chmod 1755 dir, donde el 1 representa el bit adhesivo 
+
+
+GID o tambien conocido como SGID o Set group id bit, tiene un valor octal de 2 y en modo simbolico esta representado por una s en los permisos del group (Se aplican a archibvos y directorios)
+En archivos, hara que el proceso se ejecute con los privilegios del grupo propietario del archivo
+Cuando se aplica a directorios, hara que cada archivo o direcotrio creado bajo él, herede el grupo del directorio principal 
+esto se muestra como: 
+
+$ ls -l test.sh
+-rwxr-sr-x 1 carol root 33 Dec 11 10:36 test.sh
+
+
+SUID tambien conocido como Establecer ID de usuario, tiene el valor octal de 4 y esta representado por una S en los permisos d euser en modo simbolico
+Solo se aplica a archivos y no tiene ningun afecto en los directorios, su comportamiento es similar al bit SGID, pero el proceso se ejecutara con los privilegios de usuario propietario del archivo 
+Los archivos con el bit SUID muestran una s que remplaza la z en los permisos del usuario en la salida ls -l
+
+
+$ ls -ld test.sh
+-rwsr-xr-x 1 carol carol 33 Dec 11 10:36 test.sh
+
+
+
