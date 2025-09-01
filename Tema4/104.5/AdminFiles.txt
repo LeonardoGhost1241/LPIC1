@@ -121,6 +121,8 @@ el comando umaks, los quita, por lo que si pasamos umask 777, al crear un archiv
 
 podemos ver lo spermisos en formato simbolico, con umaks -S, vermeos una salida como u=rwx,g=rw,o=r
 
+Cuando trabajes con umask, recuerda, umask resta empezando con 666 para los documentos y 777 para los directrios
+
 
 ARCHIVOS ESPECIALES 
 ademas de los permisos para usuario, grupo y otros, cada archivo puede tener otros tres permisos especiales, que puede alterar la forma en que funciona un directorio o como se ejecuta un programa.
