@@ -1,6 +1,10 @@
 #!/bin/bash
 # Script interactivo para practicar permisos en Linux
 
+title1="Permisos simbolicos (ej: u+rwx,g-w,o=rx): "
+title2="Permisos octales (ej: 755, 644, 660): "
+
+
 show_menu() {
     echo "==============================="
     echo "     MENÚ DE PERMISOS LINUX    "
@@ -21,18 +25,35 @@ info_archivo() {
     ls -lhd "$file"
 }
 
+
+modo_Recursivo(){
+	if [[ -d "$2" ]]; then	
+		read -p "Cambiar permisos de todos los archivos? y/n: " opc
+		if [[ "$opc" == "y" ]];then
+			read -p "$1" permisos
+			chmod -R $permisos "$2"
+			ls -l "$file"
+		else
+			read -p "$1" permisos
+			chmod  $permisos "$2"
+			ls -ld "$file"
+		fi
+	else
+		read -p "$title1" permisos
+		echo "chmod $permisos "$file""
+		ls -l "$file"
+	fi
+
+}
+
 cambiar_permisos_simbolico() {
     read -p "Archivo: " file
-    read -p "Permisos simbólicos (ej: u+rwx,g-w,o=rx): " permisos
-    chmod $permisos "$file"
-    ls -l "$file"
+    modo_Recursivo "$title1" "$file"
 }
 
 cambiar_permisos_octal() {
     read -p "Archivo: " file
-    read -p "Permisos octales (ej: 755, 644, 660): " permisos
-    chmod $permisos "$file"
-    ls -l "$file"
+    modo_Recursivo "$title" "$file"
 }
 
 cambiar_propietario() {
@@ -86,7 +107,7 @@ umask_menu() {
     fi
 }
 
-# Bucle principal
+#Bucle principal
 while true; do
     show_menu
     read -p "Seleccione una opción: " option
