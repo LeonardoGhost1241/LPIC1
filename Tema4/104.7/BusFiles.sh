@@ -24,7 +24,7 @@ Menu(){
 	echo " 3) Buscar archivos (find)              "
 	echo " 4) Buscar archivos (locate)            " 
 	echo " 5) Modificar comportamiento de updatedb (locate)"
-	echo " 6) Buscar binarios, paginas man y codigo fuente  "
+	echo " 6) Buscar binarios, paginas man y tipo "
 	echo " 7) Salir"
 }
 
@@ -165,7 +165,44 @@ actualizarDB(){
 }
 
 
-#buscarBinaryManCode(){}
+
+buscarBinaryManCode() {
+    select var in "Ubicar ruta de ejecutable" "Tipo de archivo" "Buscar páginas man" "Salir"; do
+        case $var in
+            "Ubicar ruta de ejecutable") 
+                read -p "Ingresa el nombre del ejecutable: " exe
+                if which "$exe" > /dev/null; then
+                    echo "Ruta del ejecutable: $(which "$exe")"
+                else
+                    echo "El ejecutable '$exe' no se encontró."
+                fi
+                ;;
+            "Tipo de archivo") 
+                read -p "Ingresa el nombre del ejecutable: " exe
+                if type "$exe" > /dev/null; then
+                    echo "Tipo de archivo: $(type -t "$exe")"
+                else
+                    echo "El ejecutable '$exe' no se encontró."
+                fi
+                ;;
+            "Buscar páginas man")  
+                read -p "Ingresa el nombre del ejecutable: " exe
+                if whereis "$exe" > /dev/null; then
+                    echo "Ubicación de las páginas man y binarios: $(whereis "$exe")"
+                else
+                    echo "No se encontraron páginas man para '$exe'."
+                fi
+                ;;
+            "Salir")
+                echo "Saliendo..."
+                break
+                ;;
+            *) 
+                echo "Opción no válida. Por favor, elige una opción del menú."
+                ;;
+        esac
+    done
+}
 
 
 while true; do
@@ -178,7 +215,7 @@ while true; do
 		3) buscarFind ;;
 		4) buscarLocate;;
 		5) actualizarDB;;
-		6) ;;
+		6) buscarBinaryManCode;;
 		7) echo "Bye" ; exit 1;;
 		*) exit 1 ;;
 	esac
