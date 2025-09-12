@@ -1,0 +1,85 @@
+
+
+
+======================================================================================
+Dispositivos, sistemas de archivos Linux, estandar de jerarquia del sistema de archivos 
+======================================================================================
+EJERCICIOS GUIADOS 
+	-¿Qué esquema de partición debería utilizarse para particionar un disco duro de 3 TB en tres particiones de 1 GB? ¿Por qué?
+	GPT por que Dos no soporta discos de mas de "TB
+
+	-En gdisk, ¿cómo podemos saber cuánto espacio hay disponible en el disco?
+	En gdisk con imprmir (print) nos mostrara el espacio disponible, sin embargo en fdisk es con F mayuscula 
+
+	-¿Cuál sería el comando para crear un sistema de archivos ext3, verificando antes los bloques defectuosos, con la etiqueta MyDisk y un UUID aleatorio, en el dispositivo /dev/sdc1?
+	mkfs.ext3 -c -L "MyDisk" -U random /dev/sdc1
+
+	-Usando parted, ¿cuál es el comando para crear una partición ext4 de 300 MB, comenzando con 500 MB en el disco?
+	sudo parted /dev/sdb mkpart ext4 800M
+
+	-Imagine que tiene 2 particiones, una en /dev/sda1 y la otra en /dev/sda2, ambas de 20 GB de tamaño. ¿Cómo puede usarlas en un solo sistema de archivos Btrfs, de tal manera que el contenido de una partición se refleje automáticamente en la otra, como en una configuración RAID1? ¿Qué tamaño tendrá el sistema de archivos?
+	mkfs.btrfs -d raid0 -m raid0 /dev/sda1 /dev/sda2, tendra un tamaño de 40 GB
+
+EJERCICIOS EXPLORATORIOS 
+	-Considere un disco de 2 GB con una tabla de particiones MBR y el siguiente diseño:
+	Disk /dev/sdb: 1.9 GiB, 1998631936 bytes, 3903578 sectors
+	Disk model: DataTraveler 2.0
+	Units: sectors of 1 * 512 = 512 bytes
+	Sector size (logical/physical): 512 bytes / 512 bytes
+	I/O size (minimum/optimal): 512 bytes / 512 bytes
+	Disklabel type: dos
+	Disk identifier: 0x31a83a48
+
+	Device     Boot   Start     End Sectors  Size Id Type
+	/dev/sdb1          2048 1050623 1048576  512M 83 Linux
+	/dev/sdb3       2099200 3147775 1048576  512M 83 Linux
+	¿Puede crear una partición de 600 MB en él? ¿Por qué?
+	No, por que el tamaño en los discos MBR no esta limitado por la cantidad maxima de espacio contiguo no asignado a diferencia de crear una particion en discos GPT, en donde se usa hasta el ultimo bit de un sector libre, sin importar donde se encuentre el disco 
+
+	-En un disco en /dev/sdc, tenemos una primera partición de 1 GB, que contiene aproximadamente 256 MB de archivos. Usando parted, ¿cómo puede reducirlo para que tenga suficiente espacio para los archivos?
+	Si queremos reducirlo, primero debemos de reducir el tamaño del sistema de archivos, esto se hace con el comando resize2fs para sistemas de archivos ext2/3/4	y con la opcion -M para ajustar automaticamente el valor al que se ajusta (-M Reduce el sistema de archivos al tamaño minimo)
+
+
+	-Imagine que tiene un disco en /dev/sdb y desea crear una partición de intercambio de 1 GB al principio. Entonces, usando parted, cree la partición con mkpart primary linux-swap 0 1024M. Luego, habilita el intercambio en esta partición con swapon /dev/sdb1, pero aparece el siguiente mensaje de error:
+	swapon: /dev/sdb1: read swap header failed
+	¿Qué salió mal?
+	Parted solo hace la particion pero no formatea la particion, para ello, debera de usar el comando de mkswap 
+
+	-Durante el curso de esta lección, estuvo probando algunos comandos en parted pero, por error, eliminó la tercera partición en su disco duro. Usted sabe que vino después de una partición UEFI de 250 MB y una partición de intercambio de 4 GB, y tenía un tamaño de 10 GB. ¿Qué comando puede usar para recuperarlo?
+	Nos dice que habia dos particiones antes de la particion que queremos recuperar, por lo que convertiremos todo a  megas, si las particiones son:
+		particion UEFI 250M
+		particion SWAP 4G = 4*1024= 4346
+		particion de 10G que se peridio = 10 * 1024 = 10240
+		Por lo que el inicio sera la suma de las dos primeras particiones y el final sera la suma de las dos primeras, mas las 10G de la particion, por lo que:
+			inicio= 250M + (4 * 1024) = 4346M
+			fin= (250M + (4*1024)) + (10 * 1024) = 14586M
+		Entonces dentro de la terminal de parted, usaremos el comando rescue con los parametros de inicio y fin tal que: 
+			(parted) rescue 4346m 14586m
+
+	-Imagine que tiene una partición de 4 GB sin usar en /dev/sda3. Usando fdisk, ¿cuál sería la secuencia de operaciones para convertirlo en una partición de intercambio activa?
+	Primero cambiaremos el tipo de particion a  linux swap 82, despues escribimos los cambios en disco y salimos, despues usamos el comando mkswap para crear la particion de intercambio y finalmente usaremos swapon para activarla
+
+
+
+
+
+
+
+
+======================================================================================
+Mantener la integridad de los sitemas de archivos 
+======================================================================================
+EJERCICIOS GUIADOS 
+	-Usando du, ¿cómo podemos verificar cuánto espacio están usando solo los archivos en el directorio actual?
+	du -Shd 0 . donde S no cuenta los subdirecotiros, h para visualizar en unidades que nosostros los humanos entendemos y -d para la produndidad
+
+	-Usando df, enumere la información para cada sistema de archivos ext4, con las salidas incluyendo los siguientes campos, en orden: dispositivo, punto de montaje, número total de inodos, número de inodos disponibles, porcentaje de espacio libre.
+	df -t ext4 --output=source,target,itotal,iavail,pcent
+
+	-¿Cuál es el comando para ejecutar e2fsck en /dev/sdc1 en modo no interactivo, mientras se intenta corregir automáticamente la mayoría de los errores?
+	e2fsck -p /dev/sdc1, con -p, esta herramienta esta optimizada para ext2/3/4
+
+	-Suponga que /dev/sdb1 es un sistema de archivos ext2. ¿Cómo puede convertirlo a ext3 y, al mismo tiempo, restablecer su recuento de montaje y cambiar su etiqueta a UserData?
+	
+
+	-¿Cómo puede comprobar si hay errores en un sistema de archivos XFS, sin reparar los daños encontrados?
