@@ -80,6 +80,37 @@ EJERCICIOS GUIADOS
 	e2fsck -p /dev/sdc1, con -p, esta herramienta esta optimizada para ext2/3/4
 
 	-Suponga que /dev/sdb1 es un sistema de archivos ext2. ¿Cómo puede convertirlo a ext3 y, al mismo tiempo, restablecer su recuento de montaje y cambiar su etiqueta a UserData?
-	
+	tune2fs -j -L "UserData" -C 0, no confundir -C con -c, (-c es el numero de veces que se puede montar un sistema de archivos sin comprobarlo, -C establece el numero de veces que se ha montado el sistema en el valor de N )	
 
 	-¿Cómo puede comprobar si hay errores en un sistema de archivos XFS, sin reparar los daños encontrados?
+	xfs_repair -n /dev/sdXX donde (-n significa no modificar), si quitamos la -n, comprobaremos el sistema de archivos
+
+EJERCICIOS EXPLORATORIOS
+	-Considere que tiene un sistema de archivos ext4 en /dev/sda1 con los siguientes parámetros, obtenidos con tune2fs:
+	Mount count:              8 (se modifica con el parametro -C)
+	Maximum mount count:      -1 (se modifica con el parametro -c)
+	¿Qué pasará en el próximo arranque si se emite el comando tune2fs -c 9 /dev/sda1?
+	Cambiara el numero de numero maximo de montajes antes de que se compruebe el sistema de archivos, si se ejecuta el comando dicho, el valor de Maximum mount count cambiara de -1 a 9
+
+	-Considere la siguiente salida de du -h:
+	$ du -h
+	216K	./somedir/anotherdir
+	224K	./somedir
+	232K	.
+	¿Cuánto espacio ocupan solo los archivos en el directorio actual? ¿Cómo podríamos reescribir el comando para mostrar esta información con mayor claridad?
+	Podemos usar la opcion -S para que no nos cuente los subdirecotrios, por lo que el comando sera du -Sh
+
+	-¿Qué pasaría con el sistema de archivos ext2 /dev/sdb1 si se emite el siguiente comando?
+	# tune2fs -j /dev/sdb1 -J device=/dev/sdc1 -i 30d
+	Daria error, ya que no se especifica al final el dispositivo, sin embargo si lo reescribimos como tune2fs -j /dev/sdb1 -J device=/dev/sdc1 -i 30d /dev/sdc1
+	primero se le agregara journaling, despues con la opcion -J pasaremos algunos parametros donde diremos en que disposivo se guardara la info del journaling y con -i se establecera el intervalo de tiempo de comprobacion del dispositivo
+
+	-¿Cómo podemos verificar si hay errores en un sistema de archivos XFS en /dev/sda1 que tiene una sección de registro en /dev/sdc1, sin realmente hacer ninguna reparación?
+	xfs_repair -nl /dev/sdc1 /dev/sda1 (donde -n asegura que no modificara nada y la opcion -l de logdev, donde se especifica el dispositivo externo donde se alojan los registros)
+
+	-¿Cuál es la diferencia entre los parámetros -T y -t para df?
+	df -T ademas de la salidad de df, podremos ver el tipo de sistema de archivos que es cada linea de df y con el parametro -t podremos ver solo los dispositivos que tienen solo este sistema, caso contrario con -x, que excluye sistemas de archivos, mostrandonos los demas 
+
+
+
+
