@@ -114,3 +114,25 @@ EJERCICIOS EXPLORATORIOS
 
 
 
+======================================================================================
+Controlar el montaje y desmontaje de sistemas de archivos 
+======================================================================================
+	-Usando mount, ¿cómo se puede montar un sistema de archivos ext4 en /dev/sdc1 a /mnt/external como solo lectura, usando las opciones noatime y async?
+	mount -t ext4 -ro -o noatime,async /dev/sdc1 /mnt/external 
+	o
+	mount -t ext4 -o noatime,async,ro /dev/sdc1 /mnt/external 
+
+	-Al desmontar un sistema de archivos en /dev/sdd2, aparece el mensaje de error target is busy. ¿Cómo puede saber qué archivos del sistema de archivos están abiertos y qué procesos los abrieron?
+	Se puede usar el comando lsof, como lsof /dev/sdd2 
+
+	-Considere la siguiente entrada en /etc/fstab: /dev/sdb1 /data ext4 noatime,noauto,async. ¿Se montará este sistema de archivos si se emite el comando mount -a? ¿Por qué?
+	No, no se montara, pues la opcion de noauto, no lo montara aunque ejecutemos la orden mount -a 
+
+	-¿Cómo se puede averiguar el UUID de un sistema de archivos en /dev/sdb1?
+	Con el comando lsblk -f /dev/sdb1
+
+	-¿Cómo se puede usar mount para volver a montar como de solo lectura un sistema de archivos exFAT con el UUID 6e2c12e3-472d-4bac-a257-c49ac07f3761, montado en /mnt/data?
+	mount -t exfat -o remount,ro UUID=6e2c12e3-472d-4bac-a257-c49ac07f3761 /mnt/data 
+
+	-¿Cómo se puede obtener una lista de todos los sistemas de archivos ext3 y ntfs montados actualmente en un sistema?
+	mount -t ext3,ntfs
