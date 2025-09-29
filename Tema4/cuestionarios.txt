@@ -2,7 +2,7 @@
 
 
 ======================================================================================
-Dispositivos, sistemas de archivos Linux, estandar de jerarquia del sistema de archivos 
+104.1	Dispositivos, sistemas de archivos Linux, estandar de jerarquia del sistema de archivos 
 ======================================================================================
 EJERCICIOS GUIADOS 
 	-¿Qué esquema de partición debería utilizarse para particionar un disco duro de 3 TB en tres particiones de 1 GB? ¿Por qué?
@@ -67,7 +67,7 @@ EJERCICIOS EXPLORATORIOS
 
 
 ======================================================================================
-Mantener la integridad de los sitemas de archivos 
+104.2	Mantener la integridad de los sitemas de archivos 
 ======================================================================================
 EJERCICIOS GUIADOS 
 	-Usando du, ¿cómo podemos verificar cuánto espacio están usando solo los archivos en el directorio actual?
@@ -115,8 +115,9 @@ EJERCICIOS EXPLORATORIOS
 
 
 ======================================================================================
-Controlar el montaje y desmontaje de sistemas de archivos 
+104.3	Controlar el montaje y desmontaje de sistemas de archivos 
 ======================================================================================
+EJERCICIOS GUIADOS
 	-Usando mount, ¿cómo se puede montar un sistema de archivos ext4 en /dev/sdc1 a /mnt/external como solo lectura, usando las opciones noatime y async?
 	mount -t ext4 -ro -o noatime,async /dev/sdc1 /mnt/external 
 	o
@@ -136,3 +137,229 @@ Controlar el montaje y desmontaje de sistemas de archivos
 
 	-¿Cómo se puede obtener una lista de todos los sistemas de archivos ext3 y ntfs montados actualmente en un sistema?
 	mount -t ext3,ntfs
+
+EJERCICIOS EXPLORATORIOS 
+	-Considere la siguiente entrada en /etc/fstab: /dev/sdc1 /backup ext4 noatime,nouser,async. ¿Puede un usuario montar este sistema de archivos con el comando mount /backup? ¿Por qué?
+	Si esta en el archivos fstab, se puede montar solo con referirse a la carpeta, como mount /backup, sin embargo la opcion "nouser" no permite que sea montado por un usuario normal
+
+	-Considere un sistema de archivos remoto montado en /mnt/server, que se ha vuelto inalcanzable debido a una pérdida de conectividad de red. 
+	 ¿Cómo podría obligarlo a desmontarlo o montarlo como de solo lectura si esto no es posible?
+	umount -f /mnt/server o umount -r /mnt/server o umount -fr /mnt/server
+
+	-Escriba una entrada /etc/fstab que monte un volumen btrfs con la etiqueta Backup en /mnt/backup, con opciones predeterminadas y sin permitir la ejecución de binarios desde él.
+	LABEL=BACKUP	/mnt/backup	btrfs	default,noexec	0	0
+
+	-Considere la siguiente unidad de montaje systemd:
+	[Unit]
+	Description=External data disk
+	[Mount]
+	What=/dev/disk/by-uuid/56C11DCC5D2E1334
+	Where=/mnt/external
+	Type=ntfs
+	Options=defaults
+	[Install]
+	WantedBy=multi-user.target
+	¿Cuál sería una entrada /etc/fstab equivalente para este sistema de archivos?
+	UUID=56C11DCC5D2E1334	/mnt/external	ntfs	defaults	0	0	
+
+	-¿Cuál debería ser el nombre de archivo de la unidad anterior para que pueda ser utilizada por systemd? ¿Dónde debería estar?
+	Para que funcione debe de tener el mismo nombre que el punto de menotaje, por ejemlo, si mi punto de montaje es /mnt/external, mi unidad deberia de llamarse mnt-external.mount, en este caso 
+	se deberia de llamar mnt-external.mount colocado desde /etc/systemd/system
+
+
+
+
+
+======================================================================================
+104.5	Administrar los permisos y la propiedad de los archivos  
+======================================================================================
+EJERCICIOS GUIADOS 
+	-Cree un directorio llamado emptydir usando el comando mkdir emptydir. Ahora, usando ls, liste los permisos para el directorio emptydir.
+	mkdir empydir && ls -ld empydir 
+
+	-Cree un archivo vacío llamado emptyfile con el comando touch emptyfile. Ahora, usando chmod en modo simbólico, agregue permisos de ejecución para el propietario del archivo emptyfile y 
+	 elimine los permisos de escritura y ejecución para todos los demás. Haga esto usando solo un comando chmod.
+	touch empyfile && chmod u=x,go=r empyfile  u otra forma de escrirbirlo es touch empyfile && chmod u+x,go+r empyfile
+
+	-¿Cuáles serían los permisos predeterminados para un archivo si el valor de umask se establece en 027?
+		640, recordemos que para los archivos el numero inicial es 666 y para los directorios es 666, por lo que si restamos 027 a 666, nos queda como (6-0)(6-2)(6-7) nos da 64-1, pero no podemos tener numeros negativos, por lo que el resultado final seria 640
+
+	-Supongamos que un archivo llamado test.sh es un script de shell con los siguientes permisos y propiedad:
+	-rwxr-sr-x 1 carol root     33 Dec 11 10:36 test.sh
+	¿Cuáles son los permisos para el propietario del archivo?  --> rwx
+	Usando la notación octal, ¿cuál sería la sintaxis de chmod para “eliminar” el permiso especial otorgado a este archivo? --> chmod g-s test.sh 
+	
+
+	-Considere este archivo:
+	$ ls -l /dev/sdb1
+	brw-rw---- 1 root disk 8, 17 Dec 21 18:51 /dev/sdb1
+	¿Qué tipo de archivo es sdb1? ¿Quién puede escribir en él?
+	Es un dispositivo de bloque o almacenamiento y mientras se monte en una parte del sistema, el usuario como el grupo lo pueden modificar
+
+
+	-Considere los siguientes 4 archivos:
+	drwxr-xr-t 2 carol carol 4,0K Dec 20 18:46 Another_Directory
+	----r--r-- 1 carol carol    0 Dec 11 10:55 foo.bar
+	-rw-rw-r-- 1 carol carol 1,2G Dec 20 18:22 HugeFile.zip
+	drwxr-sr-x 2 carol users  4,0K Jan 18 17:26 Sample_Directory
+	Anote los permisos correspondientes para cada archivo y directorio usando el modo octal usando la notación de 4 dígitos.
+	Another_Directory  --> rwxr-xr-t, 1756 (el el ultmo es 5, ya que no esta la T mayuscula, ya que cuando esta la T mayuscula, significa que solo tiene el sticky bit y no el bit de ejecucion x y si esta en minuscula, tiene el sticky bit y el bit de x activado )
+	foo.bar  -->  ----r--r--, 044
+	HugeFile.zip -->  -rw-rw-r--, 664
+	Sample_Directory  --> drwxr-sr-x, 2755
+	
+EJERCICIOS EXPLORATORIOS
+	-Pruebe esto en una terminal: cree un archivo vacío llamado emptyfile con el comando touch emptyfile. Ahora “cambie a cero” los permisos para el archivo con chmod 000 emptyfile. 
+	 ¿Qué sucederá si cambia los permisos para emptyfile pasando solo un valor para chmod en modo octal, como chmod 4 emptyfile? ¿Y si usa dos, como en chmod 44 emptyfile? 
+	 ¿Qué podemos aprender sobre la forma en que chmod lee el valor numérico?
+
+
+	-Considere los permisos para el directorio temporal en un sistema Linux, /tmp:
+	 $ ls -l /tmp
+	 drwxrwxrwt  19 root root  16K Dec 21 18:58 tmp
+	 El usuario, el grupo y otros tienen permisos completos. Pero, ¿puede un usuario normal eliminar cualquier archivo dentro de este directorio? ¿Por qué es este el caso?
+	No, no puede eliminar cualquier archivo, solo el que ha creado el usuario, esto por que tienen el sticky bit, donde todos los archivos del directorio solo pueden ser borrados por los propietarios de los archivos o por el root
+
+	-Un archivo llamado test.sh tiene los siguientes permisos: -rwsr-xr-x, lo que significa que el bit SUID está establecido. Ahora, ejecute los siguientes comandos:
+	 $ chmod u-x test.sh
+	 $ ls -l test.sh
+	 -rwSr-xr-x 1 carol carol 33 Dec 11 10:36 test.sh
+	 ¿Qué hicimos? ¿Qué significa la S mayúscula?
+	Simplemente desactivamos el bit de ejecicion en la parte del usuario y esta en mayuscula cuando no esta activado el bit de ejecucion 
+
+
+	-¿Cómo crearía un directorio llamado Box donde todos los archivos pertenecen automáticamente al grupo users y solo pueden ser eliminados por el usuario que los creó?
+	Esto se puede hacer activando el bit de grupo y el bit de otros, el bit GUID nos permite crear archivos en donde se le asignara el grupo autoamticamente de la carpeta y el bit adhsivo, nos permitira
+	que solo el usuario que lo creo lo pueda borrar y modificar, por lo que el comando seria mkdir Box && chmod g+rwxs,o+t Box
+
+
+======================================================================================
+104.6	Crear y cambiar enlaces duros y simbolicos 
+======================================================================================
+EJERCICIOS GUIADOS 
+	-¿Cuál es el parámetro para chmod en el modo symbolic para habilitar el bit sticky en un directorio?
+	chmod o+t o chmod +t 
+
+	-Imagina que hay un archivo llamado document.txt en el directorio /home/carol/Documents. ¿Cuál es el comando para crear un enlace simbólico llamado text.txt en el directorio actual?
+	ln -s /home/carol/Documents/document.txt text.txt
+
+	-Explique la diferencia entre un vínculo físico a un archivo y una copia de este archivo.
+	 En el enlace fisico solo se apunta a una direccion de memoria, teniendo los mismos inodos, y en cambio una copia de este, duplica el archivo, dandole una nueva direccion de memoria y nuevo inodo
+
+
+EJERCICIOS EXPLORATORIOS
+	-Imagine que dentro de un directorio crea un archivo llamado recipes.txt. Dentro de este directorio, también creará un enlace físico a este archivo, llamado receitas.txt, y 
+	 un enlace simbólico (o soft) a este llamado rezepte.txt.
+	 $ touch recipes.txt
+	 $ ln recipes.txt receitas.txt
+	 $ ln -s recipes.txt rezepte.txt
+	 El contenido del directorio debería ser así:
+	 $ ls -lhi
+	 total 160K
+	 5388833 -rw-r--r-- 4 carol carol 77K jun 17 17:25 receitas.txt
+	 5388833 -rw-r--r-- 4 carol carol  0K jun 17 17:25 recipes.txt
+	 5388837 lrwxrwxrwx 1 carol carol  12 jun 17 17:25 rezepte.txt -> receitas.txt
+	 Recuerde que, como enlace físico, receitas.txt apunta al mismo inodo que se asigna a recipes.txt. ¿Qué pasaría con el enlace suave rezepte.txt si se elimina el archivo receitas.txt? ¿Por qué?
+	Dejaria de funcionar, ya que este es un enlace suave, si fuera un enlace fisico, no habria ningun inconveniente, ya que apunta a la misma direccion de inodo.
+	Esto se debe a que los enalces suaves apuntan a nombres, no a inodos, y el nombre receitas.txt ya no existe, incluso si los datos todavia estan en el disco con el nombre recipes.txt
+
+
+	 -Imagine que tiene una unidad flash conectada a su sistema y montada en /media/youruser/FlashA. Desea crear un enlace llamado schematics.pdf en su directorio de inicio, 
+	  apuntando al archivo esquema.pdf en la raíz de la unidad flash. Entonces, escribe el comando:
+	  $ ln /media/youruser/FlashA/esquema.pdf ~/schematics.pdf
+	  ¿Qué pasaría? ¿Por qué?
+	 El comando fallaria, ya que no se pueden apuntar a un objetvo en una particion o dispositivo diferente. La unica forma de crear un enlace como este es usar un enlace simbolico o suave, agregando una -s 
+	"Si se cambia en nombre de un archivo, en el enlace debil dejara de funcionar y en el duro o fisico, continuara funcionando"
+	
+
+	 -Considere la siguiente salida de ls -lah:
+	  $ ls -lah
+	  total 3,1M
+	  drwxr-xr-x 2 carol carol 4,0K jun 17 17:27 .
+	  drwxr-xr-x 5 carol carol 4,0K jun 17 17:29 ..
+	  -rw-rw-r-- 1 carol carol 2,8M jun 17 15:45 compressed.zip
+	  -rw-r--r-- 4 carol carol  77K jun 17 17:25 document.txt
+	  -rw-rw-r-- 1 carol carol 216K jun 17 17:25 image.png
+	  -rw-r--r-- 4 carol carol  77K jun 17 17:25 text.txt
+	  ¿Cuántos enlaces apuntan al archivo document.txt? --> 3 enlaces, lo podemos ver en la salida de ls -lah, podemos pensar que son 4, pero el ultimo es el mismo arhcivo, por lo que solamente hay 3
+	  ¿Son enlaces suaves o duros? --> Son enlaces duros, ya que los enlaces suaves no aumentan el numero de enlaces de un archivo
+	  ¿Qué parámetro debería pasar a ls para ver qué inodo ocupa cada archivo? --> el parametro -i, como ls -liha
+
+
+	-Imagine que tiene en su directorio ~/Documents un archivo llamado clients.txt que contiene algunos nombres de clientes y un directorio llamado somedir. 
+	 Dentro de este hay un archivo diferente también llamado clients.txt con diferentes nombres. Para replicar esta estructura, use los siguientes comandos.
+	 $ cd ~/Documents
+	 $ echo "John, Michael, Bob" > clients.txt
+	 $ mkdir somedir
+	 $ echo "Bill, Luke, Karl" > somedir/clients.txt
+	 Luego cree un enlace dentro de somedir llamado partners.txt apuntando a este archivo, con los comandos:
+	 $ cd somedir/
+	 $ ln -s clients.txt partners.txt
+	 Entonces, la estructura del directorio es:
+	Documents
+	|-- clients.txt
+	`-- somedir
+	    |-- clients.txt
+	    `-- partners.txt -> clients.txt
+	Ahora, mueva partners.txt de somedir a ~/Documents y liste su contenido.
+	$ cd ~/Documents/
+	$ mv somedir/partners.txt .
+	$ less partners.txt
+	¿Seguirá funcionando el enlace? Si es así, ¿qué archivo tendrá su contenido en la lista? ¿Por qué?
+	En teoria no deberia de funcionar, deberia de datnos la leyenda de "no such file o directory", sin embargo el archivo que esta en Documents, con el mismo nombre hace que muestre el contenido de ese archivo
+	Esto pasa por que no especificamos la ruta completa o absulata al crear el enlace simbolico como ln -s /home/leonardo/Documents/somedir/clients.txt partners.txt
+
+	-Considere los siguientes archivos:
+	 -rw-r--r-- 1 carol carol 19 Jun 24 11:12 clients.txt
+	 lrwxrwxrwx 1 carol carol 11 Jun 24 11:13 partners.txt -> clients.txt
+	 ¿Cuáles son los permisos de acceso para partners.txt? ¿Por qué?
+	Tiene los mismo permisos que partners.txt, ya que los enlaces siempre heredan los mismos permisos de acceso que el destino 
+
+
+
+======================================================================================
+104.7	Encontrar archivos de sistema y ubicar archivos en el lugar correspondiente 
+======================================================================================
+EJERCICIOS GUIADOS
+	-Imagine que un programa necesita crear un archivo temporal de un solo uso que nunca más será necesario después de que se cierre el programa. ¿Cuál sería el directorio correcto para crear este archivo?
+	/tmp, ya que en cada reinicio se borrara
+
+	-¿Cuál es el directorio temporal que debe borrarse durante el proceso de arranque?
+	/run, esta ubicacion debe borrarse durante el arranque del sistema, los sistemas que necesitan mas de un arhcivo en tiempo de ejecucion pyeden crear subdirectorios aqui
+	en algunos sistemas se suele usar /var/run
+
+	-Usando find, busque solo en el directorio actual los archivos que el usuario pueda escribir, que hayan sido modificados en los últimos 10 días y tengan más de 4 GiB.
+	find . -writable -mtime 10 -size +4G
+
+	-Usando locate, busque cualquier archivo que contenga tanto los patrones report como updated, update o updating en sus nombres.
+	locate -A report  update updated updating  o puedes usar locate -A "report" "updat"
+
+	-¿Cómo puede encontrar dónde se almacena la página de manual de ifconfig?
+	whereis -m ifconfig
+
+	-¿Qué variable debe agregarse a /etc/updatedb.conf para que updatedb ignore los sistemas de archivos ntfs?
+	PRUNEFS=ntfs
+
+	-Un administrador del sistema desea montar un disco interno (/dev/sdc1). Según la FHS, ¿en qué directorio se debe montar este disco?
+	Puede usar montar en cualquier lugar, sin mebargo la FHS recomienda que los montajes temporales se realicen en /mnt 
+
+
+EJERCICIO EXPLORATORIOS
+	-Cuando se usa locate, los resultados se extraen de una base de datos generada por updatedb. Sin embargo, esta base de datos puede estar desactualizada, lo que hace que locate muestre archivos 
+	 que ya no existen. ¿Cómo se puede hacer que locate muestre solo los archivos existentes en su salida?
+	puedes usar la opcion -e, que comprueba si aun existe, y si existe, lo muestra por pantalla, puede usar algo como locate -e test2.sh 
+
+	-Busque cualquier archivo en el directorio o subdirectorios actuales hasta 2 niveles hacia abajo, excluyendo los sistemas de archivos montados, que contengan el patrón Status o statute en sus nombres.
+	 find -iname "*statu*" -maxdepth 3 -mount   o puede ocupar --> find . -iname "status" -iname "statute" -maxdepth 2 -mount 
+		PARA LA OPCION MAXDEPTH DEBES DE CONSIDERAR EL DIRETORIO ACTUAL, POR LO QUE SERIAN 3 NIVELES, EL ACTUAL(RAIZ), EL SEGUNDO(PRIMER DIRECTORIO A BUSCAR) Y EL TERCERO (EL SEGUNDO DIRECTORIO A BUSCAR)
+	
+
+	-Limitando la búsqueda a los sistemas de archivos ext4, busque cualquier archivo en /mnt que tenga al menos permisos de ejecución para el grupo, sea legible para el usuario actual y 
+	 haya cambiado algún atributo en las últimas 2 horas.
+	find /mnt -fstype ext4  -perm -g+x -redeable  -cmin -120   en las respuestas aparece todo a exception de -perm, en lugar de ser -perm -g+x se especificac como -perm -410
+
+	-Busque archivos vacíos creados hace más de 30 días y que estén al menos dos niveles por debajo del directorio actual
+	find . -type f -ctime +30 -maxdepth 3 -empty 
+
+	-Considere que los usuarios carol y john son parte del grupo mkt. Busque en el directorio de inicio de john cualquier archivo que también sea legible por carol.
+	find /home/john -group mkt -perm -g+r   en las respuestas venia especificado esta respuestas find /home/john -perm -040
