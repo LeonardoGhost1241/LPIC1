@@ -57,9 +57,42 @@ Podemos usar grep con la opcion de -v, para invertir el orden del sentido, el cu
 la mayoria de lo que podemos hacer con grep, lo podemos hacer con sed, como mostrar las lineas donde contienen la cadena "cat "
 	sed -n /cat/p < ftu.txt
 
+Podemo usar sed para filtrar las lineas que tienen una coincidencia, como:
+	sed -n '/cat/p' poem.txt
+
+Podemos sustituir coinidencias, como:
+	sed 's/hola/adios/' < poem.txt
 
 
+Podemos crear una copia de seguridad y al mismo tiempo escribir sobre el archvo original, como:
+	sed -i.backup 's/cat/dog' poem.txt
 
+
+Garantizar la itegridad de los datos
+Para garantizar la seguridad podemos usaar algunos de los siguinetes algoritmos
+
+| Comando     | Algoritmo usado | Longitud del hash | Seguridad                                 |
+| ----------- | --------------- | ----------------- | ----------------------------------------- |
+| `md5sum`    | MD5             | 32 caracteres     | Baja (no recomendado para seguridad real) |
+| `sha256sum` | SHA-256         | 64 caracteres     | Alta seguridad                            |
+| `sha512sum` | SHA-512         | 128 caracteres    | Muy alta (más lento, pero más fuerte)     |
+
+podemos comprbar el hash de un archivo como
+sha256sum file > hashes
+sha256sum file2 >> hashes
+sha256sum -c hashes
+
+puedes hacer las mismas operaciones con los otros algoritmos 
+
+
+Buscando mas en los archivos
+od - se usa para depurar aplicaciones y varios archivos, por defecto lo enumera en formato octal
+La primera columnas, es el desplazamiento de bytes para cada line de salida
+las siguientes ocho columnas es el valor octal de los datos dentro de la columna
+
+	-x para ver el contenido en forma hexadecimal
+	-c muestra carcateres que normalmente no se ven que existen dentro de un archivo, como las entradas newline 
+	-An  Si solo desea ver todos los caracteres dentro de un archivo y no necesita ver la información de desplazamiento de bytes, la columna de desplazamiento de bytes se puede eliminar con esta opcion
 
 
 
