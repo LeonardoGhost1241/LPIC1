@@ -1,0 +1,78 @@
+103.2 Procesar secuencias de texto usando filtros
+
+
+Una forma de hacer funcionar programas juntos, es atravez de piping y redirections 
+-> Casi todos sus programas de manipulacion de texto obtendran texto de una entrada estandar (stdin)
+-> Lo enviaran a una salida estandar (stdout)
+-> y lo enviaran eventuales errores a una salida de error estandar (stderr)
+
+cat - (privienen de concatenate)
+	Puedes usarlo de esta manera:
+	cat > file.txt
+	...	...
+	...
+	..
+
+	Donde todo lo que escribas se guardara en el documento 
+
+	Tambien puede copiar archivos como, cat myfile > mynewFile
+
+diff - nos permite comparar dos archivos, para ver sus diferencias
+
+
+Procesar flujos de texto
+ -Leer un arhcivo comprimido 
+grep - busca coincidencias en archivos
+	podemos usarlo en un arhcivo a travez de una pipeline, como:
+	cat file.txt | grep "oro"
+
+	o podemos usarlo como comando, como:
+	grep "oro" file.txt
+
+Hay otros comandos que manejan arhivos comprimidos, como:
+	- bzcat para archivos comprimidos bzip
+	- xzcat para archivos comprimidos zx
+	- zcat para archivos comprimidos gzip 
+Cada uno se uso para ver el contenido de un archivo comprimidos basado en el algoritmo de compresion utilizado
+
+
+
+Ver un archivo paginado 
+less - usado para canalizar la salida para que los resultados se paginen 
+
+
+Obtener una parte de un archivo de texto
+head - se usa para leer las primeras diez lineas de un archivo de manera predeterminada
+tail - se usa para leer las ultimas diez lineas de un arhcivo de manera predeterminada
+nl - muestra el numero de lieas de texto trasmitidas al comando ejem: sudo head /var/log/syslog | nl 
+wc -l  -  cuenta el numero de lineas de un archvi, como cat file | wc -l 
+
+Podemos modificar el comando de head y tail con la opcion de n, como teail -n 4 imprimira las 4 ultimas lineas de un archivo, asi con head 
+
+
+Los fundamentos de Sed, el editor de Stream 
+Podemos usar grep con la opcion de -v, para invertir el orden del sentido, el cual nos mostrara las lineas donde no aparece la coincidencia, como
+	zcat ftu.tat.gz | grep -v cat --> Nos mostrar las lineas donde no aparece cat
+
+la mayoria de lo que podemos hacer con grep, lo podemos hacer con sed, como mostrar las lineas donde contienen la cadena "cat "
+	sed -n /cat/p < ftu.txt
+
+
+
+
+
+
+
+otros comandos 
+uniq - se usa para eliminar lineas duplicadas de un archivo o de la entrada estandar (trabaja con linea de texto identicas, por defecto, elimina todas las que sean iguales y esten  juntas)
+	-d muestra las lineas que estan repetidas
+	-i ignora las diferencias entre mayusculas y minusculas 
+	-c nos indica las las veces que esta repetida una linea  
+	
+
+sort - ordena las lineas de un archivo (de forma predeterminada ordena alfabeticamente)
+	-r hace que la ordenacion sea de forma inversa
+	-n ordena en base a una informacion numerica 
+	-h ordena en magnitudes humanas, como megas, bytes o gigas
+
+

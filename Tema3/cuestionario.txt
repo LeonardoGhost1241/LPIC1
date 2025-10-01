@@ -4,6 +4,8 @@
 ==========================================================
 103.1 Trabajando en la línea de comandos
 ==========================================================
+->Leccion 1 
+
 EJERCICIOS GUIADOS 
 	-Utilice el sistema man para determinar cómo decirle a apropos que envíe un comando breve para que solo envíe un mensaje corto de uso y luego salga.
 	Ejecute man apropos y desplácese hacia abajo por la sección “Options” hasta llegar al párrafo --usage.
@@ -25,5 +27,25 @@ EJERCICIOS EXPLORATORIOS
 	$ apropos block
 	$ man lsblk
 	$ lsblk -b
+
+->Leccion 2
+EJERCICIOS GUIADOS 
+	-Use el comando export para agregar un nuevo directorio a su ruta (este no debe sobrevivir a un reinicio).
+	podemos hacer un ejemplo con la variable PATH, agregando un nuevo directorio, la linea de ejecucion, se veria como: export PATH="$PATH:/new/dir", si quieres que sea permanente, debes de agregarla al archivo ~/.bashrc o ~/.bash_profile 
+
+	-Use el comando unset para eliminar la variable PATH. Intente ejecutar un comando (como sudo cat /etc/shadow) usando sudo. ¿Que pasó? ¿Por qué? (Al salir de su shell, volverá a su estado original).
+	Es como si desaparecieran los comandos, Por que la variable PATH contiene el directorio en donde debe de buscar los comandos y al eliminarla, dejan de "existir"
+
+EJERCICIOS EXPLORATORIOS 
+	-Busque en Internet para encontrar y explorar la lista completa de caracteres especiales.
+	Lista de ejemplo: & ; | * ? " ' [ ] ( ) $ < > { } # / \ ! ~
+
+	-Intente ejecutar comandos usando cadenas formadas por caracteres especiales y usando varios métodos para escaparlos. ¿Hay diferencias entre la forma en que se comportan esos métodos?
+	Escapar usando caracteres " conservará los valores especiales del signo de dólar, una barra invertida y la barra invertida. Escapar usando un carácter ' hará que todos los caracteres sean literales.
+	$ echo "$mynewvar"
+	goodbye
+	$ echo '$mynewvar'
+	$mynewvar
+
 
 
