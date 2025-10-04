@@ -102,3 +102,7 @@ EJERCICIOS  GUIADOS
     Liste todos los usuarios en el grupo 1000 (use sed para seleccionar solo el campo apropiado) de su archivo mypasswd.
 
     Liste solo los nombres completos de todos los usuarios de este grupo (use sed y cut
+
+
+
+qqqqo
