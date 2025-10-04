@@ -50,5 +50,55 @@ EJERCICIOS EXPLORATORIOS
 
 
 ==========================================================
-103.1 Trabajando en la línea de comandos
+103.2 Pricesosar secuecnias de texto usando fltros
 ==========================================================
+EJERCICIOS  GUIADOS
+	-Alguien acaba de donar una computadora portátil a su escuela y ahora desea instalar Linux en ella. No hay manual y se vio obligado a arrancarlo desde una unidad de memoria USB sin gráficos en absoluto. Obtiene acceso a un terminal de shell y se conoce, para cada procesador que tenga, habrá una línea para él en el archivo /proc/cpuinfo:
+	processor	: 0
+	vendor_id	: GenuineIntel
+	cpu family	: 6
+	model		: 158
+	
+	(líneas saltadas)
+
+	processor	: 1
+	vendor_id	: GenuineIntel
+	cpu family	: 6
+	model		: 158
+
+	(se saltaron más líneas)
+	Usando los comandos grep y wc muestre cuántos procesadores tiene.  --> grep "processor" /proc/cpuinfo | wc -l   o cat /proc/cpuinfo | grep processor | wc -l
+	Haga lo mismo con sed en lugar de grep.  --> sed "/processor/p" < /proc/cpuinfo | wc -l 
+
+
+	-Explore su archivo local /etc/passwd con los comandos grep, sed, head y tail según las siguientes tareas:
+	¿Qué usuarios tienen acceso a un shell Bash?  --> cat /etc/passwd | grep "/bin/bash" | wc -l    o  sed -n "/\/bin\/bash/p" < /etc/passwd 
+	Su sistema tiene varios usuarios que existen para manejar programas específicos o para fines administrativos. No tienen acceso a un shell. ¿Cuántos de esos existen en su sistema?
+	¿Cuántos usuarios y grupos existen en su sistema (recuerde: use solo el archivo /etc/passwd)?
+	Muestre solo la primera línea, la última línea y la décima línea de su archivo /etc/passwd.
+
+
+	-Considere este ejemplo de archivo /etc/passwd. Copie las líneas siguientes en un archivo local llamado mypasswd para este ejercicio.
+	root:x:0:0:root:/root:/bin/bash
+	daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+	bin:x:2:2:bin:/bin:/usr/sbin/nologin
+	sys:x:3:3:sys:/dev:/usr/sbin/nologin
+	sync:x:4:65534:sync:/bin:/bin/sync
+	nvidia-persistenced:x:121:128:NVIDIA Persistence Daemon,,,:/nonexistent:/sbin/nologin
+	libvirt-qemu:x:64055:130:Libvirt Qemu,,,:/var/lib/libvirt:/usr/sbin/nologin
+	libvirt-dnsmasq:x:122:133:Libvirt Dnsmasq,,,:/var/lib/libvirt/dnsmasq:/usr/sbin/nologin
+	carol:x:1000:2000:Carol Smith,Finance,,,Main Office:/home/carol:/bin/bash
+	dave:x:1001:1000:Dave Edwards,Finance,,,Main Office:/home/dave:/bin/ksh
+	emma:x:1002:1000:Emma Jones,Finance,,,Main Office:/home/emma:/bin/bash
+	frank:x:1003:1000:Frank Cassidy,Finance,,,Main Office:/home/frank:/bin/bash
+	frank:x:1003:1000:Frank Cassidy,Finance,,,Main Office:/home/frank:/bin/bash
+	grace:x:1004:1000:Grace Kearns,Engineering,,,Main Office:/home/grace:/bin/ksh
+	grace:x:1004:1000:Grace Kearns,Engineering,,,Main Office:/home/grace:/bin/ksh
+	henry:x:1005:1000:Henry Adams,Sales,,,Main Office:/home/henry:/bin/bash
+	henry:x:1005:1000:Henry Adams,Sales,,,Main Office:/home/henry:/bin/bash
+	john:x:1006:1000:John Chapel,Sales,,,Main Office:/home/john:/bin/bash
+	john:x:1006:1000:John Chapel,Sales,,,Main Office:/home/john:/bin/bash
+
+    Liste todos los usuarios en el grupo 1000 (use sed para seleccionar solo el campo apropiado) de su archivo mypasswd.
+
+    Liste solo los nombres completos de todos los usuarios de este grupo (use sed y cut
