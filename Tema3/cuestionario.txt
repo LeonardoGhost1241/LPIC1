@@ -101,8 +101,45 @@ EJERCICIOS  GUIADOS
 
     Liste todos los usuarios en el grupo 1000 (use sed para seleccionar solo el campo apropiado) de su archivo mypasswd.
 
-    Liste solo los nombres completos de todos los usuarios de este grupo (use sed y cut
+    Liste solo los nombres completos de todos los usuarios de este grupo (use sed y cut)
+
+
+EJERCICIOS EXPLORATORIOS
+	-Una vez más, utilizando el archivo mypasswd de los ejercicios anteriores, idee un comando Bash que seleccionará a una persona de la Oficina Principal para ganar un concurso de rifas. 
+	Use el comando sed para imprimir solo las líneas de la Oficina Principal, y luego una secuencia de comando cut para recuperar el nombre de cada usuario de estas líneas. A continuación, 
+	deseará ordenar aleatoriamente estos nombres y solo imprimir el nombre superior de la lista.
+	
+
+	-¿Cuántas personas trabajan en Finanzas, Ingeniería y Ventas? (Considere explorar el comando uniq).
+	
+	
+	-Ahora desea preparar un archivo CSV (valores separados por comas) para poder importar fácilmente, desde el archivo mypasswd del ejemplo anterior, el archivo names.csv a LibreOffice. 
+	El contenido del archivo tendrá el siguiente formato:
+	First Name,Last Name,Position
+	Carol,Smith,Finance
+	...
+	John,Chapel,Sales
+	Consejo: Utilice los comandos sed, cut y paste para lograr los resultados deseados. Tenga en cuenta que la coma (,) será el delimitador de este archivo.
+	
+
+	-Supongamos que la hoja de cálculo names.csv creada en el ejercicio anterior es un archivo importante y queremos asegurarnos de que nadie lo manipulará desde el momento en que se 
+	 lo enviamos a alguien y el momento en que nuestro destinatario lo recibe. ¿Cómo podemos asegurar la integridad de este archivo usando md5sum?
+	
+
+	-Te prometiste a ti mismo que leerías un libro clásico de 100 líneas por día y decidiste comenzar con Mariner y Mystic de Herman Melville. 
+	 Diseñe un comando usando split que separe este libro en secciones de 100 líneas cada una. Para obtener el libro en formato de texto plano, búsquelo en https://www.gutenberg.org.
+	
+
+	-Usando ls -l en el directorio /etc, ¿qué tipo de listado obtiene? Usando el comando cut en la salida del comando ls dado, 
+	 ¿cómo mostraría solo los nombres de archivo? ¿Qué pasa con el nombre del archivo y el propietario de los archivos? Junto con los comandos ls -l y cut, utilice el 
+	 comando tr para suprimir las apariciones múltiples de un espacio en un solo espacio para ayudar a formatear la salida con un comando cut.
+	
+	
+	-Este ejercicio asume que está en una máquina real (no en una máquina virtual). También debe tener una memoria USB con usted. 
+	 Revise las páginas del manual para el comando tail y descubra cómo seguir un archivo a medida que se le agrega texto. 
+	 Mientras monitorea la salida de un comando tail en el archivo /var/log/syslog, inserte una memoria USB. 
+	 Escriba el comando completo que usaría para obtener el Producto, el Fabricante y la cantidad total de almacenamiento de su memoria USB.
 
 
 
-qqqqo
+
