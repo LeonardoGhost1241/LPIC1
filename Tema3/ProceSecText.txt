@@ -109,3 +109,14 @@ sort - ordena las lineas de un archivo (de forma predeterminada ordena alfabetic
 	-h ordena en magnitudes humanas, como megas, bytes o gigas
 
 
+rev - Usado para dividir archivos mas grandes en partes mas pequeñas
+	-l representa el numero de lineas a dividir
+	-b divide el archivo en partes que contengan un tamaño especifico en bytes
+	-d utiliza un sufijo numerico en lugar de letras, ejem: x00,x01
+	 puedes especificar al final del comando y de especificar el archivo un prefijo, ejemp
+			split -l 100 -d pg50461-images.html  parte --> esto dividira el archivo como parte00 parte01, etc
+
+tr - Se usa para traducir o eliminar carcateres de la entrada
+	-d elimina un caracter especifico. ejem: cat file | tr -d ","
+	-s remplaza las secuencias de carcateres repetidos por un unico carcater. ejem: cat file | tr -s "," "-"
+	este comando se puede usar con las clases de carcateres como [:digit:]
