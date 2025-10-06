@@ -120,3 +120,15 @@ tr - Se usa para traducir o eliminar carcateres de la entrada
 	-d elimina un caracter especifico. ejem: cat file | tr -d ","
 	-s remplaza las secuencias de carcateres repetidos por un unico carcater. ejem: cat file | tr -s "," "-"
 	este comando se puede usar con las clases de carcateres como [:digit:]
+
+nl - muestra el contenido de un fichero de texto añadiendo el numero de linea (Por defecto no cuenta las lineas en blanco, para esto se añade -b a)
+	-b a cuenta las lineas en blano (EN EL EXAMEN DBEMOS DE ESPECIFICAR EL COMANDO ESPECIFICO, POR LO QUE SI NOS PREGUNTAN UN COMANDO PARA MOSTRAR LAS LINEAS DE UN ARCHIVO, DEBEMOS SELECCIONAR nl y NO cat -n)
+
+od - Muestra un fichero en formato numerico octal
+
+split - Divide un fichero en varios segun unos limites
+	-l determina el numero de lineas que deseamos que esten en cada parte
+	-d Esto hara que el nombre de los archivos tenga forma numerica (en la ultima parte del comando puedes especificar el nombre de como apareceran los documentos) -- > ejem: split -l 100 -d pg50461-images.html  parte
+
+paste - concatena lina a linea la informacion de dos ficheros, separando estas mediante un tabulador (por defecto sera una tabulacion)
+	-d DELIMITER Puedes usar esta opcion para concatenar las lineas en base a un carcater como: paste -d "," file1 file 2, 
