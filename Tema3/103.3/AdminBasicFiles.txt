@@ -158,3 +158,78 @@ NOTA, SI QUERESMO MOSRAR ARCHIVOS QUE CONTENGAN RANGOS COMO DE 1 A 10 O DE 1 A 3
 ==============================================
 Leccion 2 - Gestion basica de archivos
 ==============================================
+find - comando para buscar y localizar archivos rapidamente, la sintaxis es find STARTING_PATH OPTIONS EXPRESSION ejem: find . -iname "myfile.txt"
+	-name "name" para buscar estrictamente el nombre 
+	-iname no define entre mayusculas y minusculas, cuando usemos globbing debemos de usar comillas "*.png" por ejemplo
+
+
+uso de criterios para acelerar la busqueda
+use find para localizar archivos basados en tipo, tamaño u hora, al especificar una o mas opciones, los resultados deseados e obtienen en menos tiempo
+algunas especificaciones de archvios incluyen:
+-type f    búsqueda de archivos.
+-type d    búsqueda de directorio.
+-type l    búsqueda de enlaces simbólicos.
+ejem: $ find . -type d -name "example"
+
+otros criterio
+-name    realiza una búsqueda basada en el nombre dado.
+-iname    búsquedas basadas en el nombre, sin embargo, las mayúsculas y minúsculas no son importantes (es decir, el caso de prueba myFile es similar a MYFILE).
+-not    devuelve los resultados que no coinciden con el caso de prueba.
+-maxdepth N    busca en el directorio actual así como en los subdirectorios N niveles de profundidad.
+
+busqueda por hora de modificacion (INFORMACION SACADA DE LA LECCION 104.7)
+-amin N, -cmin N, -mmin N    Esto coincidirá con los archivos a los que se ha accedido, se han cambiado los atributos o se han modificado (respectivamente) N minutos atrás.
+-atime N, -ctime N, -mtime N    Esto coincidirá con los archivos a los que se accedió, se cambiaron los atributos o se modificaron N*24 horas atrás.
+ejem: sudo find / -name "*.conf" -mtime 7
+
+busqueda por tamaño
+-size N podemos usar este comando para determinar el peso de un archivo, 
+ejemplo:
+-size 100c    archivos de exactamente 100 bytes.
+-size +100k    archivos de más de 100 kilobytes.
+-size -20M    archivos de menos de 20 megabytes.
+-size +2G    archivos de más de 2 gigabytes
+
+Para buscar arhcivos vacios, podemos usar find . -size 0c o find . -empty
+
+Actuando sobre el conjunto de resultados
+cuando el comando find logra buscar los resultado, podemos agregar una opcion mas para ejecutar sentencias en base al conjunto encontrado, lo podemos hacer con
+-exec command {} \;
+	{} remplaza automaticamente con el nombre del arhcivo que se esta procesando, osea remplaza los {} por la ruta de cada arhcvio encontrado
+	\; indica el final de comando que se quiere ejecutar, debe de ser precedido de una \, para que el shell lo interprete literalmente como parte del comando y no como un separador de comandos
+
+Usar grep para filtrar archivos basados en contenido 
+grep se usa para buscar la aparicion de una palabra clave
+	find . -type f -exec grep "lpi" '{}' \; -print
+Esto buscaría cada objeto en la jerarquía de directorio actual (.) en archivos (-type f) y luego ejecuta el comando grep "lpi" para cada archivo que satisfaga las condiciones. Los archivos que coinciden con estas condiciones se imprimen en la pantalla (-print). Las llaves ({}) son un marcador de posición para los resultados de la búsqueda find. Los {} están encerrados entre comillas simples (') para evitar pasar archivos grep con nombres que contengan caracteres especiales. El comando -exec se termina con un punto y coma (;), que se debe escapar (\;) para evitar la interpretación por parte del shell
+
+podemos sustituri -print por -delete, esto eliminaria todos los archvios que coinciden, ejemplo
+find . -name  "*.bak" -delete, esto lo podemos sustituir por -exec rm {} \;, que seria lo mismo
+
+
+
+Archivado de archivos
+tar - se utiliza para crear archivos tar convirtiendo un grupo de archivos en un archivo, comando para comprimir/extraer, 
+	su sintaxis es: tar [OPERATIONS_AND:OPTIONS] [ARCHIVE_NAME] [FILE_NAMES(S)]
+
+OPERATIONS
+solo se permite y rquiere un argumento de operaion. Las operaciones mas utilizadas son:
+	--create (-c) crea un nuevo archivo tar
+	--extract (-x) Extrae todo el archivo o uno o mas archivos de un archivo
+	--list (-t) muestra una lista de los archivos incluidos en el archvio
+
+OPTIONS
+las opciones mas utilizadas son
+	--verbose (-v) Muesyta los archivos que se estan procesando con el comando tar
+	--file=archive-name (-f archive-name) Especifica el nombre del archvio de almacenamiento
+
+ARCHIVE_NAME
+	El nombre del archvio
+FILE_NAME (S)
+	Una lista de nombres de archivos separados por espacios que se extraeran. Si no se proporciona, se estrae todo el arhcivo
+
+Crear un archivo
+
+
+
+
