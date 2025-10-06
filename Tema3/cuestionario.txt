@@ -171,58 +171,62 @@ EJERCICIOS EXPLORATORIOS
 ==========================================================
 ->Leccion 1
 EJERCICIOS GUIADOS
+	-Considere la siguiente lista:
+	$ ls -lh
+	total 60K
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Desktop
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Documents
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Downloads
+	-rw-r--r--  1   frank   frank     21    Sep 7   12:59   emp_name
+	-rw-r--r--  1   frank   frank     20    Sep 7   13:03   emp_salary
+	-rw-r--r--  1   frank   frank   8.8K    Apr 1   2018    examples.desktop
+	-rw-r--r--  1   frank   frank     10    Sep 1   2018    file1
+	-rw-r--r--  1   frank   frank     10    Sep 1   2018    file2
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Music
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Pictures
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Public
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Templates
+	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Videos
+
+	    ¿Qué representa el caracter d en la salida?
+	    ¿Por qué los tamaños se dan en formato legible para humanos?
+	    ¿Cuál sería la diferencia en la salida si se usara ls sin argumentos?
+	
+
+	-Considere el siguiente comando:
+	$ cp /home/frank/emp_name /home/frank/backup
+	    ¿Qué pasaría con el archivo emp_name si este comando se ejecuta con éxito?
+	    Si emp_name era un directorio, ¿qué opción debería agregarse a cp para ejecutar el comando?
+	    Si cp ahora se cambia a mv, ¿qué resultados espera?
+	
+	-Considere el listado:
+	$ ls
+	file1.txt file2.txt file3.txt file4.txt
+	¿Qué wildcard ayudaría a eliminar todo el contenido de este directorio?
+	
+	-Según el listado anterior, ¿qué archivos se mostrarían con el siguiente comando?
+	$ ls file*.txt
+	
+	-Complete el comando agregando los dígitos y caracteres apropiados entre corchetes que listarían todo el contenido anterior:
+	$ ls file[].txt
 
 
-Considere la siguiente lista:
-
-$ ls -lh
-total 60K
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Desktop
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Documents
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Downloads
--rw-r--r--  1   frank   frank     21    Sep 7   12:59   emp_name
--rw-r--r--  1   frank   frank     20    Sep 7   13:03   emp_salary
--rw-r--r--  1   frank   frank   8.8K    Apr 1   2018    examples.desktop
--rw-r--r--  1   frank   frank     10    Sep 1   2018    file1
--rw-r--r--  1   frank   frank     10    Sep 1   2018    file2
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Music
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Pictures
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Public
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Templates
-drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Videos
-
-    ¿Qué representa el caracter d en la salida?
-
-    ¿Por qué los tamaños se dan en formato legible para humanos?
-
-    ¿Cuál sería la diferencia en la salida si se usara ls sin argumentos?
-
-Considere el siguiente comando:
-
-$ cp /home/frank/emp_name /home/frank/backup
-
-    ¿Qué pasaría con el archivo emp_name si este comando se ejecuta con éxito?
-
-    Si emp_name era un directorio, ¿qué opción debería agregarse a cp para ejecutar el comando?
-
-    Si cp ahora se cambia a mv, ¿qué resultados espera?
-
-Considere el listado:
-
-$ ls
-file1.txt file2.txt file3.txt file4.txt
-
-¿Qué wildcard ayudaría a eliminar todo el contenido de este directorio?
-
-Según el listado anterior, ¿qué archivos se mostrarían con el siguiente comando?
-
-$ ls file*.txt
-
-Complete el comando agregando los dígitos y caracteres apropiados entre corchetes que listarían todo el contenido anterior:
-
-$ ls file[].txt
-
-
-
+EJERCICIO EXPLORATORIOS 
+	-En su directorio de inicio, cree los archivos llamados dog y cat.
+	
+	-Aún en su directorio de inicio, cree el directorio llamado animal. Mueva dog y cat a animal.
+	
+	-Vaya a la carpeta Documents que se encuentra en su directorio de inicio y dentro, cree el directorio backup.
+	
+	-Copie animal y su contenido en backup.
+	
+	-Cambie el nombre de animal en backup a animal.bkup.
+	
+	-El directorio /home/lpi/bases de datos contiene varios archivos incluyendo: db-1.tar.gz, db-2.tar.gz y db-3.tar.gz. ¿Qué comando único puede usar para listar solo los archivos mencionados anteriormente?
+	
+	-Considere el listado:
+	$ ls
+	cne1222223.pdf cne12349.txt cne1234.pdf
+	Con el uso de un solo carácter globbing, ¿qué comando eliminaría solo los archivos pdf?
 
 
