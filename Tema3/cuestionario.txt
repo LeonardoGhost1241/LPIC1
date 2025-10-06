@@ -188,45 +188,54 @@ EJERCICIOS GUIADOS
 	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Templates
 	drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Videos
 
-	    ¿Qué representa el caracter d en la salida?
-	    ¿Por qué los tamaños se dan en formato legible para humanos?
-	    ¿Cuál sería la diferencia en la salida si se usara ls sin argumentos?
+	    ¿Qué representa el caracter d en la salida? --> un directorio
+	    ¿Por qué los tamaños se dan en formato legible para humanos? --> por que hemos usado la opcion -h del comando ls
+	    ¿Cuál sería la diferencia en la salida si se usara ls sin argumentos? --> solo nos mostrar el contendio sin lo demas, como enlaces, nombre, grupo, etc
 	
-
 	-Considere el siguiente comando:
 	$ cp /home/frank/emp_name /home/frank/backup
-	    ¿Qué pasaría con el archivo emp_name si este comando se ejecuta con éxito?
-	    Si emp_name era un directorio, ¿qué opción debería agregarse a cp para ejecutar el comando?
-	    Si cp ahora se cambia a mv, ¿qué resultados espera?
+	    ¿Qué pasaría con el archivo emp_name si este comando se ejecuta con éxito? --> Copiaria el mismo contenido de emp_name a un nuevo archivo llamado backup
+	    Si emp_name era un directorio, ¿qué opción debería agregarse a cp para ejecutar el comando?  --> -r, para que la accion sea recursiva
+	    Si cp ahora se cambia a mv, ¿qué resultados espera? --> que solo se cambie de nombre, pero que tenga el mismo contenido (emp_name se movería a backup. Ya no estaría presente dentro del directorio de usuario frank.)
 	
 	-Considere el listado:
 	$ ls
 	file1.txt file2.txt file3.txt file4.txt
-	¿Qué wildcard ayudaría a eliminar todo el contenido de este directorio?
+	¿Qué wildcard ayudaría a eliminar todo el contenido de este directorio? --> podriamos usar rm con el wildcard de * commo rm file*, pero eso es solo para estos archivos, si no queremos nada usamos rm *
 	
 	-Según el listado anterior, ¿qué archivos se mostrarían con el siguiente comando?
 	$ ls file*.txt
+		Todos los arhivos, ya que todos cumplen con el patron especificado, otra forma seria, ls file[1-4].txt
 	
 	-Complete el comando agregando los dígitos y caracteres apropiados entre corchetes que listarían todo el contenido anterior:
 	$ ls file[].txt
+	quedaria como ls file[0-9].txt -> NOTA:si tenemos archivks que superan el 9, podemos usar las llaves, como: ls file{1-13}.txt
+
 
 
 EJERCICIO EXPLORATORIOS 
 	-En su directorio de inicio, cree los archivos llamados dog y cat.
+		touch dog cat
 	
 	-Aún en su directorio de inicio, cree el directorio llamado animal. Mueva dog y cat a animal.
-	
+		mkdir animal && mv dog cat animal	-> puede ocupar mv dog cat -t animal/, donde -t significa mover todos los arguentos fuente al directorio
+
 	-Vaya a la carpeta Documents que se encuentra en su directorio de inicio y dentro, cree el directorio backup.
-	
+		cd Documents && mkdir backup	
+
 	-Copie animal y su contenido en backup.
+		cp -r ../animal/ backup/
 	
 	-Cambie el nombre de animal en backup a animal.bkup.
-	
+		mv animal animal.bkup	
+
 	-El directorio /home/lpi/bases de datos contiene varios archivos incluyendo: db-1.tar.gz, db-2.tar.gz y db-3.tar.gz. ¿Qué comando único puede usar para listar solo los archivos mencionados anteriormente?
-	
+		ls -l db-[1-3]* o ls -l db-[1-3].tar.gz o ls -l db-{1..3}.tar.gz
+
 	-Considere el listado:
 	$ ls
 	cne1222223.pdf cne12349.txt cne1234.pdf
 	Con el uso de un solo carácter globbing, ¿qué comando eliminaría solo los archivos pdf?
+		rm *.pdf
 
 

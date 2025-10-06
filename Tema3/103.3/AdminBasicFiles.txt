@@ -152,6 +152,9 @@ $> ls [plf]?st*
 
 
 
+NOTA, SI QUERESMO MOSRAR ARCHIVOS QUE CONTENGAN RANGOS COMO DE 1 A 10 O DE 1 A 34, PODEMOS USAR LOS {}, EJEM: ls -l file{1.15}.txt
+
+
 ==============================================
 Leccion 2 - Gestion basica de archivos
 ==============================================
