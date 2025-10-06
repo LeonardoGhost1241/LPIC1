@@ -145,13 +145,83 @@ EJERCICIOS EXPLORATORIOS
 	-Usando ls -l en el directorio /etc, ¿qué tipo de listado obtiene? Usando el comando cut en la salida del comando ls dado, 
 	 ¿cómo mostraría solo los nombres de archivo? ¿Qué pasa con el nombre del archivo y el propietario de los archivos? Junto con los comandos ls -l y cut, utilice el 
 	 comando tr para suprimir las apariciones múltiples de un espacio en un solo espacio para ayudar a formatear la salida con un comando cut.
-	
+		Para mostrar solo los nombres de los arhcivos, podemos hacer lo siguiente
+			ls -l | rev | cut -d " " -f 1 | rev
+			o podemos usar el comando tr, como: ls -l | tr -s " " | cut -d " " -f 9
+			Si necesitamos el nombre del archvios y el propietario necesitaremos las columnas 3 y 9  	
+			como: ls -l | tr -s " " | cut -d " " -f9,3
+			y si queremos el nombre de las carpetas y el propietario usaremos
+			ls -l | grep ^d | tr -s " " | cut -d " " -f9,3
 	
 	
 	-Este ejercicio asume que está en una máquina real (no en una máquina virtual). También debe tener una memoria USB con usted. 
 	 Revise las páginas del manual para el comando tail y descubra cómo seguir un archivo a medida que se le agrega texto. 
 	 Mientras monitorea la salida de un comando tail en el archivo /var/log/syslog, inserte una memoria USB. 
 	 Escriba el comando completo que usaría para obtener el Producto, el Fabricante y la cantidad total de almacenamiento de su memoria USB.
+		Podemos usar tail -f para monitorear registros o cualquier archivo que se actualice en tiempo real
+		Sabiendo eso, podemos usar el comando sed para filtrar las opcioones que nos interesan, como el producto, el fabricante y la cantidad total de almacenamiento, el comando seria
+			sed -n -e "/Product:/p" -e "/Manufacturer:/p" -e "/logical blocks:/p" /var/log/syslog
+		o podemos usar el comando grep con la opcion -i que no distingue entre mayusculas o minusculas y ademas usaremos |, por lo que el comando seria
+			tail -f /var/log/syslog | grep -i 'product\:\|blocks\|manufacturer'
+				\|: Este es el operador que actúa como un "O" lógico en expresiones regulares. Significa que se debe buscar cualquiera de los patrones conectados por él. En este caso, indica que también se buscará el siguiente patrón si no se encuentra el primero.
+
+
+==========================================================
+103.3 Gestion basica de archivos
+==========================================================
+->Leccion 1
+EJERCICIOS GUIADOS
+
+
+Considere la siguiente lista:
+
+$ ls -lh
+total 60K
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Desktop
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Documents
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Downloads
+-rw-r--r--  1   frank   frank     21    Sep 7   12:59   emp_name
+-rw-r--r--  1   frank   frank     20    Sep 7   13:03   emp_salary
+-rw-r--r--  1   frank   frank   8.8K    Apr 1   2018    examples.desktop
+-rw-r--r--  1   frank   frank     10    Sep 1   2018    file1
+-rw-r--r--  1   frank   frank     10    Sep 1   2018    file2
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Music
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Pictures
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Public
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Templates
+drwxr-xr-x  2   frank   frank   4.0K    Apr 1   2018    Videos
+
+    ¿Qué representa el caracter d en la salida?
+
+    ¿Por qué los tamaños se dan en formato legible para humanos?
+
+    ¿Cuál sería la diferencia en la salida si se usara ls sin argumentos?
+
+Considere el siguiente comando:
+
+$ cp /home/frank/emp_name /home/frank/backup
+
+    ¿Qué pasaría con el archivo emp_name si este comando se ejecuta con éxito?
+
+    Si emp_name era un directorio, ¿qué opción debería agregarse a cp para ejecutar el comando?
+
+    Si cp ahora se cambia a mv, ¿qué resultados espera?
+
+Considere el listado:
+
+$ ls
+file1.txt file2.txt file3.txt file4.txt
+
+¿Qué wildcard ayudaría a eliminar todo el contenido de este directorio?
+
+Según el listado anterior, ¿qué archivos se mostrarían con el siguiente comando?
+
+$ ls file*.txt
+
+Complete el comando agregando los dígitos y caracteres apropiados entre corchetes que listarían todo el contenido anterior:
+
+$ ls file[].txt
+
 
 
 

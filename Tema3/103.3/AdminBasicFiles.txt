@@ -1,0 +1,157 @@
+==============================================
+Leccion 1 - Gestion basica de archivos
+==============================================
+
+Los diferentes tipos de archivos incluyen:
+	Archivos regulares: almacenanan datos y programas
+	Directorios: Que contienen otros archivos
+	Archivos especiales: que utilizan para entrada y salida
+
+claro que hay mas, pero para esta leccion usaremos estos
+
+En la salida de ls -l el primer carcater significa:
+-    para un archivo normal.
+d    para un directorio.
+c    para un archivo especial.
+
+para mostrar la salida en una unidad entendible para humanos como bytes, gigas, etc, usaremos
+-h
+
+-a enumerar los archivos ocultos, estos empiezan con un .
+
+
+
+CREAR, COPIAR MOVER Y ELIMINAR ARCHIVOS 
+touch -crear un archivo(s) nuevo vacio
+	touch file file1 file2 file3 
+
+Puedes cambiar las marcas de tiempo de los archivos
+-a cambia solamente la hora de acceso
+-m solo cambia la hora de modificacion
+
+puedes combinarlas para cambiar ambas cosas al mismo tiempo, tocuh -am file3
+
+cp - usado para copiar archivos, su sintaxis es cp OPTIONS SOURCE DESTINATION
+ejem:  cp /home/frank/Documents/file2 /home/frank/Documents/Backup
+
+como opcion adicional puedes cambiar la marca de tiempo con la opcion -d, por ejemplo touch -d "yyyy-mm-dd 00:00" file
+
+mv - mover archivos, al igual ue cp para copiar, se usa para mover y renombrar archivos, la sintaxis es mv FILENAME DESTINATION_DIRECTORY
+ejem: mv myfile.txt /home/frank/Documents
+
+-i pide confirmacion antes de hacer la accion
+-f sobreescribira forzosamente el archvio sin pedir permiso
+
+Eliminar archivos, su sintaxis es rm OPTIONS FILE
+rm - usado para eliminar arhcvios (las acciones de este comando SON IRREVERSIBLES, SE RECOMIENDA USARLO CON PRECAUCION)
+-i pide confirmacion antes de hacer la accion
+-f sobreescribira forzosamente el archvio sin pedir permiso
+
+Crear y eliminar directorios
+mkdir - crea directorrios, la sintaxis de esto es mkdir OPTIONS DIRECTORY_NAME
+	puedes crear varios directorios como: mkdir dir1 dir2 dir2
+-p crear un directorio junto con sus subdirectorios, use la opcion -p "parents", ejem: mkdir -p parents/children
+
+rmdir - borra un directorio si esta vacio, su sintaxis es rmdir OPTIONS DIRECTORY
+	se pueden pasar multiples directorios (siempre y cuando esten vacios), ejem rmdir dir1 dir2 dir3
+-p eliminaria un directorio con su subdirectorio, ejem: rmdir -p parents/children (tenga en cuenta que si alguno de los directorios no esta vacio, no se eliminaran)
+
+
+Manipulacion recursiva de archivos y directorios 
+en linux, las opciones de -r, -R o --recursive generalmente estas asociadas con la recursividad 
+
+listado recursivo con ls -R - se usa para enumerar el contendio de un directorio junto con sus subdirectorio y archivos
+ls -R mydir
+para enumerar el conteido de un directorio, incluidos sus subdirectorios, use ls -R dir_name, puede agregar la opcion ls -lR dir_name, para visualizarlo mejor
+
+
+copia recursiva con cp -r(o -R o --recursive) la sintaxis seria: cp -r SOURCE DESTINATION
+cp -r permite copiar un directorio junto con todos sus subdirectorio y archivos, ejem: cp -r dir dirDestinatio
+
+
+eliminacion recursiva con rm -r 
+rm -r elimina un directorio y todo su contenido (subdirectorios y archivos)
+cuidado con usar -rf, ya que forzara la aliminacion de todo
+si no se usa la opcion -r, el sistema informaria un error
+
+NOTA:Quizás se pregunte por qué no usamos rmdir en este caso. Hay una sutil diferencia entre los dos comandos. rmdir lograría eliminar solo si el directorio dado está vacío, mientras que rm -r puede usarse independientemente de si este directorio está vacío o no.
+
+igual que los otros comandos de eliminacion, puedes usar la opcion -i de forma iterativa
+-i pedir confirmacion antes de eliminar el archivo
+
+
+
+Archivos Globbing y Wildcards
+El globbing es una característica proporcionada por el shell de Unix/Linux para representar múltiples nombres 
+de archivo mediante el uso de caracteres especiales llamados wildcards. Los wildcards son esencialmente símbolos 
+que pueden usarse para sustituir uno o más caracteres. Permiten, por ejemplo, mostrar todos los archivos 
+que comienzan con la letra A o todos los archivos que terminan con las letras .conf
+
+estos son utiles, ya que se pueden usar en conjunto con los comandos cp, ls y rm
+ejemplos:
+Los siguientes son algunos ejemplos de globbing:
+rm *    Elimina todos los archivos en el directorio de trabajo actual.
+ls l? st    Lista todos los archivos con nombres que comienzan con l seguidos de cualquier caracter individual y terminan con st.
+rmdir [a-z] *  Elimina todos los directorios cuyos nombres comienzan con una letra.
+
+
+Tipos de wildcards
+Se puedne usar 3 tipos de carcateres como:
+* que representa cero, una o mas concurrencias de cualquier caracter
+? que representa una sola aparicion de cualquier caracter
+[] que representa cualquier aparicion de los carcateres encerrados entre corchetes, por ejemplo [0-9] coinciden con todos los digitos 
+
+
+EL ASTERICSO (*)
+coincide con cero, una o mas apariciones de cualquier carcater
+
+ejemplos:
+	$> find /home -name *.png
+	$> ls lpic-*.txt
+	$> cp -r animal/* forest
+El asterisco, como cualquier otro wildcard, podria usarse repetitidamente en el mismo comando y el cualquier posicion 
+ejem: rm *ate* 
+
+
+EL SIGNO DE INTERROGACION (?)
+coincide con una UNICA aparicion de un carcater
+
+si consideramos que en un directorio tengan:
+last.txt    lest.txt    list.txt    third.txt   past.txt
+
+ejemplos:
+$> ls l?st.txt
+	last.txt    lest.txt    list.txt
+
+$> ls ??st.txt
+	last.txt    lest.txt    list.txt    past.txt
+
+LOS CARCATERES ENTRE CORCHETES ([])
+Los wildcard entre corchetes coinciden con cualquier aparicion de los carcateres entre corchetes
+
+$> ls l[aef]st.txt
+	last.txt    lest.txt
+
+tambien se puede usar rango 
+
+$> l[a-z]st.txt
+	last.txt    lest.txt    list.txt
+
+tambien se pueden aplicar varios rangos de corchetes, como:
+$> ls
+	student-1A.txt  student-2A.txt  student-3.txt
+$> ls student-[0-9][A-Z].txt
+	student-1A.text student-2A.txt
+
+
+Podemos combinar wildcards 
+$> ls
+	last.txt    lest.txt    list.txt    third.txt   past.txt
+$> ls [plf]?st* 
+	last.txt    lest.txt    list.txt    past.txt
+
+
+
+==============================================
+Leccion 2 - Gestion basica de archivos
+==============================================
