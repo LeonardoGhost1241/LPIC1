@@ -239,3 +239,38 @@ EJERCICIO EXPLORATORIOS
 		rm *.pdf
 
 
+->Leccion 2
+EJERCICIOS GUIADOS
+	-Considere la siguiente lista:
+	$ find /home/frank/Documents/ -type d
+	/home/frank/Documents/
+	/home/frank/Documents/animal
+	/home/frank/Documents/animal/domestic
+	/home/frank/Documents/animal/wild
+	    ¿Qué tipo de archivos generaría este comando?  --> Directorios, ya que la opcion -type tiene d 
+	    ¿En qué directorio comienza la búsqueda? --> En el directorio /hom/frank/Documents
+	
+	-Un usuario desea comprimir su carpeta de respaldo. Él usa el siguiente comando:
+	$ tar cvf /home/frank/backup.tar.gz /home/frank/dir1
+	¿Qué opción falta para comprimir la copia de seguridad utilizando el algoritmo gzip?
+	Falta la opcion -z y ademas el guion inicial, el comando seria:
+		tar-czvf /home/frank/backup.tar.gz /home/frank/dir1
+	
+	
+EJERCICIO EXPLORATORIOS 
+	-Como administrador del sistema, es necesario realizar verificaciones regulares para eliminar archivos voluminosos. Estos voluminosos archivos se encuentran en /var y terminan con una extensión .backup.
+	    * Escriba el comando, usando find, para localizar estos archivos: -->	 find /var -name "*.backup"
+	    *Un análisis de los tamaños de estos archivos revela que varían de 100M a 1000M. Complete el comando anterior con esta nueva información, para que pueda ubicar 
+	     esos archivos de respaldo que van desde 100M a 1000M: -->		find /var -name "*.backup" -size +100M -size -1000M 
+	    *Finalmente, complete este comando, con la acción de eliminación para que se eliminen estos archivos: -->		find /var -name "*.backup" -size +100M -size -1000M -exec rm {} \;
+														  -->	      o find /var -name "*.backup" -size +100M -size -1000M -delete 
+	
+	-En el directorio /var, existen cuatro archivos de respaldo:
+	db-jan-2018.backup
+	db-feb-2018.backup
+	db-march-2018.backup
+	db-apr-2018.backup
+	    *Usando tar, especifique el comando que crearía un archivo con el nombre db-first-quarter-2018.backup.tar: 
+			--> tar -cvf db-first-quarter-2018.backup.tar  db-jan-2018.backup db-feb-2018.backup db-march-2018.backup db-apr-2018.backup
+	    *Usando tar, especifique el comando que crearía el archivo comprimido y comprímalo usando gzip. Tenga en cuenta que el nombre del archivo resultante debe terminar con .gz:
+		        --> tar -czvf db-first-quarter-2018.backup.tar.gz db-jan-2018.backup db-feb-2018.backup db-march-2018.backup db-apr-2018.backup
