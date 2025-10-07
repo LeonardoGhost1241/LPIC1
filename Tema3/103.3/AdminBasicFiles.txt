@@ -228,8 +228,105 @@ ARCHIVE_NAME
 FILE_NAME (S)
 	Una lista de nombres de archivos separados por espacios que se extraeran. Si no se proporciona, se estrae todo el arhcivo
 
-Crear un archivo
 
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Nota:Archivar archivos con tar es MUUUUUUY DIFERENTE  a comprimirlos, por lo que cuando creamos un archivo .tar,
+	solamente los archivamos, sin embargo para comprimirlos realmente, usaremos tar.gz
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Crear un archivo
+tar - comprimir archivos
+	-c crear un archivo o -x descomprimes el archivo tarball
+	-t listas el contenido del archivo tarball
+	-A cuando tienes varios archivos .tar, puedes agruparlos para unirlos en un mismo archivo,, lo haces con tar -Af todo.tar file1.tar file2.tar etc.tar
+	-v muestra el progreso en la terminal mientras se crea el archivo, tambien conocido como "verbose"
+	-p conserva los permisos de los archivos colodados en el archivos (para restaurarlo mas tarde si fuera el caso)
+	-f permite especificar el nombre del archvio
+	opciones antes de las anteriores
+	--exclude file.sh(ejem), ejem: tar --exclude file.txt --exclude file.sh -cvzf backup.tar.gz
+
+En general, para archivcar un unico directorio o un unico archivo, usaremos:
+tar -xvf name.tar file(s)  --> tar realiza la accion de forma recursiva 
+
+
+Extraer un archivo 
+	-x extrae archivos
+en lugar de usar la opcion -c de create, usaremos la opcion -x, de extract 
+	-C para extraer el contenido del archivo en un directorio especifico, usamos -C, ejem: tar -xvf archivo.tar -C /dir
+
+
+comprimir archivos con tar 
+El comando tar podemos crear un archivo .tar y luego comprimirlo con la compresion gzip o bzip2 en un solo comando:
+	-z comprimiremos usando el algoritmo gzip (-z), ejem: tar -czvf name.tar.gz archivos
+
+si bien gzip (.tar.gz o .tgz) se usa con mayor frecuencia, tambien admite la compresion bzip2 (bzip2 o .tar.bz2  o .tar.bz o .tbz), lo podemos hacer remplazando -z por -j
+	-j crear archivos tar.bz, ejem: tar -cjvf name.tar.bz archivo(s)
+
+Para descomprimir el archivo, remplazamos la -c de create por -x de extract, como
+tar -xzvf file.tar.gz 
+tar -xjvf file.tar.bz
+
+
+resumen:
+gzip es mas rapido pero generalmente se comprime un poco menos, por lo que obtiene un archivo algo mas grande
+bzip2 es mas lento, pero se comprime un poco mas, por lo que se obtiene un archivo algo mas pequeño
+
+Sin embargo, en general gzip y bzip2 son practicamente lo mismo y ambos funcionaran de manera similar
+
+
+Podemos usar alternativas para cada tipo de compresion, aqui los comandos:
+gzip comando para comprimir con algoritmo gzip (alimina los archivos originales despues de crear el archivo comprimido)
+	Podemos crear el tarball primero con tar y despues comprimirlo con gzip
+bzip comando para comprimir con algoritmo bzip 
+
+
+(Adicional)
+Podemos hacer copias de seguridad con el comando tar
+Tipos de copias de seguridad:
+	-> Totales: se copian todos los datos
+	-> Diferenciales: Se copian solo los que se hayan modificado desde una fecha indicada. Se utiliza la opcion -N seguido de la fecha
+	-> Incremental: Se copian solo los ficheros que se han modificado desde la ultima copia, Se utiliza la opcion -g seguido de la ruta del fichero de registro
+
+copiad diferenciasles ejem: tar -czf $(date +%F)-I.tar.gz peliculas/ -N 2024-06-01
+
+otro ejemplo, si deseas incluir los archivos modificados despues del 1 de enero de 2025, puedes usar:
+	tar -cf backup.tar -N "2025-01-01" /ruta/dir
+
+copia incremental: tar -czf copia1.tar.gz peliculas/ -g copias.log (donde el archivo copias.log sera un archivo donde contiene una lista de archivos respaldados en la ultima operacion ) 
+
+
+
+El comando cpio (copy in, copy out)
+cpio - se usa para procesar archivos de almacenamiento como arhcivos *.cpio o *.tar 
+       Tiene una funcion parecida al comando tar. Copia ficheros a/desde un solo archivo. Utiliza la entrada y salida estandar para el origen y destino de datos
+	-o crea un archivo con el contenido que le indiquemos 
+	-i extrae el contenido de un fichero
+		-d Creara la carpeta de destino, si lo usamos con -id creara una carpeta para el destino
+	-p copia una estrcutura de directorios a otro lugar
+	ejem: find /etc/| cpio -o > copia_etc.cpio
+
+cpio realiza las siguientes operaciones: (debe ser por redireccion)
+	copia archivos a un archivo
+	extrae archivos de un archivo
+
+Para crear un archivo cpio, usamos: ls | cpio -o archivo.cpio
+Para extraer el asrchivo usamos: cpio -id < file.cpio   (ESTE COMANDO DEBE DE REEDIRIGIR LA SALIDA Y LA ENTRADA DE CUALQUIER ARCHIVO)
+
+
+Este comando no comprime, si quieremos usar la compresion, debemos de usar, por ejemplo
+find /etc/ | cpio -o | gzip > copia.cpio.gz
+
+
+Comando dd
+La sintaxis de este comando difiere mucho de algunos otros, usa la sintaxis de option=value para sus opciones de linea de comandos en lugar de los formatos estandar GNU -option value o --option=value
+
+dd - copiara el contenido de oldfile en newfile, donde if es el file de entrada y of= sera al archivo de salida
+
+El comando no mostrara nada en la pantalla hasta que el comando haya finalizado, al proporcionar la option status=progress, mostrara el trabajo realizado, por ejemplo dd status=progress if=file of=file
+
+ejem: dd if=/dev/sda of =backup.dd bs=4096
 
 
 
