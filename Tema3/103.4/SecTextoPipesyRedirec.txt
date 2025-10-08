@@ -1,0 +1,47 @@
+=============================================================
+Leccion 1 - 103.4 Usar flujos, tuberías y redireccionamientos
+=============================================================
+Los procesos estandar de linux tienen 3 canales de comunicacion abiertos de manera prdeterminada
+	1.- Canal de entrada (stdin), el descriptor numerico es 0 
+	2.- Canal de salida (stout), el descriptor numerico es 1
+	3.- Canal de error estandar (stderr), el descriptor numerico es 2 
+
+Los canales de comunicacion tambien son accesibles a travez de los dispositivos especiales 
+	1.- /dev/stin
+	2.- /dev/stdout
+	3.- /dev/stderr
+
+
+
+Redireccionamientos
+La reasignacion del descriptor de archivo de un canal en el entorno de shell se denomina redirect, una redireccion
+se define con un carcater especial dentro de la linea de comando, 
+Por ejemplo, para redirigir la salida estandar de un proceso a un archivo, se usa el sombolo ">"
+
+ejemplo: cat /proc/cpuinfo > /tmp/cpu.txt
+(por defecto, solo se redirige el contenido que llega a stdout)
+bash redirige la salida estandar por defecto, por lo tanto, usar > es equivalente a usar 1> (el valor del descriptor del archvio stdout es 1)
+
+Para capturar stderr, se debe usar la redireccion 2> en su lugar. La mayoria de los programas de linea de comando envian informacion de depuracion y mensajes de error al canal de error estandar.
+Es posible leer el mensaje de error provocado por leer un archivo inexistente:
+cat /proc/cpu_info 2> /tmp/error.txt
+
+
+NOTA: Tanto STOUT como STDERR se redirigen al mismo objetivo con &> o <& (es importante nunca dejar espacion, de lo contrario, estariamos dejando el comando en segundo plano)
+
+Para descartar la salida de unc omando, su contendio se puede redirigir al archivo especial /dev/null. en este archivo se puede escribir por cualquier usuario, pero no se puede recuperar datos, ya que no se almacenan en ningun lado
+
+
+
+
+
+
+
+
+
+
+
+
+=============================================================
+Leccion 2 - 103.4 Usar flujos, tuberías y redireccionamientos
+=============================================================
