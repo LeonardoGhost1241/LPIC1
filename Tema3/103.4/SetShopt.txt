@@ -1,0 +1,75 @@
+====================
+COMANDO SET Y SHOPT
+====================
+
+
+set - configura o muestra opciones del shell y variables de entorno 
+	(sirve tanto para definir variables como para activar/desactivar comportamientos especiales de bash)
+
+sintaxis: set [opciones] [--] [argumentos]
+
+
+Algunas de las opciones de shell que puede settear son:
+	-e el shell se detienen si un comando retorno error de carro
+	set -x/set +x muestra cada comando que se ejecute (modo debug), muy util para ver que hace un script/desactiva modo debug
+	set -u marca error si se usa una variable no definida 
+	set -v muestra las lineas del script a medida que se leen 
+	set -o muestra el estado actual de todas las opciones configurables 
+		
+con set -o ver las opciones de shell
+
+
+shopt - (shell options), sirve para controlar opciones especificas de bash que no estan disponibles con set, estas  opciones afectan carcateristicas mas "avanzadas" o "modernas" del shell
+
+sintaxis: shopt [-pqsu] [opcion..]
+
+
+algunas de las opciones de shot son:
+	shopt -s nocaseglob  hace que los patrones de nombre de archivo (globbing ) ignoren mayusculas/minusculas
+	shopt -s histappend  hace que el historial de comandos se agregue al archivo .bash.history en lugar de sobreescribirlo
+	shopt -s cmdhist	Guarda los comandos multilínea como una sola entrada en el historial.
+	shopt -s globstar	Permite usar ** para hacer coincidencias recursivas en subdirectorios (ls **/*.txt).
+	shopt -s extglob	Habilita patrones avanzados como `+(a
+	shopt -s dotglob	Incluye archivos ocultos (que empiezan con .) en coincidencias con *.
+	shopt	Sin argumentos, muestra todas las opciones y su estado (on/off).
+
+
+
+Característica					set							shopt
+Propósito		Controla opciones estándar del shell (heredadas de POSIX).	Controla opciones específicas de Bash.
+Alcance			Más general, afecta comportamiento base del shell.		Más fino, afecta características “extra” de Bash.
+Ejemplo típico					set -e						shopt -s globstar
+
+
+
+
+Obciones mas comunes de cada comando
+
+
+| **Categoría**                            | **Comando / Opción**   | **Descripción**                                      | **Uso típico en scripts**                      | **Valor por defecto**    |             |
+| ---------------------------------------- | ---------------------- | ---------------------------------------------------- | ---------------------------------------------- | ------------------------ | ----------- |
+|    **Seguridad / Control de errores**    | `set -e`               | Detiene el script si un comando falla (exit ≠ 0).    | Prevenir ejecuciones incorrectas o peligrosas. | Desactivado              |             |
+|                                          | `set -u`               | Error al usar variables no definidas.                | Detectar errores por variables mal escritas.   | Desactivado              |             |
+|                                          | `set -o pipefail`      | Falla si **cualquier** comando en una tubería falla. | Mejor control de errores en pipelines.         | Desactivado              |             |
+|                                          | `set -E`               | Permite que funciones hereden el *trap ERR*.         | Manejo de errores avanzado.                    | Desactivado              |             |
+|    **Depuración / Diagnóstico**          | `set -x`               | Muestra los comandos a medida que se ejecutan.       | Depurar scripts paso a paso.                   | Desactivado              |             |
+|                                          | `set -v`               | Muestra las líneas del script mientras se leen.      | Analizar flujo de ejecución.                   | Desactivado              |             |
+|                                          | `set +x` / `set +v`    | Desactiva las opciones anteriores.                   | Limpiar salida del script.                     | —                        |             |
+|    **Gestión de variables y argumentos** | `set` sin argumentos   | Muestra todas las variables de shell y sus valores.  | Inspección.                                    | —                        |             |
+|                                          | `set -- arg1 arg2 ...` | Define los parámetros posicionales (`$1`, `$2`, …).  | Reemplazar argumentos en un script.            | —                        |             |
+|    **Compatibilidad / Estándares**       | `set -o posix`         | Obliga a Bash a comportarse como shell POSIX.        | Portabilidad.                                  | Desactivado              |             |
+|    **Prevención de sobrescritura**       | `set -o noclobber`     | Impide sobrescribir archivos con `>` (usa `>         | ` para forzar).                                | Evitar pérdida de datos. | Desactivado |
+
+
+
+| **Categoría**                             | **Opción**                | **Descripción**                                                                 | **Uso típico en scripts**                  | **Valor por defecto**  |             |
+| ----------------------------------------- | ------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------ | ---------------------- | ----------- |
+|    **Coincidencia de nombres (globbing)** | `shopt -s globstar`       | Permite usar `**` para buscar archivos recursivamente.                          | `ls **/*.log` para buscar en subcarpetas.  | Desactivado            |             |
+|                                           | `shopt -s dotglob`        | Incluye archivos ocultos (`.archivo`) en coincidencias con `*`.                 | Procesar todos los archivos.               | Desactivado            |             |
+|                                           | `shopt -s nocaseglob`     | Coincidencias sin distinguir mayúsculas/minúsculas.                             | Evitar errores por nombres con mayúsculas. | Desactivado            |             |
+|                                           | `shopt -s extglob`        | Habilita patrones avanzados como `!(a                                           | b)`o`+(patrón)`.                           | Filtrados complejos.   | Desactivado |
+|    **Historial de comandos**              | `shopt -s histappend`     | Añade al historial en vez de sobrescribirlo.                                    | Mantener historial persistente.            | Desactivado            |             |
+|                                           | `shopt -s cmdhist`        | Agrupa comandos multilínea en una sola entrada del historial.                   | Mejor legibilidad del historial.           | Activado               |             |
+|    **Comportamiento de scripts**          | `shopt -s expand_aliases` | Permite usar alias dentro de scripts.                                           | Usar alias definidos previamente.          | Desactivado en scripts |             |
+|                                           | `shopt -s checkwinsize`   | Actualiza variables `LINES` y `COLUMNS` al cambiar el tamaño de la terminal.    | Interactividad mejorada.                   | Activado               |             |
+|                                           | `shopt -s nullglob`       | Hace que los patrones sin coincidencias expandan a vacío (no al texto literal). | Evitar errores con `for f in *.txt`.       | Desactivado            |             |

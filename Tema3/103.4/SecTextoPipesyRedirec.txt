@@ -32,6 +32,41 @@ NOTA: Tanto STOUT como STDERR se redirigen al mismo objetivo con &> o <& (es imp
 Para descartar la salida de unc omando, su contendio se puede redirigir al archivo especial /dev/null. en este archivo se puede escribir por cualquier usuario, pero no se puede recuperar datos, ya que no se almacenan en ningun lado
 
 
+La redireccion de salida sobreescribe TODO un archivo cuando usamos solamente ">", sin embargo, 
+para desactivarlo, desactivaremos una opcion de set, en este caso sera noclobber de set, para ello, haremos: set +o noclobber o simplemente set -C,
+para volverlo a activar usaremos set +o noclobber o set +C 
+
+Incluso con la opcion activada, podemos seguir redirigiendo string a un archvio, esto se hace con el doble ">>", ejem: echo "string" >> file.txt, eso no lo reescribira, sino que agregara una cadena 
+
+El simbolo <, se usa para redirigir el contenido de una rchvio al stdin de un proceso. El comando uniq, como la mayoría de las utilidades de línea de comandos para procesar texto, acepta los datos enviados a stdin por defecto: uniw -c < /tmp/error.txt
+
+
+
+
+
+HERE DOCUMENTO Y HERE STRING
+Otra dorma de redirigir, involucra los dos metodos anteriores.
+La redireccion de documentos Here permite escribir texto de varias lineas que se utilizaran como contenido redirigido.
+Dos simbolos menor que << indian una redireccion de Here document 
+
+un ejemplo seria: 
+cat << EOF > file
+> string...
+> hola
+> etc...
+>EOF
+
+eso redirigira la salida al archivo file
+
+El metodo Here String es muy similar al mentodo de Here Document, pero solopara una linea:
+ejem: wc -c <<< "How many characters in this Here String?"
+Deben de estar entre comillas, de lo contrario, solo la primera palabra se usara como la cadena Here y las restantes se pasaran como argumentos al comando
+
+
+
+
+
+
 
 
 
