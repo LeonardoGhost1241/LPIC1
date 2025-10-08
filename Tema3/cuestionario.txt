@@ -1,6 +1,3 @@
-
-
-
 ==========================================================
 103.1 Trabajando en la línea de comandos
 ==========================================================
@@ -274,3 +271,76 @@ EJERCICIO EXPLORATORIOS
 			--> tar -cvf db-first-quarter-2018.backup.tar  db-jan-2018.backup db-feb-2018.backup db-march-2018.backup db-apr-2018.backup
 	    *Usando tar, especifique el comando que crearía el archivo comprimido y comprímalo usando gzip. Tenga en cuenta que el nombre del archivo resultante debe terminar con .gz:
 		        --> tar -czvf db-first-quarter-2018.backup.tar.gz db-jan-2018.backup db-feb-2018.backup db-march-2018.backup db-apr-2018.backup
+
+
+
+==========================================================
+103.4 Usar flujo, tuberias y redireccionamientos 
+==========================================================
+-Leccion 1 
+EJERCICIOS GUIADOS	
+	-Además de los archivos de texto, el comando cat también puede trabajar con datos binarios, como enviar el contenido de un dispositivo de bloque a un archivo. 
+	 Usando la redirección, ¿cómo puede cat enviar el contenido del dispositivo /dev/sdc al archivo sdc.img en el directorio actual?
+		cta /dev/sdc > sdc.img
+	
+	-¿Cuál es el nombre del canal estándar redirigido por el comando date 1> now.txt?
+		 Salida estandar o  stdout 
+	
+	-Después de intentar sobrescribir un archivo usando la redirección, un usuario recibe un error informando que la opción noclobber está habilitada. 
+	 ¿Cómo se puede desactivar la opción noclobber para la sesión actual?
+		set +o noclobber 
+	
+	¿Cuál será el resultado del comando cat <<.>/dev/stdout?
+		Asi como  es e lformato de Here document, como <<EOF y finaliza con un EOF, podemos sustituir este EOF por un punto (.), por lo que es lo mismo.
+		Entonces con cat le pasaremos una entrada cualauqiera (ya conoces como inicia la linea de Here Docuemnt ">") que a su ves, redirigiremos lo que hemos escrito a stdout, osease la salida de la temrinal, por lo que cuando demos enter, veremos el mismo texto
+	
+	
+EJERCICIOS EXPLORATORIOS 
+	-El comando cat /proc/cpu_info muestra un mensaje de error porque /proc/cpu_info no existe. El comando cat /proc/cpu_info 2>1 redirige el mensaje de error a dónde?
+		El comando cat /proc/cpu_info 2>1 intentaria redirigir la salida de error a un archivo llamado 1, lo cual no es lo que se pretende. La redireccion correcta para ver los mensajes de error en la terminal seria usando 2>&1, 
+		si queremos redirigir tanto la salida estandar como la salida de erro, deberiamos de unar &> o &>>
+
+	-¿Será posible descartar el contenido enviado a /dev/null si la opción noclobber está habilitada para la sesión de shell actual?
+		Si, /dev/null es un archivo especial no afectado por noclobber	
+
+	-Sin usar echo, ¿cómo se podría redirigir el contenido de la variable $USER al stdin del comando sha1sum?
+		Podemos usar  HERE STRING, sha1sum <<< $USER
+
+	-El kernel de Linux mantiene enlaces simbólicos en /proc/PID/fd/ a cada archivo abierto por un proceso, donde PID es el número de identificación del proceso correspondiente. 
+	 ¿Cómo podría el administrador del sistema usar ese directorio para verificar la ubicación de los archivos de registro abiertos por nginx, suponiendo que su PID sea 1234?
+		ls -l /proc/1234/fd, que mostrara los objetivos de cada enlace simbolico en el directorio
+
+	
+	-Es posible hacer cálculos aritméticos utilizando solo comandos integrados de shell, pero los cálculos de coma flotante requieren programas específicos, como bc (basic calculator). 
+         Con bc incluso es posible especificar el número de lugares decimales, con el parámetro scale. Sin embargo, bc acepta operaciones solo a través de su entrada estándar, 
+         generalmente ingresada en modo interactivo. Usando una cadena Here, ¿cómo puede la operación de coma flotante scale = 6; 1 / 3 enviarse a la entrada estándar de bc?
+		Lo podemos hacer con cadena Here String, como bc <<< "scale=6; 1/3"
+	
+	
+-Leccion 2
+EJERCICIOS GUIADOS
+	-Es conveniente guardar la fecha de ejecución de las acciones realizadas por scripts automatizados. El comando date +%Y-%m-%d muestra la fecha actual en formato año-mes-día. 
+	 ¿Cómo se puede almacenar la salida de dicho comando en una variable de shell llamada TODAY usando la sustitución de comandos?
+	
+	-Usando el comando echo, ¿cómo se puede enviar el contenido de la variable TODAY a la entrada estándar del comando sed s/-/./g?
+	
+	-¿Cómo podría usarse la salida del comando date +%Y-%m-%d como una cadena Here para ordenar sed s/-/./g?
+	
+	-El comando convert image.jpeg -resize 25% small/image.jpeg crea una versión más pequeña de image.jpeg y coloca la imagen resultante en un archivo 
+         con el mismo nombre dentro del subdirectorio small. Usando xargs, ¿cómo es posible ejecutar el mismo comando para cada imagen listada en el archivo filelist.txt?
+	
+	
+EJERCICIOS EXPLORATORIOS 
+	-Una rutina de copia de seguridad simple crea periódicamente una imagen de partición /dev/sda1 con dd < /dev/sda1 > sda1.img. 
+	 Para realizar futuras comprobaciones de integridad de datos, la rutina también genera un hash SHA1 del archivo con 
+	 sha1sum < sda1.img > sda1.sha1. Al agregar tuberías y el comando tee, ¿cómo se combinarían estos dos comandos en uno?
+	
+	-El comando tar se usa para archivar muchos archivos en uno solo, preservando la estructura del directorio. 
+	 La opción -T permite especificar un archivo que contiene las rutas a archivar. 
+	 Por ejemplo, find /etc -type f | tar -cJ -f /srv/backup/etc.tar.xz -T - crea un archivo tar comprimido etc.tar.xz de la lista provista por el 
+	 comando find (la opción -T- indica la entrada estándar como la lista de ruta). 
+	 Para evitar posibles errores de análisis debido a las rutas que contienen espacios, ¿qué opciones de comando deberían estar presentes para find y tar?
+	
+	-En lugar de abrir una nueva sesión de shell remota, el comando ssh solo puede ejecutar un comando indicado como argumento: ssh user@storage "remote command". 
+	 Dado que ssh también permite redirigir la salida estándar de un programa local a la entrada estándar del programa remoto, 
+	 ¿cómo canalizaría el comando cat un archivo local llamado etc.tar.gz a /srv/backup/etc.tar.gz en user@storage a través de ssh?
