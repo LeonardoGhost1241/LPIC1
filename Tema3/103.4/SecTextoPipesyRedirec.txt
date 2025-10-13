@@ -65,18 +65,67 @@ Deben de estar entre comillas, de lo contrario, solo la primera palabra se usara
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 =============================================================
 Leccion 2 - 103.4 Usar flujos, tuberías y redireccionamientos
 =============================================================
+El caracter de barra vertical |, también conocido como el símbolo pipe, se puede usar para crear una tubería que conecte la salida de un programa directamente a la entrada de otro, mientras que command substitution permite almacenar la salida de un programa en una variable o usarlo directamente como argumento para otro comando.
+
+Tuberias (Pipes) (|)
+Este caracter le dice al shell que inicie todos los comandos distintos al mismo tiempo y que concatene la salida del comando anterior a la entrada del siguiente comando, de izquierda a derecha 
+ejem: cat /proc/cpuinfo | wc 
+ejem:  cat /proc/cpuinfo | grep 'model name' | uniq
+
+Tambien se pueden combinar con redireccionamientos en la misma linea de comando, como:
+grep 'model name' </proc/cpuinfo | uniq
+
+Las tuberías y redirecciones son exclusivas, es decir, una fuente puede asignarse a un solo destino. Sin embargo, es posible redirigir una salida a un archivo y aún verlo en la pantalla con el programa tee. 
+Para hacerlo, el primer programa envía su salida al stdin de tee y se le proporciona un nombre de archivo a este último para almacenar los datos
+
+tee - lee la entrada de un comando y escribe la salida 
+	-a usado para no sobreescribir el contenido del archivo proporcionado sino para agregarle datos
+
+- - -- - - - - - - 
+IMPORTANTE:
+Solo la salida estándar de un proceso es capturada por una tubería. Digamos que debe pasar por un largo proceso de compilación en la pantalla y al mismo tiempo guardar tanto la 
+salida estándar como el error estándar en un archivo para su posterior inspección. Suponiendo que su directorio actual no tiene un Makefile, el siguiente comando generará un error:
+
+$ make | tee log.txt
+make: *** No targets specified and no makefile found.  Stop.
+
+Aunque se muestra en la pantalla, el mensaje de error generado por make no fue capturado por tee y el archivo log.txt se creó vacío. 
+Se debe hacer una redirección antes de que una tubería pueda capturar el stderr:
+
+$ make 2>&1 | tee log.txt
+make: *** No targets specified and no makefile found.  Stop.
+$ cat log.txt
+make: *** No targets specified and no makefile found.  Stop.
+
+En este ejemplo, el stderr de make se redirigió al stdout, por lo que tee pudo capturarlo con una tubería, mostrarlo en la pantalla y guardarlo en el archivo log.txt. 
+En casos como este, puede ser útil guardar los mensajes de error para su posterior inspección.
+
+- - - - - - - 
+
+
+Sustitucion de comando
+Este es otro metod para capturar la salida de un comando, colocar un comando dentro de las comillas inversas
+ejem: mkdir 'date +%Y-%m-%d'
+
+Se obtiene un resultado identico usando $() en lugar de commillas inversas
+ejem:mkdir $(date +%Y-%m-%d)
+
+se puede guardar una variable con la salida de un comando, como 
+OS='uname -o'
+
+
+Un método más sofisticado para usar la salida de un programa como argumento de otro programa emplea un intermediario llamado xargs
+
+xargs - Usa el contenido que recibe a travez de stdin para ejecutar un comando dado con los contenidos como argumento. Se utiliza para manejar listas de archivos o argumentos que provienen de otros comandos
+	-n N Especifica el numero de argumentos pasados al comando en cada invocacion
+	-d delim Establece un delimitador diferente para separar los argumentos (no muy comun)
+	-0 indica que la entrada esta separada por caracteres nulos. Utilizado comunmente con la opcion find -print0 (le dice a xargs que el caracter nulo debe usarse como separador)
+	-I str permite especificar un marcador de posicion que sera remplazado por cada argumento, ejem find / -iname "*.txt" | xargs -I str ls -l str
+
+
+
+	
+
