@@ -1,3 +1,55 @@
-Crear, monitorear y matar procesos
+=========================================
+103.5 Crear, monitorear y matar procesos
+=========================================
+
+Control de trabajos 
+Los trabajos son procesos que se han iniciado de FORMA ITERATIVA A TRAVEZ DE UN TERMINAL, 
+enviados asegundo plano y aun no han finalizado la ejecucion
+
+para conocer los trabajos activos (y su estado) en su sistema 
+jobs - muestra los trabajos, y no muestra nda si no los hay
+	-l mostrara la ID del proceso justo antes del comando
+	-n Lista los procesos que han cambiado de estado desde la ultima notificacion (Running, Stopped, Terminated o Done)
+	-p Lista los ID de procesos
+	-r Lista solos los procesos en ejecucion 
+	-s Lista solamente los procesos detenidos (o suspendidos)
+
+nota: recuerde, un trabajo tiene un ID de trabajo y un ID de proceso PID
 
 
+salida de jobs 
+$ jobs
+[1]+  Stopped                 sleep 60
+
+Permítanos explicar el resultado:
+[1]    Este número es el ID del trabajo y se puede utilizar, precedido por un símbolo de porcentaje (%), para cambiar el estado del trabajo mediante las utilidades fg, bg y kill (como se mostrará más adelante).
++      El signo más indica el trabajo actual predeterminado (es decir, el último suspendido o enviado al segundo plano). El trabajo anterior está marcado con un signo menos (-). Cualquier otro trabajo anterior no está marcado.
+Stopped    Descripción del estado del trabajo.
+sleep 60    El comando o trabajo en ejecución.
+
+
+
+
+
+
+
+Especificaciones de trabajo
+los comandos jobs, fg ,bg y kill necesitan una especificacion o jobspec para actuar sobre un trabajo
+%n	trabajo cuyo numero de identificacion es n, ejem: jobs %1
+%str	trabajo cuya linea comienza con str, ejem: jobs %str, ejem: jobs %ls
+%?str	trabajo cuya linea de comando contiene str, ejem: jobs %?le
+
+%+ %%	Trabajao actual (El ultimo que se inicio en segundo plano o suspendido del primer plano)
+%- Trabajo anterior, antes del actual, ejem jobs %-
+
+
+Estado del trabajo: suspension, primer plano y segundo plano
+fg	llevar al primer plano y lo convierte en el trabajo actual (podemos detenerlo con ctrl + Z o  con ctrl + C)
+bg	se puede usar el signo & al final del comando y asi lo pondremos en segundo plano
+kill	se usa para terminar procesos iniciados desde la terminal, ejem kill %1
+ 
+
+
+Trabajos separados
+Si la sesion se termina, los trabajos desaparecen. Es posible separar los trabajos de las sesiones y hacer  que se ejcuten incluso despues de cerrar la sesion
+esto se puede lograr con el comando nohub ()
