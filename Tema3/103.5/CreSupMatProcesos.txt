@@ -52,4 +52,100 @@ kill	se usa para terminar procesos iniciados desde la terminal, ejem kill %1
 
 Trabajos separados
 Si la sesion se termina, los trabajos desaparecen. Es posible separar los trabajos de las sesiones y hacer  que se ejcuten incluso despues de cerrar la sesion
-esto se puede lograr con el comando nohub ()
+esto se puede lograr con el comando nohub (no hangup)
+
+sintaxis 
+nohup command &
+
+ejemplo: nohup ping 8.8.8.8 localhost &
+la salida muestra el ID del trabajo y el ID del proceso, seguido de un mensaje que no sinforma sobre el archivo nohub.out
+En este archivo se guardaran stdout y stderr
+
+Si queremos matar el proces, debemos especificar su PID, como kill 1251
+
+
+
+Monitoreo de procesos
+watch - nos permite mirar el cambio de salida del programa con el tiempo, por ejemplo, watch  uptime, el comando se ejecuta hasta que se termina con ctrl + C
+	-n o --interval  nos permite definir un intervalo de actualizacion, ejemplo watch -n 5 free (el comando se ejecutara cada 5 segundos)
+
+
+
+Envio de señales a proceso: kill
+Cada proceso tiene un identificador de proceso unico PID
+Una forma de averiguar el PID de un proceso es con el comando pgrep
+
+pgrep - permite averigua el PID de un proceso
+	ejem, pgrep sleep 
+
+otro comando que se puede utilizar es el comando pidof, ejem, pidof sleep
+
+pkill - mata un proceso basado en su nombre
+	ejem. pkill sleep
+
+killall - mata varias INSTANCIAS del mismo proceso
+	  ejem: killall sleep 
+	 ejem: killall $(pgrep firefox)    donde mata varias instancias de firefox
+	o simplemente kill $(pgrep firefox)  -> como se vio en anteriores lecciones, puedes especificar $() o '' para ejecutar comandos 
+
+
+Por defecto, pkill y killall envian la señal pordefecto de SIGTERM
+Sin embargo kill puede especificar varias señales de diversas formas, como:
+	kill -SIGTERM 1234
+	kill -1 1234
+	kill -s SIGHUP 1234    donde s es signal     -> Para ver todas las señales disponibles usamos, kill -l 
+
+
+
+
+
+
+
+TOP Y PS
+TOP produce resultados dinamicamente
+PS produce resultados esteticamente 
+
+
+Interactuando con top
+Este comadno nos muestra los procesos y mientras vemos como se ejcutan, podemos usar alguos "comandos" cuando se este ejecutando
+
+M	Odena por uso de memoria.
+N	Ordena por número de ID.
+T	Ordena por tiempo de ejecución.
+P	Ordena por porcentaje de uso en CPU.
+R	Cambiar entre orden descendente/ascendente
+
+otras teclas son:
+? o h	Ayuda.
+k	Mata un proceso. top solicitará que se elimine el PID del proceso y que se envíe la señal (por defecto, SIGTERM o 15).
+r	Cambiar la prioridad de un proceso (renice). top le pedirá el valor nice. Los valores posibles oscilan entre -20 y 19, pero solo el superusuario (root) puede establecerlo en un valor negativo o inferior al actual.
+u	Lista de procesos de un usuario en particular (de forma predeterminada se muestran los procesos de todos los usuarios).
+c	Muestra las rutas absolutas de los programas y diferencia entre procesos de espacio de usuario y procesos de espacio de kernel (entre corchetes).
+V	Vista de bosque/jerarquía de procesos.
+t y m	Cambia el aspecto de las lecturas de CPU y memoria respectivamente en un ciclo de cuatro etapas: las dos primeras pulsaciones muestran barras de progreso, la tercera oculta la barra y la cuarta la recupera.
+W	Guardar ajustes de configuración en ~/.toprc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
