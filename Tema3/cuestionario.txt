@@ -321,26 +321,57 @@ EJERCICIOS EXPLORATORIOS
 EJERCICIOS GUIADOS
 	-Es conveniente guardar la fecha de ejecución de las acciones realizadas por scripts automatizados. El comando date +%Y-%m-%d muestra la fecha actual en formato año-mes-día. 
 	 ¿Cómo se puede almacenar la salida de dicho comando en una variable de shell llamada TODAY usando la sustitución de comandos?
+		TODAY=$(date +%Y-%m-%d)
+		echo $TODAY
 	
 	-Usando el comando echo, ¿cómo se puede enviar el contenido de la variable TODAY a la entrada estándar del comando sed s/-/./g?
+	echo $TODAY | date sed s/-/./g 
 	
 	-¿Cómo podría usarse la salida del comando date +%Y-%m-%d como una cadena Here para ordenar sed s/-/./g?
-	
+		sed s/-/./g <<< `date +%Y-%m-%d`	
+		o
+		sed s/-/./g <<< $(date +%Y-%m-%d)
+
 	-El comando convert image.jpeg -resize 25% small/image.jpeg crea una versión más pequeña de image.jpeg y coloca la imagen resultante en un archivo 
          con el mismo nombre dentro del subdirectorio small. Usando xargs, ¿cómo es posible ejecutar el mismo comando para cada imagen listada en el archivo filelist.txt?
+	 		El comando convert es parte de la suite de herramientas de ImageMagick, que se utiliza para la manipulacion de imagenes. Este comando permite convertir, redimensionar y realizar diversas operaciones en imagenes en varios formatos, como
+			las opciones mas comunes son:
+				-resize 50%	o -resize 1920x1080
+				-format 
+		cat filelist.txt | xargs -I image convert image -resize 50% small/image
+		o
+		xargs -I image convert image -resize 25% small/image < filelist.txt
+
 	
-	
+
+
 EJERCICIOS EXPLORATORIOS 
 	-Una rutina de copia de seguridad simple crea periódicamente una imagen de partición /dev/sda1 con dd < /dev/sda1 > sda1.img. 
 	 Para realizar futuras comprobaciones de integridad de datos, la rutina también genera un hash SHA1 del archivo con 
 	 sha1sum < sda1.img > sda1.sha1. Al agregar tuberías y el comando tee, ¿cómo se combinarían estos dos comandos en uno?
-	
+		sha1sum sda1.img | tee sda1.sha1	
+
+
+
 	-El comando tar se usa para archivar muchos archivos en uno solo, preservando la estructura del directorio. 
 	 La opción -T permite especificar un archivo que contiene las rutas a archivar. 
 	 Por ejemplo, find /etc -type f | tar -cJ -f /srv/backup/etc.tar.xz -T - crea un archivo tar comprimido etc.tar.xz de la lista provista por el 
 	 comando find (la opción -T- indica la entrada estándar como la lista de ruta). 
 	 Para evitar posibles errores de análisis debido a las rutas que contienen espacios, ¿qué opciones de comando deberían estar presentes para find y tar?
+	las opciones -print0 y --null
+		find /etc -type f -print0 | tar -cJ -f /srv/backup/etc.tar.xz --null -T -
+
 	
 	-En lugar de abrir una nueva sesión de shell remota, el comando ssh solo puede ejecutar un comando indicado como argumento: ssh user@storage "remote command". 
 	 Dado que ssh también permite redirigir la salida estándar de un programa local a la entrada estándar del programa remoto, 
 	 ¿cómo canalizaría el comando cat un archivo local llamado etc.tar.gz a /srv/backup/etc.tar.gz en user@storage a través de ssh?
+		$ cat etc.tar.gz | ssh user@storage "cat > /srv/backup/etc.tar.gz"
+		o
+		$ ssh user@storage "cat > /srv/backup/etc.tar.gz" < etc.tar.gz
+
+
+
+==========================================================
+103.5 Crear, supervisar y matar procesos 
+==========================================================
+
