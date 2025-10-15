@@ -1,7 +1,7 @@
 =========================================
 103.5 Crear, monitorear y matar procesos
 =========================================
-
+-> Leccion 1
 Control de trabajos 
 Los trabajos son procesos que se han iniciado de FORMA ITERATIVA A TRAVEZ DE UN TERMINAL, 
 enviados asegundo plano y aun no han finalizado la ejecucion
@@ -126,10 +126,62 @@ t y m	Cambia el aspecto de las lecturas de CPU y memoria respectivamente en un c
 W	Guardar ajustes de configuración en ~/.toprc.
 
 
+NOta:Para mas info de la interfaz y su significado, visitar (https://learning.lpi.org/es/learning-materials/101-500/103/103.5/103.5_01/)
+
+
+
+INteractuando con ps
+ps tiene 3 estilos diferentes para correrlo, BSD, UNIX y GNU.
+BSD - Las opciones no siguen ningun guion inicial 
+	ps p 811
+UNIX - Las opciones siguen un guion inicial
+	ps -p 811
+GNU - Las opciones van seguidas de guiones dobles iniciales
+	ps --pid 811
+
+por lo que para buscar los procesos de un usuario, usaremos:
+	ps U leonardo
+	ps -u leonardo
+	ps --user leonardo 
+
+
+Salida del comando
+$ ps U leonardo
+   PID TTY      STAT   TIME COMMAND
+   811 pts/0    S      0:00 -su
+   898 pts/0    R+     0:00 ps U carol
+
+La columna STAT nos dice el estado del proceso
+a	muestra procesos que estan conectados a un tty o terminal
+u	Muestra formato orientado al usuario
+x	Mostrar procesos que no estan conectadis a yb tty o terminal
 
 
 
 
+
+Permítanos explicar las columnas:
+
+USER    Dueño del proceso.
+PID    Identificador de proceso.
+%CPU    Porcentaje de CPU utilizado.
+%MEM    Porcentaje de memoria física utilizado.
+VSZ    Memoria virtual de procesos en KiB.
+RSS    Memoria física no intercambiada utilizada por el proceso en KiB.
+TT    Terminal (tty) que controla el proceso.
+STAT    Código que representa el estado del proceso. Además de S, R y Z (que vimos al describir la salida de top), otros valores posibles incluyen: D (suspensión ininterrumpida — generalmente esperando E/S), T (detenido — normalmente por una señal de control). Algunos modificadores adicionales incluyen: < (alta prioridad — no agradable para otros procesos), N (baja prioridad — agradable para otros procesos) o + (en el grupo de procesos en primer plano).
+STARTED    Hora a la que comenzó el proceso.
+TIME    Tiempo de CPU acumulado.
+COMMAND    Comando que inició el proceso.
+
+
+
+
+
+=========================================
+103.5 Crear, monitorear y matar procesos
+=========================================
+->Leccion 2
 
 
 
