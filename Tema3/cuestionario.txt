@@ -374,4 +374,88 @@ EJERCICIOS EXPLORATORIOS
 ==========================================================
 103.5 Crear, supervisar y matar procesos 
 ==========================================================
+->Leccion 1
 
+EJERCICIOS GUIADOS
+	-oneko es un programa divertido y agradable que muestra un gato persiguiendo el cursor del mouse. Si aún no está instalado en su sistema de escritorio, 
+	 instálelo utilizando el administrador de paquetes de su distribución. Lo usaremos para estudiar el control del trabajo.
+	    Inicia el programa. ¿Cómo lo hace?
+			oneko
+	    Mueva el cursor del mouse para ver cómo lo persigue el gato. Ahora suspenda el proceso. ¿Cómo hace eso? ¿Cuál es el resultado?
+			Lo ponemos hacer con el shortcut Ctrl + Z
+
+	    Compruebe cuántos trabajos tiene actualmente. ¿Qué escribe? ¿Cuál es el resultado?
+			jobs -l	
+
+	    Ahora envíelo al segundo plano especificando su ID de trabajo. ¿Cuál es el resultado? ¿Cómo puede saber que el trabajo se está ejecutando en segundo plano?
+			bg %%, como el esl unico, podmeos usar %% o %+, de otro modo debemos especificar %n, ejem: bg %1
+
+	    Finalmente, finalice el trabajo especificando su ID de trabajo. ¿Qué escribes?
+			kill %% o kill %1
+	
+
+	-Descubra los PID de todos los procesos generados por Apache HTTPD web server (apache2) con dos comandos diferentes:
+		Podemos usar pgrep y ps aux | grep "apache*", la ejecucion de estos seria:
+			pgrep apache2 o pidof apache2
+			ps aux | grep "apache"
+
+	-Termine todos los procesos apache2 sin usar sus PID y con dos comandos diferentes:
+		Podemos usar killall o pkill
+			killall apache2
+			kill $(pgrep apache2)
+			pkill apache2
+	
+
+	-Suponga que tiene que terminar todas las instancias de apache2 y no tiene tiempo para averiguar cuáles son sus PID. ¿Cómo lograría eso usando kill con la señal predeterminada SIGTERM en una línea:
+		kill -s SIGTERM $(pgrep apache2), por defecto kill usa la señal predeterminada de 15 o SIGTERM, por lo que no es necesario utilizarlo, por lo tanto, kill $(pidof apache2)
+
+
+	-Inicie top e interactúe con él realizando lo siguiente:
+	    Mostrar una vista del bosque de pocesos: se usa la opcion V, nos mostrara los procesos en forma de arbol	
+	    Muestra rutas completas de procesos que diferencian entre espacio de usuario y espacio de kernel: Se puede usar la opcion c, para mostrar las  rutas de cada comando
+	
+	-Escriba el comando ps para mostrar todos los procesos iniciados por Apache HTTPD web server usuario (www-data):
+	    Usando la sintaxis BSD: ps U www-data
+	    Usando la sintaxis UNIX: ps -u www-data
+	    Usando la sintaxis de GNU: ps --user www-data
+
+
+
+EJERCICIOS EXPLORATORIOS
+
+	-La señal SIGHUP puede usarse como una forma de reiniciar ciertos demonios. Con Apache HTTPD web server, por ejemplo, enviar SIGHUP al proceso padre (el que comenzó con init) mata a sus hijos. 
+	 Sin embargo, el padre vuelve a leer sus archivos de configuración, vuelve a abrir los archivos de registro y genera un nuevo conjunto de hijos. Realice las siguientes tareas:
+	    Inicie el servidor web:  sudo systemct start apache2
+	    Asegúrese de conocer el PID del proceso principal: ps aux | grep apche2
+	    Haga que el servidor web Apache HTTPD se reinicie enviándole la señal SIGHUP al proceso principal:kill -s SIGHUP 
+	    Verifique que el padre no haya sido terminado y que se hayan generado nuevos hijos: el proceso incial lo inicio el root, por lo que podemos usar:
+												kill -1 4094
+												kill -SIGHUP 4094
+												kill -s SIGHUP 4094
+
+
+	-Aunque inicialmente estático, la salida de ps puede volverse dinámica combinando ps y watch. Supervisaremos Apache HTTPD web server para detectar nuevas conexiones. 
+	 Antes de realizar las tareas descritas a continuación, se recomienda que lea la descripción de la directiva MaxConnectionsPerChild en Apache MPM Common Directives.	
+	    Agregue la directiva MaxConnectionsPerChild con un valor de 1 en el archivo de configuración de apache2 — en Debian y derivados se encuentran en /etc/apache2/apache2.conf; 
+	    en la familia CentOS, en /etc/httpd/conf/httpd.conf. No olvide reiniciar apache2 para que los cambios surtan efecto.
+		La línea a incluir en el archivo de configuración es MaxConnectionsPerChild 1. Una forma de reiniciar el servidor web es a través de sudo systemctl restart apache2.
+
+	    Escriba un comando que use watch, ps y grep para las conexiones apache2.
+		watch 'ps aux | grep apache2' o watch "ps aux | grep apache2"
+	
+	    Ahora abra un navegador web o use un navegador de línea de comandos como lynx para establecer una conexión con el servidor web a través de su dirección IP. ¿Qué observa en la salida de watch?
+		Uno de los procesos secundarios propiedad de www-data desaparece.
+
+	
+	-Como has aprendido, por defecto, top clasifica las tareas por porcentaje de uso de CPU en orden descendente (los valores más altos en la parte superior). 
+	 Este comportamiento se puede modificar con las teclas interactivas M (uso de memoria), N (identificador único del proceso), T (tiempo de ejecución) y P (porcentaje del tiempo de CPU). 
+	 Sin embargo, también puede ordenar la lista de tareas a su gusto iniciando top con la opción -o (para obtener más información, consulte la página man de top). Ahora, realice las siguientes tareas:
+	
+	    Inicie top para que las tareas se ordenen por uso de memoria: se usa top -o %MEM
+	    Verifique que envió el comando correcto resaltando la columna de memoria: se usa la opcion x
+	
+
+	-ps también tiene una opción "o" para especificar las columnas que desea que se muestren. Investigue esta opción y realice las siguientes tareas:
+		(https://man7.org/linux/man-pages/man1/ps.1.html#STANDARD_FORMAT_SPECIFIERS)
+	    Inicie ps para que solo se muestre información sobre usuario, porcentaje de memoria utilizada, porcentaje de tiempo de CPU utilizado y comando completo: ps -o user,%mem,%cpu,cmd
+	    Ahora, ejecute ps para que la única información que se muestre sea la del usuario y el nombre de los programas que están utilizando: ps o user,comm
