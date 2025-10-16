@@ -309,6 +309,74 @@ STARTUP SCREENS:Puede incluir comandos para que varios programas se ejecuten en 
 -------
 TMUX 
 _______
+Es muy similar a screen, sin embargo, tiene algunas diferencias:
+
+	->Modelo cliente-servidor: el servidor suministra una serie de sesiones, cada una de las cuales puede tener varias ventanas vinculadas que, a su vez, pueden ser compartidas por varios clientes.
+	->Selección interactiva de sesiones, ventanas y clientes a través de menús.
+	->La misma ventana se puede vincular a varias sesiones.
+	->Disponibilidad de diseños de teclas vim y Emacs.
+	->Soporte para terminales UTF-8 y 256 colores.
+
+tmux - invoca una sesion 
+	Prefijo Ctrl + b
+
+Ventanas:
+Con el comando tmux, se puede implementar escribiendo tmux
+
+Session name:    [0]
+Window number:    0:
+Window name:    bash*. Por defecto, este es el nombre del programa que se ejecuta dentro de la ventana y, a diferencia de screen, tmux lo actualizará automáticamente 
+		para reflejar el programa en ejecución actual. Note el asterisco que indica que esta es la ventana visible actual.
+
+ejemplo: tmux -s "LPI" -n "window zero" --> CRear una sesion llamada LPI y con una pestaña llamada  "window zero"
+
+
+, - Renombrar una pestaña de la sesion 
+w - ver todas las pestañas de la sesion
+
+Al igual que screen, podemos usar 
+n - siguiente ventana
+p - privious ventana Windows
+numero - podemos cambiar de ventanas dado un numero, Ctrl + b - numero, ejem Ctrl + b - 2, nos cambiara a la tercera ventana
+
+& - Se puede usar para deshacerte de una ventana, pedira confirmacion, ejem: Ctrl + b - &
+
+
+
+Otros comandos de ventana interesantes incluyen:
+Ctrl+b-f -     buscar ventana por nombre.
+Ctrl+b-. -     cambiar el número de índice de la ventana.
+
+
+Paneles:
+% - Panel Vertical
+" - Panel horizontal
+x - Cerrar el panel, preguntara por confirmacion
+
+
+
+
+Comandos de panel importantes:
+Ctrl+b-↑,↓,←,→		moverse entre paneles.
+Ctrl+b-;		pasar al último panel activo.
+Ctrl+b-Ctrl+arrow key	cambiar el tamaño del panel en una línea.
+Ctrl+b-Alt+arrow key	cambiar el tamaño del panel en cinco líneas.
+Ctrl+b-{	intercambiar paneles (actual a anterior).
+Ctrl+b-}	intercambiar paneles (actual a siguiente).
+Ctrl+b-z	panel de acercar/alejar.
+Ctrl+b-t	tmux muestra un reloj elegante dentro del panel (deténgalo presionando q).
+Ctrl+b-!	convertir el panel en ventana.
+
+
+Sesiones:
+s - Listar todas las sesiones abiertas
+
+tmux ls   Ver las sesiones abiertas con tmux
+
+
+
+
+
 
 
 
