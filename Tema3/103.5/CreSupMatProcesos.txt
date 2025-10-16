@@ -183,11 +183,132 @@ COMMAND    Comando que inició el proceso.
 =========================================
 ->Leccion 2
 
+Uso de multiplexores (screen y tmux), aunque no son los mismo, algunas caracteristicas de estos son:
+	->Cualquier invocación exitosa dará como resultado al menos una sesión que, a su vez, incluirá al menos una ventana. Las ventanas contienen programas.
+	->Las ventanas se puede dividir en regiones o paneles, lo que puede ayudar a la productividad cuando se trabaja con varios programas simultáneamente.
+	->Facilidad de control: para ejecutar la mayoría de los comandos, utilizan una combinación de teclas, el llamado comando prefijo o comando clave, seguido de otro caracter.
+	->Las sesiones se pueden separar de su terminal actual (es decir, los programas se envían en segundo plano y continúan ejecutándose). Esto garantiza la ejecución completa de los programas sin importar si cerramos accidentalmente un terminal, experimentamos un congelamiento ocasional del terminal o incluso una pérdida de conexión remota.
+	->Conexiones de Socket.
+	->Modo de copia.
+	->Son altamente personalizables.
+
+
+-------
+SCREEN 
+_______
+screen - invoca una sesion 
+	Prefijo Ctrl + a
+
+Ventanas:
+w - ver todas las ventanas en la parte inferior de la pantalla de la temrinal
+c - crear una nueva ventana (el conteo inicia desde 0 en adelante, por lo que cuando iniciemos este multiplexor, iniciara con 0)
+A - Cambiar el nombre de la ventana actual de screen
+screen -t name	- podemos usar este comando dentro o fuera del multiplexor para iniciar una sesion con un nombre inicial
+n - siguiente ventana
+p - privious ventana Windows
+numero - podemos cambiar de ventanas dado un numero, Ctrl + a - numero, ejem Ctrl + a - 2, nos cambiara a la tercera ventana
+" - Podremos ver todas las sesiones en forma de lista y seleccionar alguna con las flechas del teclado
+
+nota:
+	-> Las ventanas ejecutan sus programas de forma completamente independiente entre si
+	-> Los programas seguiran ejecutanmdose incluso si su ventana no esta visible (tambien cuando se desconecta la sesion de pantalla)
+
+exit o k - para eliminar una ventana, podemos usar cualquiera de estas dos opciones, nos pedira confirmacion antes de llevar acabo la accion 
+
+
+Regiones:
+S - Para dividir la regio de forma horizontal
+| - Para dividir de forma vertical
+nota:cuando tengamos la region, podremos poner cualquier ventana existente dentro de ella, con la opcion "
+Tab - Para moverse a una region 
+Q - Termina todas las regiones excepto la actual
+X - Terminar la region actual
+
+Sesiones:
+screen --list / screen -ls  - Listar todas las sesiones de screen
+
+la salida de este comando sera:
+$ screen -list
+There is a screen on:
+        1037.pts-0.debian       (08/24/19 13:53:35)     (Attached)
+1 Socket in /run/screen/S-carol.
+
+donde 
+	PID
+		1037
+	Name
+		pts-0.debian (indicando el trminal, en este caso pseudo terminal esclavo-el nombre del host)
+	Status
+		Attached
+	
+screen -S "name session"  -  Establece un nombre de una sesion 
+
+screen -S session-PID -X quit  - Termina una sesion, la opcion -S se puede especificar el PID o el nombre como el anterior
+
+
+Desvincular Sesiones:
+Quiza desea
+	->Conectarse desde su casa y seguir trabajando
+	->Compartir una sesion con otro usuario
+
+screen -d PID - Podemos desconectarnos de una sesion con d, ejem: ctrl + a - d, o desvincular una sesion en especifico con el PID, como screen -d 3324
+screen -r PID  - Podemos volvernos a vinclar con el PID
+
+Algunas otras opciones del comando screen
+
+-d -r	Vuelva a conectar una sesión y, si es necesario, desconéctela primero.
+-d -R	Igual que -d -r pero screen incluso creará la sesión primero si no existe.
+-d -RR	Igual que -d -R. Sin embargo, utilice la primera sesión si hay más de una disponible.
+-D -r	Vuelva a conectar una sesión. Si es necesario, desconecte y cierre la sesión de forma remota primero.
+-D -R	Si se está ejecutando una sesión, vuelva a conectarla (desconecte y cierre la sesión de forma remota primero si es necesario). Si no se estaba ejecutando créelo y notifique al usuario.
+-D -RR	Lo mismo que -D -R - solo que más fuerte.
+-d -m	Inicie screen en modo independiente. Esto crea una nueva sesión pero no se vincula a ella. Esto es útil para los scripts de inicio del sistema.
+-D -m	 Igual que -d -m, pero no bifurca un nuevo proceso. El comando sale si la sesión termina.
+
+
+
+Copiar y pegar: modo Scrollback
+GNU Screen presenta un modo de copia o scrollback. Una vez ingresado, puede mover el cursor en la ventana actual y 
+por el contenido de su historial usando las teclas de flecha. Puede marcar texto y copiarlo en ventanas. Los pasos a seguir son:
+
+    Ingrese al modo de copia/scrollback: Ctrl+a-[.
+
+    Vaya al principio del texto que desea copiar usando las teclas de flecha.
+
+    Marque el comienzo del fragmento de texto que desea copiar: Espacio.
+
+    Vaya al final del fragmento de texto que desea copiar usando las teclas de flecha.
+
+    Marque el final del fragmento de texto que desea copiar: Espacio.
+
+    Vaya a la ventana de su elección y pegue el fragmento de texto: Ctrl+a-].
+
+
+
+Personalizacion de screen 
+El archivo de configuración de todo el sistema para screen es /etc/screenrc. Alternativamente, se puede usar un ~/.screenrc a nivel de usuario. 
+El archivo incluye cuatro secciones principales de configuración:
+
+SCREEN SETTINGS: Puede definir la configuración general especificando la directiva seguida de un espacio y el valor como en: defscrollback 1024.
+
+SCREEN KEYBINDINGS:
+	Esta sección es bastante interesante ya que le permite redefinir combinaciones de teclas que quizás interfieran con su uso diario del terminal. 
+	Utilice la palabra clave bind seguida de un espacio, el carácter que se utilizará después del prefijo del comando, 
+	otro espacio y el comando como en: bind l kill (esta configuración cambiará la forma predeterminada de matar una ventana a Ctrl+a-l).
+	Para mostrar todos los enlaces de la pantalla, escriba Ctrl+a-? O consulte la página del manual.
+    		Tip:Por supuesto, también puede cambiar el prefijo del comando. Por ejemplo, para ir de Ctrl+a a Ctrl+b, simplemente agregue esta línea: escape ^Bb.
+
+TERMINAL SETTINGS: Esta sección incluye configuraciones relacionadas con el tamaño de la ventana de la terminal y los búferes, entre otros. 
+	 	   Para habilitar el modo sin bloqueo para manejar mejor las conexiones ssh inestables, por ejemplo, se utiliza la siguiente configuración: defnonblock 5.
+STARTUP SCREENS:Puede incluir comandos para que varios programas se ejecuten en el inicio de la pantalla; por ejemplo: screen -t top top (screen abrirá una ventana llamada top con top adentro).
 
 
 
 
 
+-------
+TMUX 
+_______
 
 
 
