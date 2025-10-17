@@ -373,6 +373,33 @@ s - Listar todas las sesiones abiertas
 
 tmux ls   Ver las sesiones abiertas con tmux
 
+Para iniciar una nueva sesion, debemos de usar ctrl + b y tecleamos :new -s "sesion" -n "nomprePestaña"
+
+$ - Para cambiar el nombre de la sesion podremos usa
+
+tmux kill-session -t "second session"  - Matar una  sesion
+
+
+
+Desvincular sesiones
+
+d - denvincularse de la session
+ 
+tmux attach-session -s SESSION-NAME    -    Podemos vincularnos con una sesion asi
+tmux attach -s SESSION-NAME    -    Podemos vincularnos con una sesion asi
+tmux at -s SESSION-NAME    -    Podemos vincularnos con una sesion asi
+
+
+tip: 
+La misma sesión se puede vincular a más de un terminal. Si desea vincular una sesión asegurándose 
+de que primero esté desconectada de cualquier otro terminal, 
+use el modificador -d: tmux attach -d -t SESSION-NAME.
+
+
+Comandos importantes para vincular/desvincular sesiones:
+Ctrl+b-D    seleccione qué cliente desvincular.
+Ctrl+b-r    Actualizar la terminal del cliente.
+Para leer la lista completa de comandos, consulte la página del manual.
 
 
 
@@ -380,11 +407,37 @@ tmux ls   Ver las sesiones abiertas con tmux
 
 
 
+Copiar y pegar: modo Scrollback
+tmux también presenta el modo scrollback básicamente de la misma manera que screen }
+(recuerde usar el prefijo de comando de tmux y no el de screen). 
+La única diferencia en cuanto a los comandos es que usa Ctrl+Espacio para marcar 
+el comienzo de la selección y Alt+w para copiar el texto seleccionado.
 
 
 
 
 
+
+
+Personalización de tmux
+
+Los archivos de configuración para tmux se encuentran normalmente en /etc/tmux.conf y ~/.tmux.conf. Cuando se inicia, tmux utiliza estos archivos si existen. También existe la posibilidad de iniciar tmux con el parámetro -f para proporcionar un archivo de configuración alternativo. Puede encontrar un ejemplo de archivo de configuración tmux ubicado en /usr/share/doc/tmux/example_tmux.conf. El nivel de personalización que se puede lograr es realmente alto. Algunas de las cosas que puede hacer incluyen:
+
+    Cambiar la tecla de prefijo
+
+    # Change the prefix key to C-a
+    set -g prefix C-a
+    unbind C-b
+    bind C-a send-prefix
+
+    Establecer combinaciones de teclas adicionales para ventanas superiores a 9
+
+    # Some extra key bindings to select higher numbered windows
+    bind F1 selectw -t:10
+    bind F2 selectw -t:11
+    bind F3 selectw -t:12
+
+Para obtener una lista completa de todos los enlaces, escriba Ctrl+b-? (Presione q para salir) o consulte la página del manual.
 
 
 	

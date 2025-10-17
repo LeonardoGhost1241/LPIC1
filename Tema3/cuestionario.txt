@@ -459,3 +459,110 @@ EJERCICIOS EXPLORATORIOS
 		(https://man7.org/linux/man-pages/man1/ps.1.html#STANDARD_FORMAT_SPECIFIERS)
 	    Inicie ps para que solo se muestre información sobre usuario, porcentaje de memoria utilizada, porcentaje de tiempo de CPU utilizado y comando completo: ps -o user,%mem,%cpu,cmd
 	    Ahora, ejecute ps para que la única información que se muestre sea la del usuario y el nombre de los programas que están utilizando: ps o user,comm
+
+
+->leccion 2
+EJERCICIOS GUIADOS
+
+	-Indique si las siguientes declaraciones/características corresponden a la GNU Screen, tmux o ambos:
+	Característica/Declaración					GNU Screen					tmux
+	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	El prefijo de comando predeterminado es Ctrl+a			    *
+	Modelo cliente-servidor												 *
+	Los paneles son pseudo-terminales				    *
+	Matar una región no mata sus ventanas asociadas
+	Las sesiones incluyen ventanas
+	Las sesiones se pueden separar					    *
+			
+	
+	
+	-Instale GNU Screen en su computadora (nombre del paquete: screen) y complete las siguientes tareas:	
+	    Inicie el programa. ¿Qué comando utiliza?
+	
+	    Inicie top:
+	
+	    Usando el prefijo de la tecla de pantalla, abra una nueva ventana; luego, abra /etc/screenrc usando vi:
+	
+	    Liste las ventanas en la parte inferior de la pantalla:
+	
+	    Cambie el nombre de la ventana actual a vi:
+	
+	    Cambie el nombre de la ventana restante a top. Para hacer eso, primero muestre una lista de todas las ventanas para que pueda moverse hacia arriba y hacia abajo y seleccionar la correcta:
+	
+	    Verifique que los nombres hayan cambiado volviendo a mostrar los nombres de las ventanas en la parte inferior de la pantalla:
+	
+	    Ahora, separe la sesión y haga que screen cree una nueva llamada ssh:
+	
+	    Desconecte también de ssh y haga que screen muestre la lista de sesiones:
+	
+	    Ahora, adjunte a la primera sesión usando su PID:
+	
+	    Debería estar de vuelta en la ventana que muestra top. Divida la ventana horizontalmente y muévase a la nueva región vacía:
+	
+	    Haga que screen enumere todas las ventanas y seleccione vi para que se muestre en la nueva región vacía:
+	
+	    Ahora, divida la región actual verticalmente, muévase a la región vacía recién creada y asóciela con una nueva ventana:
+	
+	    Termine todas las regiones excepto la actual (recuerde, aunque mate las regiones, las ventanas siguen vivas). Luego, salga de todas las ventanas de la sesión actual hasta que termine la sesión:
+	
+	    Finalmente, haga que screen liste sus sesiones una vez más, elimine la sesión ssh restante por PID y verifique que en realidad no quedan sesiones:
+	
+	
+	
+	-Instale tmux en su computadora (nombre del paquete: tmux) y complete las siguientes tareas:
+	
+	    Inicie el programa. ¿Qué comando utiliza?
+	
+	    Inicie top (observe cómo, en un par de segundos, el nombre de la ventana cambia a top en la barra de estado):
+	
+	    Usando el prefijo de clave de tmux, abra una nueva ventana; luego, cree ~/.tmux.conf usando nano:
+	
+	    Divida la ventana verticalmente y reduzca el tamaño del panel recién creado varias veces:
+	
+	    Ahora cambie el nombre de la ventana actual a text editing; luego, haga que tmux muestre una lista con todas sus sesiones:
+	
+	    Vaya a la ventana que ejecuta top y vuelva a la actual usando la misma combinación de teclas:
+	
+	    Desconecte la sesión actual y cree una nueva cuyo nombre sea ssh y su nombre de ventana sea ssh window:
+	
+	    Desconecte también de la sesión ssh y haga que tmux muestre la lista de sesiones nuevamente:
+	    Note:A partir de este punto, el ejercicio requiere que utilice una máquina remota para las conexiones ssh a su host local (una máquina virtual es perfectamente válida y puede resultar realmente práctica). Asegúrese de tener openssh-server instalado y ejecutándose en su máquina local y que al menos openssh-client esté instalado en la máquina remota.
+	
+	    Ahora, inicie una máquina remota y conéctese a través de ssh con su host local. Una vez que se haya establecido la conexión, verifique las sesiones tmux:
+	
+	    En el host remoto, adjunte a la sesión ssh por nombre:
+	
+	    De vuelta en su máquina local, conéctese a la sesión ssh por nombre, asegurándose de que la conexión al host remoto finalice primero:
+	
+	    Haga que todas las sesiones se muestren para su selección y vaya a su primera sesión ([0]). Una vez allí, mate la sesión ssh por su nombre:
+	
+	    Finalmente, desconéctese de la sesión actual y elimínela por su nombre:
+	
+	
+	
+	
+	
+	EJERCICIOS EXPLORATORIOS 
+	
+	-Tanto screen como tmux pueden ingresar al modo de línea de comandos a través de prefijo de comando + : (ya vimos un breve ejemplo con tmux). Investigue un poco y realice las siguientes tareas en el modo de línea de comandos:
+	
+	    Haga que screen entre en el modo de copia:
+	
+	    Haga que tmux cambie el nombre de la ventana actual:
+	
+	    Haga que screen cierre todas las ventanas y finalice la sesión:
+	
+	    Haga que tmux divida un panel en dos:
+	
+	    Haga que tmux elimine la ventana actual:
+	
+	
+	-Cuando ingresa al modo de copia en screen, no solo puede usar las teclas de flecha y PgUP o PgDown para navegar por la ventana actual y el búfer de retroceso. También existe la posibilidad de utilizar un editor de pantalla completa similar a vi. Con este editor, realice las siguientes tareas:
+	
+	    Echo supercalifragilisticexpialidocious en su terminal screen:
+	
+	    Ahora, copie los cinco caracteres consecutivos (de izquierda a derecha) en la línea justo encima de su cursor:
+	
+	    Finalmente, pegue la selección (stice) en su símbolo del sistema:
+	
+	-Suponga que desea compartir una sesión tmux (our_session) con otro usuario. Ha creado el socket (/tmp/our_socket) con los permisos adecuados para que tanto usted como el otro usuario puedan leer y escribir. ¿Qué otras dos condiciones deben cumplirse para que el segundo usuario pueda adjuntar correctamente la sesión a través de tmux -S /tmp/our_socket a -t our_session?
