@@ -499,52 +499,65 @@ EJERCICIOS GUIADOS
 	    Inicie el programa. ¿Qué comando utiliza? --> tmux 
 	    Inicie top (observe cómo, en un par de segundos, el nombre de la ventana cambia a top en la barra de estado):
 	    Usando el prefijo de clave de tmux, abra una nueva ventana; luego, cree ~/.tmux.conf usando nano: Ctrl + b - c, seguido de nano ~/tmux.conf
-	    Divida la ventana verticalmente y reduzca el tamaño del panel recién creado varias veces: --> Ctrl + b - 
+		Divida la ventana verticalmente y reduzca el tamaño del panel recién creado varias veces: --> Ctrl + b - % y para cambiar el tamaño usaremos ctrl + b manreniendolo mientras usamos las flechas para 			aumentar o reducir el tamaño 
+	    Ahora cambie el nombre de la ventana actual a text editing; luego, haga que tmux muestre una lista con todas sus sesiones: Ctrl + b - ,  y para listar todas las sesiones usaremos ctrl + b - s 
+	    Vaya a la ventana que ejecuta top y vuelva a la actual usando la misma combinación de teclas: se usa la misma c9mbinacion, ctrl + b + s y seleccionames la que queramos 	
+	    Desconecte la sesión actual y cree una nueva cuyo nombre sea ssh y su nombre de ventana sea ssh window: --> para desconectarse usamos ctrl + b - d y para crear una nueva sesion usamos tmux new -s 				"name session" -n "ssh"
+	    Desconecte también de la sesión ssh y haga que tmux muestre la lista de sesiones nuevamente: --> ctrl + b - s para mostrar las sesiones 
 	
-	    Ahora cambie el nombre de la ventana actual a text editing; luego, haga que tmux muestre una lista con todas sus sesiones:
-	
-	    Vaya a la ventana que ejecuta top y vuelva a la actual usando la misma combinación de teclas:
-	
-	    Desconecte la sesión actual y cree una nueva cuyo nombre sea ssh y su nombre de ventana sea ssh window:
-	
-	    Desconecte también de la sesión ssh y haga que tmux muestre la lista de sesiones nuevamente:
-	    Note:A partir de este punto, el ejercicio requiere que utilice una máquina remota para las conexiones ssh a su host local (una máquina virtual es perfectamente válida y puede resultar realmente práctica). Asegúrese de tener openssh-server instalado y ejecutándose en su máquina local y que al menos openssh-client esté instalado en la máquina remota.
-	
-	    Ahora, inicie una máquina remota y conéctese a través de ssh con su host local. Una vez que se haya establecido la conexión, verifique las sesiones tmux:
-	
-	    En el host remoto, adjunte a la sesión ssh por nombre:
-	
-	    De vuelta en su máquina local, conéctese a la sesión ssh por nombre, asegurándose de que la conexión al host remoto finalice primero:
-	
-	    Haga que todas las sesiones se muestren para su selección y vaya a su primera sesión ([0]). Una vez allí, mate la sesión ssh por su nombre:
-	
-	    Finalmente, desconéctese de la sesión actual y elimínela por su nombre:
+		    Note:A partir de este punto, el ejercicio requiere que utilice una máquina remota para las conexiones ssh a su host local (una máquina virtual es perfectamente válida y puede resultar realmente práctica). Asegúrese de tener openssh-server instalado y ejecutándose en su máquina local y que al menos openssh-client esté instalado en la máquina remota.
+	    Ahora, inicie una máquina remota y conéctese a través de ssh con su host local. Una vez que se haya establecido la conexión, verifique las sesiones tmux: -->  tmux ls para ver las sesiones 
+	    En el host remoto, adjunte a la sesión ssh por nombre: --> tmux attach-session -t "name sesion" / tmux attach -s "session name" / tmux at -s "session name " vinculamos una sesion 
+	    De vuelta en su máquina local, conéctese a la sesión ssh por nombre, asegurándose de que la conexión al host remoto finalice primero:tmux a -d -t ssh (a puede ser reemplazarse por at o attach
+	    Haga que todas las sesiones se muestren para su selección y vaya a su primera sesión ([0]). Una vez allí, mate la sesión ssh por su nombre: ctrl + b - s y para terminar la sesion ctrl + b  despues ejecutamos :kill-session -t 0 o ya en la sesion podemos usar ctrl + b - X para cerrar paneles 
+	    Finalmente, desconéctese de la sesión actual y elimínela por su nombre: ctrl + b - d y para eliminarla tmux kill-session -t "name session"
 	
 	
 	
-	
-	
-	EJERCICIOS EXPLORATORIOS 
-	
+EJERCICIOS EXPLORATORIOS	
 	-Tanto screen como tmux pueden ingresar al modo de línea de comandos a través de prefijo de comando + : (ya vimos un breve ejemplo con tmux). Investigue un poco y realice las siguientes tareas en el modo de línea de comandos:
-	
-	    Haga que screen entre en el modo de copia:
-	
+	    Haga que screen entre en el modo de copia: se puede usar ctrl + a -[  y despues presionamos ctrl + espacio y para copiar elcontenido 	
 	    Haga que tmux cambie el nombre de la ventana actual:
-	
 	    Haga que screen cierre todas las ventanas y finalice la sesión:
-	
 	    Haga que tmux divida un panel en dos:
-	
 	    Haga que tmux elimine la ventana actual:
-	
-	
-	-Cuando ingresa al modo de copia en screen, no solo puede usar las teclas de flecha y PgUP o PgDown para navegar por la ventana actual y el búfer de retroceso. También existe la posibilidad de utilizar un editor de pantalla completa similar a vi. Con este editor, realice las siguientes tareas:
-	
+Haga que screen entre en el modo de copia:
+
+Ctrl+a-: — después, teclee copy.
+
+Haga que tmux cambie el nombre de la ventana actual:
+
+Ctrl+b-: — después, teclee rename-window.
+
+Haga que screen cierre todas las ventanas y finalice la sesión:
+
+Ctrl+a-: — después, teclee quit.
+
+Haga que tmux divida un panel en dos:
+
+Ctrl+b-: — después, teclee split-window.
+
+Haga que tmux elimine la ventana actual:
+
+Ctrl+b-: — después, teclee kill-window.	
+
+
+	-Cuando ingresa al modo de copia en screen, no solo puede usar las teclas de flecha y PgUP o PgDown para navegar por la ventana actual y el búfer de retroceso. También existe la posibilidad de utilizar un editor de pantalla completa similar a vi. Con este editor, realice las siguientes tareas:	
 	    Echo supercalifragilisticexpialidocious en su terminal screen:
-	
 	    Ahora, copie los cinco caracteres consecutivos (de izquierda a derecha) en la línea justo encima de su cursor:
-	
 	    Finalmente, pegue la selección (stice) en su símbolo del sistema:
 	
+Echo supercalifragilisticexpialidocious en su terminal screen:
+echo supercalifragilisticexpialidocious
+
+Ahora, copie los cinco caracteres consecutivos (de izquierda a derecha) en la línea justo encima de su cursor:
+Ingresamos al modo de copia: Ctrl+a-[ o Ctrl+a-: y luego escribimos copy. Luego, nos movemos a la línea de arriba usando k y presionamos espacio para marcar el comienzo de la selección. Finalmente, avanzamos cuatro caracteres usando l y presionamos espacio nuevamente para marcar el final de la selección.
+
+Finalmente, pegue la selección (stice) en su símbolo del sistema:
+Ctrl+a-]
+
+
+
 	-Suponga que desea compartir una sesión tmux (our_session) con otro usuario. Ha creado el socket (/tmp/our_socket) con los permisos adecuados para que tanto usted como el otro usuario puedan leer y escribir. ¿Qué otras dos condiciones deben cumplirse para que el segundo usuario pueda adjuntar correctamente la sesión a través de tmux -S /tmp/our_socket a -t our_session?
+Ambos usuarios deben tener un grupo en común, p. Ej. multiplexor. Luego, también debemos cambiar el conector a ese grupo: chgrp multiplexer /tmp/our_socket
+
