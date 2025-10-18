@@ -469,55 +469,37 @@ EJERCICIOS GUIADOS
 	+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	El prefijo de comando predeterminado es Ctrl+a			    *
 	Modelo cliente-servidor												 *
-	Los paneles son pseudo-terminales				    *
-	Matar una región no mata sus ventanas asociadas
-	Las sesiones incluyen ventanas
-	Las sesiones se pueden separar					    *
+	Los paneles son pseudo-terminales				                                                 *
+	Matar una región no mata sus ventanas asociadas			    *
+	Las sesiones incluyen ventanas					    *						 *
+	Las sesiones se pueden separar					    *						 *
 			
 	
 	
 	-Instale GNU Screen en su computadora (nombre del paquete: screen) y complete las siguientes tareas:	
-	    Inicie el programa. ¿Qué comando utiliza?
+	    Inicie el programa. ¿Qué comando utiliza?  --> screen 
+	    Inicie top: --> usamos el comando top
+	    Usando el prefijo de la tecla de pantalla, abra una nueva ventana; luego, abra /etc/screenrc usando vi: --> ctrl + a - c y despues ejecutamos vim /etc/screencr
+	    Liste las ventanas en la parte inferior de la pantalla: ctrl + a - w  
+	    Cambie el nombre de la ventana actual a vi: --> Ctrl + a - A
+	    Cambie el nombre de la ventana restante a top. 
+		Para hacer eso, primero muestre una lista de todas las ventanas para que pueda moverse hacia arriba y hacia abajo y seleccionar la correcta: Ctrl + a - w, despues seleccionamos la otra y cambiamos el nombre con Ctrl + a - A
+	    Verifique que los nombres hayan cambiado volviendo a mostrar los nombres de las ventanas en la parte inferior de la pantalla: --> Ctrl + w
+	    Ahora, separe la sesión y haga que screen cree una nueva llamada ssh: Ctrl + d, y creamos una nueva sesion con screen -S "ssh" y para listarlas usamos screen -ls  
+	    Desconecte también de ssh y haga que screen muestre la lista de sesiones: Ctrl + d y para listarlas, usaremos screen -ls 
+	    Ahora, adjunte a la primera sesión usando su PID: --> screen -r PID, podemos desvincularnos de una sesion con screen -d PID
+	    Debería estar de vuelta en la ventana que muestra top. Divida la ventana horizontalmente y muévase a la nueva región vacía:  --> Ctrl + a - S, para movernos al siguiente panel, usaremos  Ctrl + a - Tab
+	    Haga que screen enumere todas las ventanas y seleccione vi para que se muestre en la nueva región vacía: --> Ctrl + a - " y seleccionamos la que querramos
+	    Ahora, divida la región actual verticalmente, muévase a la región vacía recién creada y asóciela con una nueva ventana: Ctrl + a - |, y para asociarla podemosusar Ctrl + a - w 
+	    Termine todas las regiones excepto la actual (recuerde, aunque mate las regiones, las ventanas siguen vivas). Luego, salga de todas las ventanas de la sesión actual hasta que termine la sesión: Crtl + a - Q
+	    Finalmente, haga que screen liste sus sesiones una vez más, elimine la sesión ssh restante por PID y verifique que en realidad no quedan sesiones: --> screen -S "ssh" -X quit y con screen -ls
 	
-	    Inicie top:
-	
-	    Usando el prefijo de la tecla de pantalla, abra una nueva ventana; luego, abra /etc/screenrc usando vi:
-	
-	    Liste las ventanas en la parte inferior de la pantalla:
-	
-	    Cambie el nombre de la ventana actual a vi:
-	
-	    Cambie el nombre de la ventana restante a top. Para hacer eso, primero muestre una lista de todas las ventanas para que pueda moverse hacia arriba y hacia abajo y seleccionar la correcta:
-	
-	    Verifique que los nombres hayan cambiado volviendo a mostrar los nombres de las ventanas en la parte inferior de la pantalla:
-	
-	    Ahora, separe la sesión y haga que screen cree una nueva llamada ssh:
-	
-	    Desconecte también de ssh y haga que screen muestre la lista de sesiones:
-	
-	    Ahora, adjunte a la primera sesión usando su PID:
-	
-	    Debería estar de vuelta en la ventana que muestra top. Divida la ventana horizontalmente y muévase a la nueva región vacía:
-	
-	    Haga que screen enumere todas las ventanas y seleccione vi para que se muestre en la nueva región vacía:
-	
-	    Ahora, divida la región actual verticalmente, muévase a la región vacía recién creada y asóciela con una nueva ventana:
-	
-	    Termine todas las regiones excepto la actual (recuerde, aunque mate las regiones, las ventanas siguen vivas). Luego, salga de todas las ventanas de la sesión actual hasta que termine la sesión:
-	
-	    Finalmente, haga que screen liste sus sesiones una vez más, elimine la sesión ssh restante por PID y verifique que en realidad no quedan sesiones:
-	
-	
-	
-	-Instale tmux en su computadora (nombre del paquete: tmux) y complete las siguientes tareas:
-	
-	    Inicie el programa. ¿Qué comando utiliza?
-	
+
+	-Instale tmux en su computadora (nombre del paquete: tmux) y complete las siguientes tareas:	
+	    Inicie el programa. ¿Qué comando utiliza? --> tmux 
 	    Inicie top (observe cómo, en un par de segundos, el nombre de la ventana cambia a top en la barra de estado):
-	
-	    Usando el prefijo de clave de tmux, abra una nueva ventana; luego, cree ~/.tmux.conf usando nano:
-	
-	    Divida la ventana verticalmente y reduzca el tamaño del panel recién creado varias veces:
+	    Usando el prefijo de clave de tmux, abra una nueva ventana; luego, cree ~/.tmux.conf usando nano: Ctrl + b - c, seguido de nano ~/tmux.conf
+	    Divida la ventana verticalmente y reduzca el tamaño del panel recién creado varias veces: --> Ctrl + b - 
 	
 	    Ahora cambie el nombre de la ventana actual a text editing; luego, haga que tmux muestre una lista con todas sus sesiones:
 	
