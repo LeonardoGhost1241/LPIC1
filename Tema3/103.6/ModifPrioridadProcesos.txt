@@ -1,0 +1,77 @@
+103.6 Modificar las prioridades de ejecicion de procesos
+
+
+El planificador de linux 
+Linux, como sistema operativo de multiprocesamiento preventivo, utiliza un planificador para organizar la ejecución de procesos y subprocesos. 
+Existen dos tipos de políticas de programación: tiempo real y normales.
+Los procesos en tiempo real se programan según su prioridad, lo que significa que un proceso de mayor prioridad puede interrumpir 
+un proceso de menor prioridad. Por otro lado, la mayoría de los procesos comunes en Linux siguen políticas normales y utilizan un valor 
+llamado nice para definir su prioridad de ejecución, lo que generalmente resulta en prioridades estáticas.
+El sistema permite varias configuraciones de planificación, pero solo los procesos bajo políticas normales se ven afectados por ajustes de prioridad.
+
+
+Prioridad de lectura
+Linux reserva prioridades estaticas que van de 
+	--> 0 a 99 para procesos en tiempo real
+	--> 100 a 139 para procesos normales que se asignan a prioridades estaticas 
+
+**Los valores mas bajos significan una prioridad mas alta
+
+La prioridad estatica de un proceso activo se puede encontrar en el archivo sched, ubicado en su directorio respectivo dentro del sistema de archivos /proc
+
+ejemplo:
+grep ^prio /proc/1/sched
+prio                   :       120
+
+Como se muestra en el  ejemplo, la linea que comienza con "prio" da el valor de prioridad del proceso (e proceso PID 1 es el proceso init o systemd, el primer proceso que el kernel inicia al arrancar el sistema )
+
+La prioridad estandar para los procesos normales es 120, de modo que se puede reducir a 100 o aumentar a 139
+Para verificarlas prioridades de todos los procesos en ejecucion se pueden verificar con el comando:
+	 ps -Al o ps -el 
+		donde:
+			e o A muestra todos los procesos del sistema
+			l muestra un formato largo, ejemplo: F S   UID     PID    PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD   
+
+F S   UID     PID    PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+--> Donde PRI indica la prioridad estatica asignada por el kernel
+
+Nota:El valor de la prioridad mostrado por ps difiere del obtenido en el ejemplo anterior.
+	Debido a razones historicas, las prioridades mostradas por ps varian de -40 a 99 por defecto, por lo que la prioridad real se obtiene agregando 40 ()
+
+
+
+
+Niceness de Procesos
+Todo proceso normal comienza con un valor nice predeterminado de 0 (prioridad 120)
+	El valor nice y la prioridad del proceso son conceptos relacionados pero distintos en Llinux
+		Valor de Nice: Este valor oscila entre -20 (mexima prioridad) y +19 (minima prioridad). Un proceso normal comienza con un valor nice de 0
+		Prioridad del proceso: El sistema operativo traduce el valor nice a una propiedad interna. En linux, esta prioridad se mide en un rango de 0 a 139, donde un valor de nice de 0 corresponde con una prioridad de 120
+
+La idea proviene de que los procesos "mas agradables", permiten que otros procesos se ejecuten antes que ellos en una cola de ejecucion particular
+
+Los numeros van desde:
+	-20 (menos agradables, alta prioridad)
+	19 (mas agaradables, baja prioridad)
+
+*La columna NI en la salida de ps indica el numero nice 
+*Solo el usuario root puede disminuir el valor nice de un proceso por debajo de cero
+
+Es posible iniciar un proceso con una prioridad no estandar con el comando nice. Por defecto, nice cambia el valor a 10, pero se puede especificar con la opcion -n
+
+Ejemplo:
+nice -n 15 tar czf home_backup,tar.gz /home
+
+En este ejemplo, el comando tar se ejecuta con un valor nice de 15. El comando renice puede usarse para cambiar la prioridad de un proceso en ejecución. La opción -p indica el número PID del proceso objetivo. Por ejemplo:
+# renice -10 -p 2164
+2164 (process ID) old priority 0, new priority -10
+
+
+Las opciones -g y -u se utilizan para modificar todos los procesos de un grupo o usuario especifico, respectivamente. Con renice +5 -g users, el valor nice de los procesos propiedad
+de los usuarios del grupo users se elevara en cinco
+
+
+**Podemos usar el programa top para modificar la prioridad de un proceso, esto se hace con la letra "r" y luego el numero PID del proceso
+
+
+
+
