@@ -10,6 +10,19 @@ llamado nice para definir su prioridad de ejecución, lo que generalmente result
 El sistema permite varias configuraciones de planificación, pero solo los procesos bajo políticas normales se ven afectados por ajustes de prioridad.
 
 
+
+| **Aspecto**                  | **Políticas en Tiempo Real**                                  | **Políticas Normales**                                    |
+|------------------------------|---------------------------------------------------------------|----------------------------------------------------------|
+| **Definición**               | Programación directa por valores de prioridad.                | Usan valores nice para gestionar prioridades de ejecución. |
+| **Prioridad**                | Proceso con mayor prioridad interrumpe a uno de menor.        | Compiten entre sí, generalmente tienen prioridad igual.   |
+| **Rango de Prioridad**       | 1 a 99 (99 siendo la máxima).                                 | -20 a +19 (donde -20 es máxima prioridad y +19 la mínima).|
+| **Ejemplos de Uso**          | Control de sistemas, aplicaciones multimedia.                 | Aplicaciones de usuario y del sistema, como editores o navegadores. |
+| **Acceso a la CPU**          | Tienen acceso preferencial a la CPU; pueden interrumpir otros procesos. | Se ejecutan cuando los procesos en tiempo real están inactivos. |
+| **Configuración**            | Menos flexible; necesita permisos especiales.                 | Más flexible y fácil de ajustar; se puede cambiar el valor nice. |
+
+
+
+
 Prioridad de lectura
 Linux reserva prioridades estaticas que van de 
 	--> 0 a 99 para procesos en tiempo real
