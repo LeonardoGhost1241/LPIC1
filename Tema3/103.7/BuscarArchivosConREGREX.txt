@@ -1,0 +1,193 @@
+103.7  Realizar busquedas en archivos de texto usando expresiones regulares 
+->Leccion 1
+Las expresiones regulares (REs), consisten en secuencias de carcateres que forman un patron generico que se utiliza para localizar y aveces modificar una 
+secuencia correspondiente en una cadena de caracteres mas grande.
+
+Las expresiones amplian la capacidad de:
+    Escribir reglas de análisis para solicitudes en servidores HTTP, nginx en particular.
+    Escribir scripts que conviertan conjuntos de datos basados en texto a otro formato.
+    Buscar ocurrencias de interés en entradas de diario o documentos.
+    Filtrar documentos de marcado, manteniendo el contenido semántico.
+
+La expresion regular mas simple contiene almenos un atomo. Un atomo, llamado asi por que es el elemento basico de una expresion regular, es solo un carcater que puede tener o no un significado especial.
+La mayoria de carcateres ordinario son inequivocos  que conservan su significado literal, mientras que otros tienen un significado especial, por ejemplo:
+
+
+
+. (punto):	Átomo coincide con cualquier carácter.
+^ (signo de intercalación):	Átomo coincide con el comienzo de una línea.
+$ (signo de dólar):	Átomo coincide con el final de una línea.
+
+
+Los átomos de signo de intercalación y dólar se utilizan cuando sólo son de interés las coincidencias al principio o al final de la cadena. 
+Por eso también se les llama anchors (anclas). Por ejemplo, cd se puede encontrar en abcd, pero ^cd no. 
+De manera similar, ab se puede encontrar en abcd, pero ab$ no. El signo de intercalación ^ es un carácter literal excepto cuando está al principio y $ es un carácter literal excepto cuando está 
+al final de la expresión regular.
+
+
+Expresion de corchetes (braket expression
+Los corchetes (incluido su contenido) se consideran un solo atomo
+	*Suele ser una lista, haciendo que el atomo coincida con cualquier carcater de la lista, ejem: [1b] se puede encontrar enabcd y en a1cd
+	*Puedes especificar rangos de carcateres con cualquier letra minusculam, ejem: [0-9], que coincide con los digitos del 0 al 9 y [a-z] qu coincide con cualquier letra minuscula. Los rangos deben de ser ocupados con precaucion, ya que pueden no ser consistentes en distintas configuraciones regionales
+
+Las listas de expresiones entre corchetes tambien aceptan clases en lugar de solo carcateres y rangos individuales.
+Las clases mas tradicionales son:
+
+[:alnum:]    Representa un carácter alfanumérico.
+[:alpha:]    Representa un carácter alfabético.
+[:ascii:]    Representa un carácter que encaja en el juego de caracteres ASCII.
+[:blank:]    Representa un carácter en blanco, es decir, un espacio o una tabulación.
+[:cntrl:]    Representa un carácter de control.
+[:digit:]    Representa un dígito (0 a 9).
+[:graph:]    Representa cualquier carácter imprimible excepto el espacio.
+[:lower:]    Representa un carácter en minúscula.
+[:print:]    Representa cualquier carácter imprimible, incluido el espacio.
+[:punct:]    Representa cualquier carácter imprimible que no sea un espacio ni un carácter alfanumérico.
+[:space:]    Representa caracteres de espacio en blanco: espacio, avance de formulario (\f), nueva línea (\n), retorno de carro (\r), tabulación horizontal (\t) y tabulación vertical (\v).
+[:upper:]    Representa una letra mayúscula.
+[:xdigit:]   Representa dígitos hexadecimales (de 0 a F).
+
+
+
+Cuantificadores
+El alcance de un atomo se puede ajustar usando un cuantificador de atomos. Los cuantificadores de atomos definen secuencias de atomos.
+La subcadena correspondiente a la coincidencia se llama pieza
+
+Segun lod efine POSIX, hay dos tipos de expresiones regulares:
+	* Expresiones regulares "Basicas"
+	* Expresiones regulares "Extendidas"
+
+La mayoria de programas admiten ambas formas
+
+El cuantificador * tiene la misma funcion tanto en los RE basicos como en los extendidos (El atomo aparece cero o mas veces)
+El cuantificador + selecciona secuencias donde el atomo aparece una o mas veces
+
+Resumen:
+* Indica que el atomo puede aparecer CERO O MAS VECES 
+	Como:
+	Cuantificador: a*  Coincidira con ""(cero carcateres), a,aa,aaa,etc
+	Literal: \*, coincidira con el carcater "*" en una cadena. Por ejemplo "este es un * asterico"
+
++ Selecciona secuencias donde el atomo aparece UNA O MAS VECES 
+	Como:
+	Cuantificador: b+, coincidira con b,bb,bbb, pero NO con "" cero carcateres
+	Literal: \+, Coincidira con el carcater "+", por ejemeplo: "suma=4+5"
+
+? Coincide si el atomo aparece CERO O UNA VEZ 
+	Como:
+	Cuantificador: c?, coincidira con "" (cero carcateres) y "c", Es decir, puede aparecer una vez o no aparecer
+	Literal:\?, coincidira con el carcater ?, En la cadena, "¿Que quieres hacer?", el "?" sera una coincidencia
+
+
+
+
+Limites
+Un bound es un cuantificador de atomos, que permite especificar limites cuantitativos precisos para un atomo. En lasexpresiones regulares extendidas, un limite puede aparecer de tres formas:
+
+{i}    El átomo debe aparecer exactamente i veces (i un número entero). Por ejemplo, [[:blank:]]{2} coincide con exactamente dos caracteres en blanco.
+{i,}   El átomo debe aparecer al menos i veces (i un número entero). Por ejemplo, [[:blank:]]{2,} coincide con cualquier secuencia de dos o más caracteres en blanco.
+{i,j}  El átomo debe aparecer al menos i veces y como máximo j veces (i y j números enteros, j mayor que i). Por ejemplo, xyz{2,4} coincide con la cadena xy seguida de entre dos y cuatro caracteres z.
+
+Las expresiones regulares básicas también admiten límites, pero los delimitadores deben estar precedidos por \: \{ y \}. Por sí mismos, { y } se interpretan como caracteres literales. 
+Un \{ seguido de un carácter que no sea un dígito es un carácter literal, no el comienzo de un límite.
+
+
+Otra explicacion:
+1.-Exactitud de Coincidencias: {i}
+	Este formato requiere que el atomo aparezca exactamente i veces
+		Ejemplo: [[:blank:]]{2} --> Buscara exactamene dos espacios en blanco consecutivos en el texto, ejemplo "  "(dos espacios) cpincidira, pero " "(un espacio) o  "   "(tres espacios) NO
+
+2.-Minimo de coincidencias: {i, }
+	Aqui se establece que el atomo debe aparecer almenos i veces
+		Ejemplo: [[:blank:]]{2,} --> Buscara dos o mas espacios en blanco, ejemplo, las cadenas " ", " " y " " coincidiran, pero un solo espacio, NO, lo tendras mas claro con la siguiente coincidencia...
+
+3.-Rango de coincidencias: {i,j}
+	Este formato permite que el atomo aparezca al menos i veces y como maximo j veces
+		En la expresion xyz{2,4} --> la expresion buscara la cadena xy seguida entre dos o cuatro carcateres z. Ejemplo: coincidira con "xyz", "xyzz", "xyzzz" y "xyzzzz", mientras que "xy"(sin z) o "xyzzzzz"(mas de cuatro) NO 
+
+
+
+Ramas y referencias posteriores
+Las expresiones regulares extendidas permiten dividir una expreison en ramas, cada rama es una expresion independiente y se usan para coincidir con cualquiera de las dos opciones "|", ejem: he|him
+
+*En las expresiones regulares basicas, el simbolo "|" se intepreta como un carcater literal, no como un separador de ramas
+	Solucion:Para permitir ramas, se debe usar  \|, que le dice a la RE que debe intepretarlo como un operador de ramas
+
+
+Expresion regular extendida encerrada entre () se puede usar como Referencia posterior
+	Ejem: ([:digito:])\1 que coincidira con cualquier expresion regular que se repita al menos una vez, por que \1 n la expresion es la referencia posterior a la 
+	      pieza que coincide con la primera subexpresion entre parentesis. Si existe mas de una subexpresion entre parentesis en la expresion regular, se puede hacer referencia a ellas con \2, \3, etc
+
+Para REs básicas, las subexpresiones deben estar delimitadas por \( y \), con ( y ) por sí mismos caracteres ordinarios. 
+El índice de referencia inversa se usa del mismo modo que en las expresiones regulares extendidas.
+
+
+
+Busquedas con expresiones Regulares
+La opcion -regrex del comando find permite probar cada ruta en una jerarquia de directorio conra una expreion regular.
+	Ejem: find $HOME -regex '.*/\..*' -size +100M
+		Busca archivos de más de 100 megabytes (100 unidades de 1048576 bytes), pero sólo en rutas dentro del directorio de inicio del usuario que contienen una 
+		coincidencia con .*/\..*, es decir, un /. rodeado por cualquier otro número de caracteres. En otras palabras, sólo se enumerarán los archivos 
+		ocultos o los archivos dentro de los directorios ocultos, independientemente de la posición de /. en la ruta correspondiente
+
+
+Para expresiones regulares que no distinguen entre mayúsculas y minúsculas, se usará en su lugar la opción -iregex:
+	Ejem:find /usr/share/fonts -regextype posix-extended -iregex '.*(dejavu|liberation).*sans.*(italic|oblique).*'
+		En este ejemplo, la expresión regular contiene ramas (escritas en modo extendido) para listar sólo archivos de fuentes específicos bajo la jerarquía de directorios /usr/share/fonts. 
+		Las expresiones regulares extendidas no son compatibles de forma predeterminada, pero find permite habilitarlas con -regextype posix-extended o -regextype egrep. 
+		El estándar RE predeterminado para find es findutils-default, que es prácticamente un clon básico de expresión regular.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+->Leccion 2
+
+Dos comandos son especialmente adecuados para manipular archivos y datos de texto usando expresiones regulares: grep y sed.
+grep es un buscador de patrones y sed es un editor de flujo. Por si mismos son utiles, pero destacan cuando se usan en conjunto
+
+El proposito de las expresiones regulares es, localizar y opcionalmente, modificar secuencialmente, modificar secuencias de texto dentro de cadenas de carcateres mas grandes
+
+
+El buscador de patrones: grep
+Un uso muy comun de grep, es facilitar la inspeccion de archivos largos, usando la expresion regular como filtro aplicado a cada linea
+
+ejemplo:
+grep '^options' /etc/modprobe.d/alsa-base.conf
+options snd-pcsp index=-2
+options snd-usb-audio index=-2
+options bt87x index=-2
+options cx88_alsa index=-2
+options snd-atiixp-modem index=-2
+options snd-intel8x0m index=-2
+options snd-via82xx-modem index=-2
+
+
+Se puede usar la pipe para pasar salidas "|"
+ejem:
+fdisk -l | grep '^Disk /dev/sd[ab]'
+Disk /dev/sda: 320.1 GB, 320072933376 bytes, 625142448 sectors
+Disk /dev/sdb: 7998 MB, 7998537728 bytes, 15622144 sectors
+

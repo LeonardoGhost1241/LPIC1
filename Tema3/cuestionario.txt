@@ -633,3 +633,45 @@ EJERCICIOS EXPLORATORIOS
 	
 		donde R significa que debe de ejecutarse en un modod de prioridad en tiempo real
 		-p Se esta especificadno la prioridad que se asignara al proceso identificado por su PID
+
+==========================================================
+103.7 Trabajando en la línea de comandos
+==========================================================
+->Leccion 1
+
+EJERCICIOS GUIADOS 
+	-¿Qué expresión regular extendida coincidiría con cualquier dirección de correo electrónico, como info@example.org?
+		[[:alnum:]]@example\.org
+
+	-¿Qué expresión regular extendida sólo coincidiría con cualquier dirección IPv4 en el formato estándar de cuatro puntos, como 192.168.15.1?
+		"[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+" 
+		"[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"
+
+	-¿Cómo se puede usar el comando grep para listar el contenido del archivo /etc/services, descartando todos los comentarios (líneas que comienzan con #)?
+		grep -v  -E "^#" lorem.txt 
+
+	-El archivo domains.txt contiene una lista de nombres de dominio, uno por línea. ¿Cómo se usaría el comando egrep para listar solo los dominios .org o .com?
+		egrep es lo mismo que grep -E 
+			grep -E "\.com|\.org" lorem.txt 
+			o grep -E "[[:alnum:]]+(\.org|\.com)" --> grep -E "[[:alnum:]]+(\.com|\.org)" lorem.txt 
+
+		Opciones menos utiles
+		grep -E "*.org|*.com"	
+		grep -E "[[:alnum:]].com$|[[:alnum:]].org$"
+
+
+EJERCICIOS EXPLORATORIOS
+	-Desde el directorio actual, ¿cómo usaría el comando find con una expresión regular extendida para buscar todos los archivos que no contienen 
+	 un sufijo de archivo estándar (los nombres de archivo que no terminan en .txt o .c, por ejemplo)?
+--> Para mostrar arhcivos sin extensiones			#find $HOME -regextype posix-extended -type f ! -regex ".*\..*$"  --> .* significa todo o nada, por que el punto representa cualquier carcater y el * representa mas de una repeticion de cualquier carcater
+		La respuesta para este ejercicio es: find -type f -regextype posix-extended ! -regex ".*\.(txt|c)$"
+
+
+	-El comando less es el paginador predeterminado para mostrar archivos de texto largos en el entorno de shell. 
+	 Al escribir /, se puede ingresar una expresión regular en el campo de búsqueda para saltar a la primera coincidencia correspondiente. 
+	 Para permanecer en la posición actual del documento y sólo resaltar las coincidencias correspondientes, 
+	 ¿qué combinación de teclas se debe ingresar en el campo de búsqueda?
+		Presionando Ctrl+K antes de ingresar la expresión de búsqueda.
+
+	-Con less, ¿cómo sería posible filtrar la salida para que sólo se muestren las líneas que coinciden con una expresión regular?
+		Presionando & e ingresando la expresión de búsqueda.
