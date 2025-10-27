@@ -1,0 +1,103 @@
+======================
+101.2Arranque del sistema
+======================
+
+
+BIOS (Basic Input/Output System)
+
+    -Definición: Firmware almacenado en un chip de memoria no volátil en la placa base.
+    -Proceso de Arranque:
+        Se ejecuta el POST (Power-On Self-Test) para detectar fallas de hardware.
+        Activa componentes básicos como video, teclado y medios de almacenamiento.
+        Carga la primera etapa del gestor de arranque desde el MBR (Master Boot Record).
+        La primera etapa llama a la segunda etapa del gestor de arranque, que carga el núcleo del sistema operativo.
+    -Limitaciones: Se basa en el MBR y tiene un límite de 2 TB para el tamaño de las particiones. No puede leer sistemas de archivos modernos.
+
+UEFI (Unified Extensible Firmware Interface)
+
+    -Definición: Firmware más avanzado que reemplaza al BIOS, con capacidades mejoradas.
+    -Proceso de Arranque:
+        Se ejecuta el POST para detectar fallas de hardware.
+        Activa componentes básicos como video, teclado y medios de almacenamiento.
+        Lee definiciones de arranque almacenadas en NVRAM para ejecutar la aplicación EFI predefinida desde la partición ESP (EFI System Partition).
+        Si la aplicación es un gestor de arranque, carga el núcleo del sistema operativo.
+    -Ventajas: No se basa en el MBR, admite particiones de más de 2 TB y puede leer varios sistemas de archivos (FAT12, FAT16, FAT32). Incluye características como Secure Boot, que permite solo la ejecución de aplicaciones EFI firmadas, mejorando la seguridad.
+
+
+
+
+
+El cargador de arranque 
+El gestor de arranque mas popular de linuz en la arquitectura x86 es GRUB (Grand Unified Bootloader), tan pronto lo llame bios o uefi aparecen lso SO que hay en el sistema
+
+**Algunas veces no aparecen, por lo que debemos de presionar "shift" en bios u en uefi se hace con "scape"
+
+GRUB (Grand Unified Bootloader) es el gestor de arranque más utilizado en sistemas Linux x86. Al iniciar, GRUB muestra una lista de sistemas operativos disponibles. Si no aparece automáticamente, se puede invocar presionando Shift (o Esc en sistemas UEFI).
+
+Desde el menú de GRUB, se pueden seleccionar núcleos y pasarles parámetros, que generalmente siguen el formato opción=valor. Algunos parámetros útiles incluyen:
+
+    acpi: Habilita/deshabilita el soporte ACPI (ej. acpi=off).
+    init: Establece un iniciador alternativo (ej. init=/bin/bash).
+    systemd.unit: Define el objetivo de systemd a activar (ej. systemd.unit=graphical.target).
+    mem: Limita la RAM disponible (ej. mem=512M).
+    maxcpus: Limita el número de procesadores visibles (ej. maxcpus=2).
+    quiet: Oculta mensajes de arranque.
+    vga: Selecciona un modo de video (ej. vga=ask).
+    root: Establece la partición raíz (ej. root=/dev/sda3).
+    ro/rw: Define el modo de montaje del sistema de archivos raíz (solo lectura o lectura/escritura).
+
+Para hacer que los cambios en los parámetros sean persistentes, se deben agregar al archivo /etc/default/grub en la línea GRUB_CMDLINE_LINUX y luego ejecutar grub-mkconfig -o /boot/grub/grub.cfg para regenerar la configuración de GRUB. Los parámetros utilizados en la sesión actual se pueden ver en /proc/cmdline.
+
+
+
+
+
+Inicializacion del sistema 
+La inicialización del sistema operativo comienza cuando el gestor de arranque carga el núcleo en la RAM. El núcleo toma el control de la CPU y configura aspectos fundamentales del 
+sistema, como la detección de dispositivos y el direccionamiento de memoria.
+
+A continuación, el núcleo abre el initramfs (initial RAM filesystem), que es un sistema de archivos temporal que contiene los módulos necesarios para acceder al sistema 
+de archivos raíz "real". Una vez que el sistema de archivos raíz está disponible, el núcleo monta los sistemas de archivos configurados en /etc/fstab y ejecuta el primer programa, 
+llamado init.
+
+El programa init es responsable de ejecutar los scripts de inicialización y los demonios del sistema. Existen diferentes implementaciones de iniciadores, como systemd 
+y Upstart. Después de cargar init, el initramfs se elimina de la RAM.
+
+
+SysV standar - administrador de servicios badado en el estandar SysVinit controla que los demosnio y recursos estaran disposibles empleando el concepto de runlevels, los niveles enumerados 
+		del 1 al 6 con propositos especificos
+
+systemd - administrador midernos de sistemas y servicios con una capa de compatibilidad entre los comandos y niveles de ejecucion de SysVinit. La mayoria de las principales distros han adoptado este administrador sinedo el predeterminado
+
+Upstart - Es igual que systemd, un susstituto de init. Su objetivo es acelerar el proceso de arranque, fue usado por ubuntu, sin embargo dio paso a systemd
+
+
+
+
+INspeccion de inicializacion 
+Tods los errores dan como resultaod un mensaje que puedn usarse para posterior inspeccion o correcion.
+
+**El espacio donde el kernel almacena sus mensajes, incluido los mensajes de arrnauq se llama "kernel ring buffer"
+Se guardan incluso cuando no se le muestran al usuario
+
+dmes - muestra los mensjaes actuLES EN EL BUFFER  (( Mensajes del núcleo, enfocado en eventos de hardware y arranque, no persistente ))
+	--clear: Se pierden todos los mensajes cuando se apaga el sistemao al ejecutar el comando -> dmesg --clear 
+
+
+En sistemas basados en systemd, el comando es journalctl
+
+journalctl (( Registros del sistema más amplios, incluye mensajes de servicios y aplicaciones, persistente y organizado. ))
+	--list-boot: muestra una lista de numeros de arranque relativos al arranque actual, su hash de identificacion y las marcas de tiempo del primer y ultimo mensaje correspondiente
+	-b 0  o  --boot=0 mensajes para el arranque actual
+	-b 1  o  --boot=1 mostraran mensajes de la inicializacion anterior
+	-D o --direcory se puede usar para leer mensajes de registros en directorios que no sean /var/log/journal, que es el lugar predeterminado para los mensajes de registro de systemd
+		**Como los mensajes de registro de systemd se almacenan en texto sin formato, se requiere el comando journalctl para leerlos 
+
+
+
+la principal diferencia entre dmesg y journalctl es que el primero muestra mensajes del nucleo, enfocado en hardware y arranque y el segundo son registros mas aplios, agregando ademas de 
+estos dos ultimos, lo de mensajes de servicios, plicacion
+
+Los mensajes emitidos por el sistema, se almacenan en archivos dentro del direcorio /var/log/
+	
+
