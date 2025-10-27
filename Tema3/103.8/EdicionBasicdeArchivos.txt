@@ -1,0 +1,112 @@
+Edicion basica de archivos 
+
+
+vi - visual y es el editor estandar en el entorno shell
+	Una alternativa a vi, es vim, que se usa como un reemplazo moderno de vi
+		-Vim ofrece soporte para resatado de sintaxis, deshacer/reacher multinivel y edicion de varios documentos. Aunque tiene mas recursos, vim es totalmente compatible con vi
+
+
+
+
+La forma estandar de iniciar vi es darle una ruta a un archivo como parametro
+Para saltar directamente a una linea especifica, su numero debe ser informado con un signo mas, como en vi +9 /etc/fstab
+
+La interfaz de vi es muy simple: todo el espacio disponible en la ventana de la terminal 
+está ocupado para presentar un archivo, normalmente informado como un argumento de 
+comando, al usuario. Las únicas pistas visuales son una línea de pie de 
+página que muestra la posición actual del cursor y una tilde ~ que indica dónde termina el archivo. 
+
+
+
+Hay diferentes modos de ejecución para vi donde cambia el comportamiento del programa. 
+Los más comunes son: modo inserción y modo normal.
+
+
+
+
+
+MODO DE INSERCION
+Para ingresar, el usuario debe ejecutar un comando de insercion en el modo normal. La tecla Esc finaliza el modo de insercion y vuelve al modo normal, el modo vi prederterminado
+Para conocer mas sobre los otros modos de ejecicion, escribiremos :help vim-modes-intro
+
+
+
+MODO NORMAL
+Tambien conocido como modo de comando, es como se inicia por defecto vi.
+En este modo, las teclas del teclado estan asociadas con comandos para taeas de manipulacion de texto y navegacion
+La mayoria de los comando de este modo son teclas unicas.
+
+Algunas de las teclas y sus funciones en modo normal son:
+
+
+0, $    Ve al principio y al final de la línea.
+1G, G    Vaya al principio y al final del documento.
+(, )    Vaya al principio y al final de la oración.
+{, }    Vaya al principio y al final del párrafo.
+w, W    Saltar palabra y saltar palabra, incluida la puntuación.
+h, j, k, l    Izquierda, abajo, arriba, derecha.
+e o E    Ir al final de la palabra actual.
+/, ?    Busca hacia adelante y hacia atrás.
+i, I    Ingrese al modo de inserción antes de la posición actual del cursor y al comienzo de la línea actual.
+a, A    Ingrese al modo de inserción después de la posición actual del cursor y al final de la línea actual.
+o, O    Agregue una nueva línea e ingrese al modo de inserción en la línea siguiente o en la línea anterior.
+s, S    Borre el carácter debajo del cursor o toda la línea e ingrese al modo de inserción.
+c    Cambie el (los) carácter (es) debajo del cursor.
+r    Reemplaza el carácter debajo del cursor.
+x    Elimina los caracteres seleccionados o el carácter debajo del cursor.
+v, V    Inicie una nueva selección con el carácter actual o la línea completa.
+y, yy    Copia (tira) los caracteres o la línea completa.
+p, P    Pega el contenido copiado, antes o después de la posición actual.
+u    Deshace la última acción.
+Ctrl-R    Rehace la última acción.
+ZZ    Cerrar y guardar.
+ZQ    Cerrar y no guardar.
+
+
+Si alguno de los comandos anteriores esta precedido por  un numero, el comando se ejecutara esas vecese, por ejemplo, 3yy para copiar la linea actual mas las dos siguientes
+O si el comando es algo como: d5w para eliminar la palabra actual y las 4 palabras siguientes y asi sucesivamete
+
+
+  
+
+Comandos COLON
+Los comandos colon son comandos que inician con los dos puntos (:), estos comandos  permiten al usuario realizar busquedas, guardar, salir, ejecutar comandos de shell, cambiar de configuracion de vi
+Para volver al modo normal, se debe ejecutar el comando :visual o la tecla Enter
+
+:s/REGEX/TEXT/g		Remplaza las apariciones de la expresion regular REGEX por TEXT en la linea actual. Acepta la misma sintaxis del comando sed, incluidas las direcciones
+:!			Ejecutar el comando de shell especificado a continuacion
+:quit o :q		Salir del programa
+:quit! o :q!		Salir del programa sin guardar
+:wq			Guardar y salir
+:exit o :x o :e		Guardar y salir, si es necesario
+:visual			Volver al modo de navegacion
+
+
+El programa estandar vi es capaz de realizar la mayoria de las tareas de edicion de texto, pero se puede usar cualquiero otro editor
+
+
+
+Editores Alternativos
+Otra alternativa mas intuitiva y facil es nano
+A diferencia de vi, todas las pulsaciones de teclas se insertan en el documento 
+que se está editando. Los comandos en nano se dan usando la tecla Ctrl o la tecla Meta (dependiendo del sistema, Meta es Alt o ⌘).
+
+
+
+Ctrl-6 o Meta-A    Iniciar una nueva selección. También es posible crear una selección presionando Shift y moviendo el cursor.
+Meta-6		   Copia la selección actual.
+Ctrl-K		   Cortar la selección actual.
+Ctrl-U		   Pegar el contenido copiado.
+Meta-U		   Deshacer.
+Meta-E		   Rehacer.
+Ctrl-\		   Reemplazar el texto en la selección.
+Ctrl-T		   Iniciar una sesión de revisión ortográfica para el documento o la selección actual.
+
+
+
+Emacs es otro editor muy popular en entorno de shell, ademas de ser un editor de textos, tambien es un IDE de desarrollo
+Emacs se puede configurar como cliente de correo electronico, noticias o RSS, lo que lo convierte en una autentica suite productiva
+
+
+La variable que usa Bash para encontrar el editor predeterminado son VISUAL o EDITOR, por ejemplo, el comando export EDITOR=nano, define nano como el editor de texto predeterminado en la sesion de shell actual,
+Para que ese cambio persista en las sesiones futuras, esta linea debe de incluirse en ~/.bash_profile

@@ -675,3 +675,36 @@ EJERCICIOS EXPLORATORIOS
 
 	-Con less, ¿cómo sería posible filtrar la salida para que sólo se muestren las líneas que coinciden con una expresión regular?
 		Presionando & e ingresando la expresión de búsqueda.
+
+==========================================================
+103.1 Trabajando en la línea de comandos
+==========================================================
+EJERCICIOS GUIADOS
+	-vi se usa principalmente como editor para archivos de configuración y código fuente, donde la sangría ayuda a identificar secciones de texto. 
+	 Una selección se puede sangrar a la izquierda presionando < y a la derecha presionando >. ¿Qué teclas deben presionarse en modo normal para sangrar la selección actual tres pasos a la izquierda?
+		Se puede usar 3<, el cual ejecuta tres veces 
+
+	-Se puede seleccionar una línea completa presionando V en el modo normal vi. Sin embargo, también se incluye el carácter de nueva línea de terminación. 
+	 ¿Qué teclas se deben presionar en modo normal para seleccionar desde el carácter inicial hasta el carácter de nueva línea, pero sin incluirlo?
+		Las teclas 0v$h, que significan 0 (“saltar al inicio de una línea”), v (“iniciar la selección de caracteres”), $ (“ir al final de la línea”) y h (“retroceder una posición”).
+
+	-¿Cómo debería ejecutarse vi en la línea de comando para abrir ~/.bash_profile y saltar directamente a la última línea?
+		El comando vi + ~/.bash_profile abrirá el archivo y colocará el cursor en su última línea.
+
+	-¿Qué teclas se deben presionar en el modo normal vi para eliminar caracteres desde la posición actual del cursor hasta el siguiente carácter de punto?
+		Las teclas dt, que significan d (“iniciar eliminación”), t (“saltar al siguiente carácter”) y . (carácter de punto).
+
+
+EJERCICIOS EXPLORATORIOS 
+	-vim permite seleccionar bloques de texto con ancho arbitrario, no sólo secciones con líneas completas. Al presionar Ctrl+V en modo normal, 
+	 se realiza una selección moviendo el cursor hacia arriba, abajo, izquierda y derecha. Con este método, 
+	 ¿cómo se eliminaría un bloque que comienza en el primer carácter de la línea actual, que contiene las siguientes ocho columnas y cinco líneas de texto?
+		La combinación 0, Ctrl-V y 8l5jd seleccionará y eliminará el bloque correspondiente.
+
+	-Una sesión vi fue interrumpida por una falla de energía inesperada. Cuando se vuelve a abrir el archivo, 
+	 vi pregunta al usuario si desea recuperar el archivo de intercambio (una copia automática realizada por vi). ¿Qué debe hacer el usuario para descartar el archivo de intercambio?
+		Presione d cuando se lo solicite vi.
+
+	-En una sesión de vim, una línea fue previamente copiada al registro l. ¿Qué combinación de teclas registraría una macro en el registro a para pegar la 
+	 línea en el registro l inmediatamente antes de la línea actual?
+		La combinación qa"lPq, que significa q (“iniciar grabación de macro”), a (“asignar registro a a macro”), "l (“seleccionar texto en registro l”), P (“pegar antes de la línea actual”) y q (“finalizar grabación macro”).

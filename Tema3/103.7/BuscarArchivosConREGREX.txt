@@ -140,29 +140,6 @@ Para expresiones regulares que no distinguen entre mayúsculas y minúsculas, se
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ->Leccion 2
 
 Dos comandos son especialmente adecuados para manipular archivos y datos de texto usando expresiones regulares: grep y sed.
