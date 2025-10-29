@@ -1,0 +1,131 @@
+=======================================================
+101.1 Determinar y configurar los ajustes del hardware 
+=======================================================
+	EJERCICIOS GUIADOS 
+	-Supongamos que un sistema operativo no puede iniciarse después de agregar un segundo disco SATA al sistema. 
+	 Sabiendo que ninguno de los dispositivos está defectuoso, ¿cuál podría ser la posible causa de este error?
+		Los niveles de ejecucion no estan bien definidos, por lo que debe de ejecutarse primero el disco para buscar un sistema operativo
+	
+	-Suponga que desea asegurarse de que la tarjeta de video externa conectada al bus PCI de su computadora de escritorio recién adquirida 
+	 realmente sea la anunciada por el fabricante, pero al abrir el cajón de la computadora anularía la garantía. 
+	 ¿Qué comando podría usarse para enumerar los detalles de la tarjeta de video, tal como fueron detectados por el sistema operativo?
+		lspci -s id_tarjeta -v 
+
+	
+	-La siguiente línea es parte de la salida generada por el comando lspci:
+	03:00.0 RAID bus controller: LSI Logic / Symbios Logic MegaRAID SAS 2208 [Thunderbolt] (rev 05)
+	¿Qué comando debe ejecutar para identificar el módulo del núcleo del sistema operativo en uso para este dispositivo específico?
+		lspci -s 03:00.0 -v  o lspci -s 03:00.0 -k	
+
+	-Un administrador del sistema quiere probar diferentes parámetros para el módulo del kernel bluetooth sin reiniciar el sistema. 
+	 Sin embargo, cualquier intento de descargar el módulo con modprobe -r bluetooth da como resultado el siguiente error:
+	modprobe: FATAL: Module bluetooth is in use.
+	¿Cuál es la posible causa de este error?
+		No puede ejecutarlo, por que ya esta en uso
+
+	
+	
+EJERCICIOS EXPLORATORIOS 
+	-No es raro encontrar máquinas desactualizadas, obsoletas o mejor conocidas como legacy en entornos de producción, 
+	 como cuando algunos equipos utilizan una conexión obsoleta para comunicarse con la computadora de control, por 
+	 lo que es necesario prestar especial atención a algunas peculiaridades de estas máquinas más antiguas. 
+	 Algunos servidores x86 con firmware BIOS más antiguo, por ejemplo, no se iniciarán si no se detecta un teclado. 
+	 ¿Cómo se puede evitar este problema en particular?
+		La utilidad de configuración del BIOS tiene una opción para desactivar el bloqueo de la computadora cuando no se encuentra un teclado	
+
+	
+	-Los sistemas operativos construidos alrededor del núcleo de Linux también están disponibles para una amplia variedad de arquitecturas de 
+	 computadora que no sean x86, como en las computadoras de placa única basadas en la arquitectura ARM. 
+	 Un usuario atento notará la ausencia del comando lspci en tales máquinas, como la Raspberry Pi. 
+	 ¿Qué diferencia con las máquinas x86 justifica esa ausencia?
+		A diferencia de la mayoría de las máquinas x86, una computadora basada en ARM como la Raspberry Pi carece de un bus PCI, por lo que el comando lspci es inútil.
+
+	
+	-Muchos enrutadores de red tienen un puerto USB que permite las conexiones de un dispositivo externo, como un disco duro USB. 
+	 Dado que la mayoría de estos utilizan un sistema operativo basado en Linux, ¿cómo se nombrará un disco duro USB externo en el directorio /dev/, 
+	 suponiendo que no haya otro dispositivo de bloque convencional en el enrutador?
+		Los kernels modernos de Linux identifican los discos duros USB como dispositivos SATA, por lo que el archivo correspondiente será /dev/sda ya que no existe ningún otro dispositivo de bloque convencional en el sistema.
+	
+
+	-En 2018, se descubrió la vulnerabilidad de dispositivos conocida como Meltdown. Afecta a casi todos los procesadores de muchas arquitecturas. 
+	 Las versiones recientes del núcleo de Linux pueden informar si el sistema actual es vulnerable. ¿Cómo se puede obtener esta información?
+		El archivo /proc/cpuinfo tiene una línea que muestra los errores conocidos de la CPU correspondiente, como bugs: cpu_meltdown
+
+
+
+
+==========================
+101.2Arranque del sistema
+==========================
+EJERCICIOS GUIADOS 
+
+	En una máquina equipada con un firmware de BIOS, ¿dónde se encuentra el binario de arranque?
+		En el primer sector del disco, osease los primeros 512 bytes 
+
+	El firmware UEFI admite funciones ampliadas proporcionadas por programas externos, llamadas aplicaciones EFI. 
+	Estas aplicaciones, sin embargo, tienen su propia ubicación especial. ¿En qué parte del sistema se ubicarían las aplicaciones EFI?
+		en la carpeta llamada /EFI, o dentro de /boot
+
+	Los cargadores de arranque permiten pasar parámetros personalizados del kernel antes de cargarlo. 
+	Suponga que el sistema no puede iniciarse debido a una ubicación errónea del sistema de archivos raíz. 
+	¿Cómo se le daría al kernel el sistema de archivos raíz correcto, ubicado en /dev/sda3?
+		con la opcion root=/dev/sda3
+
+	El proceso de arranque de una máquina Linux termina con el siguiente mensaje:
+	ALERT! /dev/sda3 does not exist. Dropping to a shell!
+	¿Cuál es la causa probable de este problema?
+		El nucleo no puedo encotnrar el dispositivo /dev/sda3, determinado como el sistema de arhcivos raiz
+
+
+EJERCICIOS EXPLORATORIOS 
+	El gestor de arranque presentará una lista de sistemas operativos para elegir cuando se instala más de un sistema operativo en la máquina. 
+	Sin embargo, un sistema operativo recién instalado puede sobrescribir el MBR del disco duro, borrando la primera etapa del gestor de arranque y 
+	haciendo que el otro sistema operativo sea inaccesible. ¿Por qué esto no sucedería en una máquina equipada con un firmware UEFI?
+		Las máquinas UEFI no usan el MBR del disco duro para almacenar la primera etapa del gestor de arranque.
+
+	¿Cuál es una consecuencia común de instalar un kernel personalizado sin proporcionar una imagen initramfs adecuada?
+		El sistema de archivos raíz puede ser inaccesible si fue compilado como un módulo de kernel externo.
+
+	El registro de inicialización tiene cientos de líneas, por lo que la salida del comando dmesg a menudo se canaliza a un método de lectura más ágil, 
+	como el comando less. ¿Qué opción dmesg paginará automáticamente su salida, eliminando la necesidad de usar un comando de paginación explícitamente?
+		Los comandos dmesg -H o dmesg --human habilitarán el paginador por defecto.
+
+	Un disco duro que contiene todo el sistema de archivos de una máquina desconectado se removió y se conectó a una máquina en funcionamiento como unidad secundaria. 
+	Suponiendo que su punto de montaje es /mnt/hd, ¿cómo se usaría journalctl para inspeccionar el contenido de los archivos de logs ubicados en /mnt/hd/var/log/journal/?
+		Con los comandos journalctl -D /mnt/hd/var/log/journal o journalctl --directory=/mnt/hd/var/log/journal	
+	
+
+
+
+
+===============================================================================================
+101.3Cambiar los niveles de ejecucion / objetivos de arrnauwe y apagar o reiniciar el sistema
+===============================================================================================
+EJERCICIOS GUIADOS 
+	¿Cómo podría usarse el comando telinit para reiniciar el sistema?
+		telinit 6 ya que el nivel 6 es de reinicio del sistema
+
+	¿Qué pasará con los servicios relacionados con el archivo /etc/rc1.d/K90network cuando el sistema ingrese al nivel de ejecución 1?
+		Este no se iniciara o se matara, ya que tiene una K en el nombre, significa que no se 
+
+	Usando el comando systemctl, ¿cómo podría un usuario verificar si la unidad sshd.service está funcionando?
+		Con systemctl status sshd.service
+
+	En un sistema basado en systemd, ¿qué comando debe ejecutarse para permitir la activación de la unidad sshd.service durante la inicialización del sistema?
+		systemctl enable sshd.service
+
+
+EJERCICIOS EXPLORATORIOS 
+	En un sistema basado en SysV, suponga que el nivel de ejecución predeterminado definido en /etc/inittab es 3, pero el sistema siempre comienza en el nivel de ejecución 1. 
+	¿Cuál es la causa probable de eso?
+		En el archivo inittab la lindea de default puede que este algo como: id:1:initdefault:, por lo que deberiamos de modifucar el 3 por el 1
+
+
+	Aunque el archivo /sbin/init se puede encontrar en sistemas basados en systemd, es solo un enlace simbólico a otro archivo ejecutable. En tales sistemas, ¿cuál es el archivo señalado por /sbin/init?
+		El binario principal de systemd: /lib/systemd/systemd
+
+	¿Cómo se puede verificar el objetivo predeterminado del sistema (system_target) en un sistema basado en systemd?
+		con systemctl get-default
+
+	¿Cómo se puede cancelar un reinicio del sistema programado con el comando shutdown?
+		sutdown -c 

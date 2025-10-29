@@ -93,6 +93,21 @@ journalctl (( Registros del sistema más amplios, incluye mensajes de servicios 
 	-D o --direcory se puede usar para leer mensajes de registros en directorios que no sean /var/log/journal, que es el lugar predeterminado para los mensajes de registro de systemd
 		**Como los mensajes de registro de systemd se almacenan en texto sin formato, se requiere el comando journalctl para leerlos 
 
+	-S -U: permite especificar desde (since) y/o hasta cuando (until)
+		YYY-MM-DD [HH:MM:SS], yestedar, today, tomorrow, N day ago, -/+ NhMmin (-1h15min)
+	-u unit: mensaje de una unidad en concreto
+	-k mensaje del kernel
+	-p: por tipo (emerg, alert, crit, err, warning, notice, info, debug)
+	PARAM=VALUE: Parametros como _PID, _UID, _COMM (Man systemd.journal-fields), ejemplo de uso: journalctl _COMM=sshd
+
+
+Al arrancar el sistema se muestran mensajes segun se van cargando controladores o funciones del sistema. Para revisarlos se usa dmesg
+Opciones:
+	-T: Muestra las marcas de tiempo mas claramente
+	-k: Solo mensajes del kernel
+	-I;Filtra por niveles de aviso (warn, err, etc..)
+
+Como la salida es en formato texto podemos usar tuberias para filtrar y buscar los mensajes deseados, por ejemplo con grep. Equivalente a journalctl -b -k
 
 
 la principal diferencia entre dmesg y journalctl es que el primero muestra mensajes del nucleo, enfocado en hardware y arranque y el segundo son registros mas aplios, agregando ademas de 
@@ -100,4 +115,15 @@ estos dos ultimos, lo de mensajes de servicios, plicacion
 
 Los mensajes emitidos por el sistema, se almacenan en archivos dentro del direcorio /var/log/
 	
+
+
+initramfs (initical ram file system)
+Es el sistema de archivos ram inicial (ramdisk). Es un archivo comprimido normalmente en formato gzip que contiene un pequeño sistema de arhcivos que se cargaran en la memoria RAM en el proceso de arranque del
+nucleo
+
+El kernel lo necesita para comletar tareas relacionadas con modulos y controladores de dispositivos antes de poder arrancar el verdadero sistema de archivos raiz instalado en el disco duro e invocar al proceso init
+
+En el archivo de configuracion de GRUB figura una linea como esta:
+	initrd /boot/initrd.img-4.9.0-7-amd64
+
 
