@@ -1,0 +1,210 @@
+instailacion de linux y administracion de paquetes
+
+
+
+La herramienta de paqueteria en debian  (dpkg)
+
+
+INSTALAR UN PAQUETE .DEB
+	dpkg -i packageName
+(Antes de instalar un paquete, dpkg, verificara si ya existe una version anterior en el sistema, si es asi, el paquete se actualizara a la nueva version, si no, se instalara una copia)
+
+
+Manejo de dependencias
+Antes de instalar un paquete, verificara que las dependencias para que funcione ese programa este instalada en el sistema, de lo contrario, no se instalara el paquete
+
+
+ELIMINAR PAQUETES
+	dpkg -r unrar
+La operacion de eliminacion, tambien ejecuta una verificacion de dependencias, y un apquete no se puede eliminar a menos que tambien se elimine cualquier otro paquete que dependa de el.  (Puede pasar varios nombvres de paquetes a dpkg)
+
+Para eliminar todo lo relacionado con el paquete, usamos -P de (purgar), en lugar de -r
+
+
+FORZAR LA INSTALACION O INSTALACION DE UN PAQUETE
+	dpkg -i(o -r -P) --force 
+
+
+INFORMACION DE UN PAQUETE
+	dpkg -I paquete
+
+
+LISTAR PAQUETES INSTALADOS Y CONTENIDO DEL PAQUETE
+Para obrtener una lista de cada paquete instalado en sus sistema, usamos  
+	--get-selections
+
+Para obtener una lista de cada archivo instalado por un paquete especifico pasando el parametro -L
+	dpkg -L unrar
+
+AVERIGUAR QUE PAQUETE PPOSEE UN ARCHIVO ESPECIFICO
+	dpkg-query -S /usr/bin/paquete
+
+RECONFIGURAR PAQUETES INSTALADOS
+Cuando se instala un paquete, hay un paso de configuración llamado post-install donde se ejecuta un script para configurar todo lo necesario para que el software se ejecute, como permisos, ubicación de archivos de configuración, etc
+Cundo queemos reconfigurar un paquete, podemos usar
+	dpkg-reconfigure tzdata
+
+
+
+
+
+
+
+
+
+Herramienta de paqueteria Avanzada (apt)
+apt no es un sustituto de dpkg, la diferencia es que apt proporciona caracteristicas como capacidades avanzadas y resolucion de dependencias automatica
+
+Existen muchas herramientas, pero las principales son:
+
+apt-get    Se utiliza para descargar, instalar, actualizar o eliminar paquetes del sistema.
+apt-cache    Se utiliza para realizar operaciones, como búsquedas, en el índice de paquetes.
+apt-file    se utiliza para buscar archivos dentro de los paquetes.
+
+se pueden simplificar, apt-get y apt.cache por simplemente apt
+
+ACTUALIZACION DE LOS INDICES DE PAQUETES
+	Antes de instalar o actualizar un software con apt, se recominda actualizar primero el indice de paquetes para recuperar informacion sobre paquetes nuevos y actualizados
+	apt-get update (se puede usar apt update)
+
+INSTALAR Y REMOVER PAQUETES
+	para instalar
+		apt-get install xournal
+	para eliminar
+		aptget remove xournal
+tenga en cuenta que al instalar o eliminar paquetes apt, hara una resolucion de dependencias automatica (Esto significa que cualquier paquete adicional que necesite el paquete que está instalando también se instalará, y que los paquetes que dependen del paquete que está eliminando también se eliminarán.), siempre le mostrara lo que se instalara y/o lo que se eliminara
+	para eliminar el paquete y cualquier archivo de configuracion, usamos:
+		apt-get purge p7zip o (apt-get-remove --purge p7zip)
+
+REPARAR DEPENDENCIAS ROTAS
+Esto significa que uno o más de los paquetes instalados dependen de otros paquetes que no se han instalado o que ya no están presentes. Esto puede suceder debido a un error de APT o debido a un paquete instalado manualmente.
+Para intentar "arreglar" los paquetes roto, asegurando que todos los paquetes sean consistentes nuevamente
+	apt-get install -f (o puede usar, apt install -f)
+
+ACTUALIZAR PAQUETES
+Se utiliza para actualizar automaticamente cualquier paquete instalado a las ultimas versiones del repo
+	apt-get upgrade, antes de ejecutrarlo, primero actualice el indice de paquetes con (apt-update)
+		
+Para actualizar solo un paquete, solo usaremos 
+	apt-get upgrade nombrePaquete
+
+
+
+
+LA CACHE LOCAL
+Cuando instala o actualiza un paquete, el archivo .deb correspondiente se descarga en un directorio de caché local antes de instalar el paquete. Por defecto, este directorio es /var/cache/apt/archives. Los archivos descargados parcialmente se copian a /var/cache/apt/archives/partial/
+
+A medida que se hacen estas operaciones, el directorio del cache puede ser bastrante grande, se puede recuperar espacio vaciando la cache, con:
+	apt-get clean (Esto eliminara el contenido de los directorios /var/cache/apt/archives y /var/cache/apt/archives/partial)
+
+tambien puede usar apt-clean
+
+
+BUSCAR PAQUETES
+La utilidad apt-cache se puede usar para realizar operaciones en el índice de paquetes, como buscar un paquete específico o listar qué paquetes contienen un archivo específico.
+
+	apt-cache search paquete
+
+El resultado será una lista de cada paquete que contiene el patrón, ya sea en el nombre del paquete, la descripción o los archivos proporcionados.
+
+Para mostrar la informacion completa, incluida la descripcion, del paquete, usamos el parametro:
+	apt-cache show liblzma5 por ejemplo
+
+
+
+
+LISTA DE FUENTES 
+APT utiliza una lista de fuentes para saber de dónde obtener paquetes. Esta lista se almacena en el archivo sources.list, ubicado dentro del directorio /etc/apt
+
+UNa linea tipica dentro de sources.list, se ve como:
+deb http://us.archive.ubuntu.com/ubuntu/ disco main restricted universe multiverse
+
+Tipo de archivo(deb): Un repositorio puede contener paquetes con software listo para ejecutar (paquetes binarios, descrito como deb) o con el código fuente de este software (paquetes fuente, descrito como deb-src). El ejemplo anterior proporciona paquetes binarios.
+
+URL (http...): url del repositorio
+
+Distribucion (disco): El nombre (o nombre en clave) de la distribución para la que se proporcionan los paquetes. Un repositorio puede alojar paquetes para múltiples distribuciones. En el ejemplo anterior, disco es el nombre en clave de Ubuntu 19.04 Disco Dingo
+
+Componentes (main):Cada componente representa un conjunto de paquetes. Estos componentes pueden ser diferentes en diferentes distribuciones de Linux. Por ejemplo, en Ubuntu y derivados, son:
+	main    contiene paquetes de código abierto con soporte oficial.
+	restricted    contiene software de código cerrado con soporte oficial, como controladores de dispositivo para tarjetas gráficas, por ejemplo.
+	universe    contiene software de código abierto mantenido por la comunidad.
+	multiverse    contiene software no compatible, de código cerrado o con patente gravada.
+
+En dabian, los componentes principales son:
+	main    consiste en paquetes que cumplen con las Directrices de software libre de Debian (DFSG), que no dependen de software fuera de esta área para operar. Los paquetes incluidos aquí se consideran parte de la distribución Debian.
+	contrib    contiene paquetes compatibles con DFSG, pero que dependen de otros paquetes que no están en main.
+	non-free    contiene paquetes que no son compatibles con DFSG.
+	security    contiene actualizaciones de seguridad.
+	backports    contiene versiones más recientes de paquetes que están en main. El ciclo de desarrollo de las versiones estables de Debian es bastante largo (alrededor de dos años), y esto asegura que los usuarios puedan obtener los paquetes más actualizados sin tener que modificar el repositorio principal main.
+
+	ra agregar un nuevo repositorio, simplemente debe de agregar la linea y ejecutar ap-get- update 
+
+
+
+
+El directorio /etc/apt/surces.list.d
+Puede agregar archivos con repositorios adicionales para ser utilizados por APT, sin la necesidad de modificar el archivo principal /etc/apt/sources.list
+
+Listar el contenido de paquetes y busqueda de archivos
+Una utilidad llamada apt-file puede usarse para realizar más operaciones en el índice de paquetes, como listar el contenido de un paquete o encontrar un paquete que contenga un archivo específico
+
+	apt-file update 	actualizar la base de datos de archivos de los paquetes disponibles en los repositorios configurados en tu sistema
+
+puede que la utilidad apt-file no este instalada
+
+Para enumerar el contenido de un paquete, use el parametro list
+	apt-file list unrar
+
+
+
+
+
+
+
+dpkg -i
+
+    Instala un paquete individual o una lista de paquetes separados por espacios.
+dpkg -r
+
+    Elimina un paquete o una lista de paquetes separados por espacios.
+dpkg -I
+
+    Inspecciona un paquete, proporcionando detalles sobre el software que instala y las dependencias necesarias.
+dpkg --get-selections
+
+    Enumera todos los paquetes que dpkg ha instalado en el sistema.
+dpkg -L
+
+    Imprime una lista de cada archivo que instala un paquete en particular.
+dpkg-query
+
+    Con un nombre de archivo especificado, este comando imprimirá el paquete que instaló el archivo.
+dpkg-reconfigure
+
+    Este comando volverá a ejecutar una secuencia de comandos post-install de paquetes para que un administrador pueda hacer ajustes de configuración a la instalación del paquete.
+apt-get update
+
+    Este comando actualizará el índice del paquete local para que coincida con lo que está disponible dentro de los repositorios configurados en el directorio /etc/apt/.
+apt-get install
+
+    Este comando descargará un paquete desde un repositorio remoto y lo instalará junto con sus dependencias, también se puede usar para instalar un paquete Debian que ya se ha descargado.
+apt-get remove
+
+    Este comando desinstalará los paquetes especificados del sistema.
+apt-cache show
+
+    Al igual que el comando dpkg -I, este comando puede usarse para mostrar detalles en un paquete específico.
+apt-cache search
+
+    Este comando buscará en su base de datos APT local en caché un paquete en particular.
+apt-file update
+
+    Este comando actualizará la caché del paquete para que el comando apt-file pueda consultar su contenido.
+apt-file search
+
+    Este comando puede buscar el nombre de un paquete que ha instalado un archivo en particular, al igual que el comando dpkg-query.
+apt-file list
+
+    Este comando se usa para listar el contenido de un paquete, al igual que el comando dpkg -L.
+

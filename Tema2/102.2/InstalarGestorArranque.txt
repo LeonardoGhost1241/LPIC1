@@ -1,0 +1,277 @@
+===================================
+Instalar un gestor de arranque
+==================================
+-El primer sofwtare que se ejecuta cuando se inicia la pc, es el cargador de arranque 
+
+El cargador de arranque esta generalmetne ubicado en un espacio de 32 KB entre el MBR y la primera particion, que cargara los sistemas operativos 
+
+En sistemas con firmwaere UEFI, el grub se carga mediante el firmware desde lo archivos grubia32.efi (para sistemas de 32 bits) o grubx64.efi (para sistemade 64 bits) desde una particion llamada ESP (EFI System Partition)
+
+No se necesita una partición de arranque en los sistemas actuales, ya que los cargadores de arranque como GRUB generalmente pueden montar el sistema de archivos raíz y buscar los archivos necesarios dentro de un directorio /boot, pero es una buena práctica ya que separa los archivos necesarios para proceso de arranque desde el resto del sistema de archivos 
+
+
+Entonces, para una máxima compatibilidad, la partición /boot generalmente se encuentra al comienzo del disco y termina antes del cilindro 1024 (528 MB), asegurando que la máquina siempre pueda cargar el kernel. El tamaño recomendado para esta partición en una máquina actual es de 300 MB.
+
+
+=======================================
+Contenido de la particion de arranque
+=======================================
+El contenido de la particion /boot varia con la arquitectura del sistema o el cargador de arranque 
+
+En un sistema basado en x86, se encontrara la mayoria de los siguientes archivos se nombran con un sufijo -VERSION, donde este es la version del nucleo de linux correspondiente. 
+Ejemplo: por lo que un archivo de configuracion para la version del nucleo de linux 4.15.0-65-generic se llamaría config-4.15.0-65-generic
+
+
+-->Archivo de configuracion 
+El archivo generalmente se llama config-VERSION, almacena los parametros de cofiguracion para el nucleo de linux. Se genera automaticamente cuando se compila o se instala un nuevo nucleo
+ **El usuario no debe de modificarlo directamente 
+Ejem: (en el sistema actual que se esta usando, estos son los dos archvios de configuracion)
+config-6.11.0-25-generic
+config-6.11.0-26-generic
+
+-->Mapa del sistema
+Este es una tabla de bsqueda que combina nombres de simbolos (como variables o funciones ) con su posiscion corresponfiente en la memoria. Esto es util al depurar cualquier tipo de falla delsistema conocida como kernel panic, ya que permite al usuario saber que variable o funcion se esta llamando cuando ocurrio la falla
+Ejem: (en el sistema actual que se esta usando, estos son los archvios del mapa del sistema)
+System.map-6.11.0-25-generic  
+System.map-6.11.0-26-generic
+
+-->Kernel de linux
+Este es el nucleo del sistema operativo. el nombre suele ser vmlinuz-VERSION, en algunos casos pueden encontrarte con el nombre de vmlinuz en lugar de vmlinux, la z significa que el archivo ha sido comprimido 
+Ejem: (en el sistema actual que se esta usando, este es el arhcivo del kernel)
+vmlinuz -> vmlinuz-6.11.0-26-generic
+vmlinuz-6.11.0-25-generic
+vmlinuz-6.11.0-26-generic
+
+-->Disco RAM inicial
+este generalmente se llama initrd.img-VERSION y contiene un sistema de archivos raiz minimo cargado en un disco RAM, que contienen utilidades y modulos del nucleo necesarios para que el nucleo pueda montar el archivos reaiz real 
+
+-->Archhvos relacionads con el cargador de arranque
+En los sitemas con GRUB instlado, generalmente se encuentran en boot/grub e incluyen arhvios de configuracion  GRUB (/boot/grub/grub.cfg) en GRUB2 y para GRUB legacy (/boot/grub/menu.lst/),
+módulos (en /boot/grub/i386-pc), archivos de traducción (en /boot/grub/locale) y fuentes (en /boot/grub/fonts)
+
+
+-----------------------------------------------------------------------------------------------------------------------
+GRUB 2 
+
+INSTALANDO GRUB2
+grub-install - instalar GRUB2
+
+(los soguiente comandos es necesario ser root)
+
+**La particion de arranque se identifica como (*)
+
+1.-Identifique la particion de arranque
+2.-Cree un directorio para montar dicha particion como /mnt/tmp
+3.-
+	Si su sistema tienen una PARTICION DE ARRANQUE dedicada, el comando es: grub-install --boot-directory=/mnt/tmp /dev/sda
+	Si su sistema tiene un DIRECTORIO DE ARRNAQUE como /boot en el sistema de archivos raiz, el comando es: grub-install --boot-directory=/boot /dev/sda
+
+
+CONFIGURANDO GRUB2
+**El archvio de configuracion predeterminada para GRUB 2 es /boot/grub/grub.cfg. Este archivo se genera automaticamente y NO SE RECOMEINDA EDICION MANIAL
+**Para HACER CAMBIOS EN LA CONFIGURACION DE GRUB, debe de editar el archivo /etc/dafault/grub y despues ejecutar update-grub para generar un archvio compatibl
+
+-->update-grub suele ser un acceso directo a grub-mkconfig -o /boot/grub/grub.cfg, por lo que producen los mismos resultados
+
+
+Hay algunas opciones en el archivo /etc/default/grub que controlan el comportamiento de GRUB 2, como el kernel predeterminado para arrancar, el tiempo de espera,etc. Los mas importantes son:
+	GRUB_DEFAULT=
+	La entrada de menú predeterminada para arrancar. Puede ser un valor numérico (como 0, 1, etc.), el nombre de una entrada de menú (como debian) o saved, que se usa junto con GRUB_SAVEDEFAULT=, explicado a continuación. Tenga en cuenta que las entradas del menú comienzan en cero, por lo que la primera entrada del menú es 0, la segunda es 1, etc.
+
+	GRUB_SAVEDEFAULT=
+	Si esta opción se establece en true y GRUB_DEFAULT= se establece en saved, entonces la opción de inicio predeterminada siempre será la última seleccionada en el menú de inicio.
+
+	GRUB_TIMEOUT=
+	El tiempo de espera, en segundos, antes de que se seleccione la entrada de menú predeterminada. Si se establece en 0, el sistema iniciará la entrada predeterminada sin mostrar un menú. Si se establece en -1, el sistema esperará hasta que el usuario seleccione una opción, sin importar cuánto tiempo tarde.
+
+	GRUB_CMDLINE_LINUX=
+	Esto enumera las opciones de línea de comando que se agregarán a las entradas para el kernel de Linux.
+
+	GRUB_CMDLINE_LINUX_DEFAULT=
+	Por defecto, se generan dos entradas de menú para cada núcleo de Linux, una con las opciones predeterminadas y una entrada para la recuperación. Con esta opción, puede agregar parámetros adicionales que se agregarán solo a la entrada predeterminada.
+
+	GRUB_ENABLE_CRYPTODISK=
+	Si se establece en y, los comandos como grub-mkconfig, update-grub y grub-install buscarán discos cifrados y agregarán los comandos necesarios para acceder a ellos durante el arranque. Esto desactiva el arranque automático (GRUB_TIMEOUT= con cualquier valor que no sea -1) porque se necesita una contraseña para descifrar los discos antes de que se pueda acceder a ellos
+
+
+
+
+ADMINISTRAR ENTRADAS DE MENU
+uando se ejecuta "update-grub", grub2 buscara nucleos de sistemas operativos en la maquina y generaran las entradas de menu corresponeidntes en el archivo /boot/grub/grub.cfg
+
+-Para agaregar nuevas entradas puede editar los archivos /etc/grub.d, los archivos se ejecutan en funcion del numero que tiene, por lo que primero va el 05 antes que el 10 y asi, para agregar una entrada, la puede hacer ne el archivo 40_custom
+
+ejemplo de ntrada de menu:
+	menuentry "Default OS" {
+	    set root=(hd0,1)					---> Disco y particion, la podemos especificar tambien como search --set=root --fs-uuid LABEL, se suele usar --no-floppy para evitar buscar disq
+	    linux /vmlinuz root=/dev/sda1 ro quiet splash	---> Nucleo del sistema operativo, despues podemos pasar los parametros de la linea de comando al nucleo del sistema operativo, en este caso 3
+	    initrd /initrd.img					---> Indica donde se encuentra el disco RAM inicial, ubucado en la raiz del sistema de archivos
+	}
+
+
+
+El parametro "set root" define el disco y la particion donde se encuentra el sisetam raiz (En grub2 los discos estan enumerados desde el 0 y las particiones desde 1 en adelante, por lo que si tenmos (hd0,msdos1)--> estariamos hablando del primer disco con la primera particion (hd1,gtp1)-->segundo disco con la primera particion).  tambien se puede  hacer que  grub2 busque un sistema de archivos con una etiqueta especifica oUUID (Universally Unique Identifier), para eso debemos de poner
+	search --set=root --label UUID
+y la etiqueta del sistema de archivos a buscar, o --fs-uuid seguido del UUID del sistema de archivos 
+Para buscar las etiquetas de los dispositivos, buscaremos en /dev/disk/by-uuid/
+
+ejemplo:
+si tenemos un dispositivo en /dev/disk/by-uuid llamado ae71b214-0aec-48e8-80b2-090b6986b625, para especificarlo como el dispositivo raiz para GRUB2, el comando seria:
+		search --set=root --fs-uuid ae71b214-0aec-48e8-80b2-090b6986b625
+
+******Cuando se usa el comando search, es comun agregar el paramtro --no.floppy para que GRUB no pierda el tiempo buscando en disquetes
+
+
+
+La linea de linux indica donde se encuentra el nucelo del sistema operativo (en este caso es el archivo vmlinuz en la raiz del sistema de archivos )
+
+
+
+
+
+INTERACTUANDO CON GRUB2
+cuando se inicia grub, dependiendo del timeout nos mostrara las entradas de menu
+
+presionamos 'e' -- para editar una opcion, depsues ctr + x  o  f10 para arrancar
+presionamos 'c' -- para entrar a la pantalla de menu o para entrar a la consola grub
+
+dentro de la consola de comandos presionamos 'help' para ver los comandos disposnibles 
+
+
+RRANQUE DESDE LA CONSOLA GRUB2
+Puedes usar grub2 para arrancar el sistema en caso de que una configuracion incorrecta en una entrada del menu haga que falle 
+
+1.-Averiguar donde esta la particion de arranque 
+**Tenga en cuenta que tenemos imágenes de kernel (vmlinuz) e initrd (initrd.img) directamente en el directorio raíz. Si no, podríamos verificar el contenido de /boot con list (hd0,msdos1)/boot/   ******Si no puedes listar la particion, es posible que sea un sistema de archivo no compatible con grub como
+ZFS o Btrfs
+
+2.-cofiguraremos la particion de arrnaque dado lo encontrado anteriormente
+	set root=(hd0,msdos1)
+
+3.-Cargue el kernel con el comando linux
+	linux /vmlinuz root=/dev/sda1
+
+4.-Cargamos el disco RAM con initrd, seguido de la ruta completa al archvio initrd.img
+	initrd /initrd.img
+
+5.-Iniciamos el sistema con 'boot'
+
+
+
+ARRNAQUE DESDE LA CONSOLA DE RESCATE
+En caso de algun fallo, grub, puede arrancar la consola de recate de grub, el prompt se ve como 'grub rescue>'								
+
+El proceso de arranque es casi el mismo, sin embargo de deben cargar algunos modulos grub2 para que todo funcione
+
+
+1.-Identificar la particion de arranque con 'ls'
+2.-Usar el comando prefix=, seguido de la ruta completa al directorio que contiene los archivos GRUB (usualmente /boot/grub) 
+	ejem: grub rescue> set prefix=(hd0,msdos1)/boot/grub
+3.-Despues de eso cargamos los modulos normal y linux con el comando insmod 
+	grub rescue>insmod normal
+	grub rescue>insmod linux
+4.-Luego configurar la particion de arranque  con set root= como se indico anteriormente --> cargar kernel de linux --> cargar el disco ram inicial --> iniciar con boot
+
+
+
+
+
+GRUB  LEGACY 
+Instalacion de grub legacu desde un sistema en ejecucion
+
+1.-Instalaremos grub con el comando grub-install
+	grub-install device  ejem:grub-install /dev/sda  **Debe especificar el dispositivo deonde se instalara  grub legacy, NO LA PARTICION
+
+Por defecto GRUB copiara los archivos necesarios al directorio /boot en el dispositivo especificado. Si desea copiarlos a otro lado puede usar la opcion --boot-directory, seguido de la ruta completa
+
+
+
+INSTALACION DE GRUB LEGACY DESDE UN GRUB SHELL
+Si no puedes reinstalar GRUB lecagy, puedes hacerlo desde la consola de grub 
+
+1.-Identificar donde esta la particion de arranque
+	root (hd0,0) **Si no sabe que dispositivo contiene el directorio /boot, puede pedirle a grub que lo busque con el comando find como find /boot/grub/stage1 y la salida deberia de ser como (hd0,0)
+
+2.-Luego configure la particion de arranque como se indico anteriormente y use el comando setup para instalar GRUB en el MBR y copie los archivos necesarios en el disco
+	grub>setup (hd0)
+
+3,.Cuando finalice, reinicie el sistema y deberia de arrancar normalmente 
+
+
+
+ONFIGURACION DENENTRADAS Y AJUSTES DEL MENU GRUB LEGACY 
+Las entradas y configuracion de de menu de legacy se almacenana en el archivo /boot/grub/menu.lst, este archivo se puede editar directamente 
+
+
+Las entradas de menu, tienen 3 comandos:
+	-title: establece el titulo del sistema operatico
+	-root: le dice al grub desde que dispositivo o particion arranqucar
+	-kernel: Especifica la ruta completa a la imagen del nucleo del sistema operativo que debe cargarse cunado se seleccionna la entrrada --> esta ruta es relativa al dispositivo especificado en el parametro root
+
+ejemplo
+#thisline comment
+title my linux distribution
+root (hd0,0)
+kernel /vmlinuz root=/dev/hda1
+
+A diferencia de grub 2, en grub legacy ambos discos y particiones estan enumerados desde cero
+
+**Puede omitir la instruccion root especifica en el dispositivo de arranque antes de la ruta en el comando kernel 
+	ejem: kernel (hd0,0)/vmlinuz root=/dev/hda1
+		equivale a -->
+		root (hd0,0)
+		kernel /vmlinuz root=/dev/hda1
+
+
+Es posible  que deba especificar la ubicacion de la imagen de disco RAM inicial para el sistema operativo  con el parametro initrd
+ejemplo:
+# This line is a comment
+title My Linux Distribution
+root (hd0,0)
+kernel /vmlinuz root=/dev/hda1
+initrd /initrd.img
+
+
+GRUB Legacy tiene un diseño modular, donde los módulos (generalmente almacenados como archivos .mod en /boot/grub/i386-pc) se pueden cargar para agregar funciones adicionales, como soporte para hardware inusual, sistemas de archivos o nuevos algoritmos de compresión
+
+Los módulos se cargan utilizando el comando module, seguido de la ruta completa al archivo .mod correspondiente. Tenga en cuenta que, al igual que los núcleos y las imágenes initrd, esta ruta es relativa al dispositivo especificado en el comando root.
+
+El siguiente ejemplo cargará el módulo 915resolution, necesario para establecer correctamente la resolución de framebuffer en sistemas con conjuntos de chips de video Intel de las series 800 o 900.
+
+
+ejem: dule /boot/grub/i386-pc/915resolution.mod
+
+
+CARGA EN CADENA DE OTROS SISTEMAS OPERATIVOS  
+GRUB Legacy se puede usar para cargar sistemas operativos no compatibles, como Windows, mediante un proceso llamado chainloading
+
+
+
+Una entrada típica para cargar Windows en cadena se vería como la siguiente:
+
+# Load Windows
+title Windows XP
+root (hd0,1)
+makeactive
+chainload +1
+boot
+
+
+
+
+Pasemos por cada parámetro. Como antes, root (hd0,1) especifica el dispositivo y la partición donde se encuentra el cargador de arranque para el sistema operativo que deseamos cargar. En este ejemplo, la segunda partición del primer disco.
+
+makeactive
+
+    establecerá una bandera que indica que esta es una partición activa. Esto solo funciona en particiones primarias de DOS.
+chainload +1
+
+    le dice a GRUB que cargue el primer sector de la partición de arranque. Aquí es donde generalmente se encuentran los gestores de arranque.
+boot
+
+    ejecutará el gestor de arranque y cargará el sistema operativo correspondiente.
+
+
+
+
+

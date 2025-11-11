@@ -1,0 +1,89 @@
+Instalacion de linux y gestion de paquetes 
+
+Introduccion (Conceptos basicos)
+Unidsco es un dispositivos de almacenamiento, antes de usar un disco en una pc, se necsita particionar, una particion es un subconjunto logico del disco, en donde seguarda informacion, separando datos como, los datos del sistema operativo a los datos de los usuarios. Cada disco necsita por lo menos una particion, sin embargo puede tener varias parciciones si es necesario y todala info se almacena en una tabla de parciiones , esta tabla inculye informacion sobre el primer y ultimo sector de la parcicion y su tipo, asi com detalles sobre cada parcicion. Dentro de cada parcicion hay un sistema de archivos, el cual describe la forma en que la infroacnio se almacena relamente en el disco, alguna de esta informacion incluye como estan organizados los directorios, cual es la relacion entre ellos, donde estan los datos para cada archivo, etc.
+
+Las parciciones no pueden abarcar barios discos, pero al usar Logical Volume Manager (LVM) se pueden combinar varias parciones, incluso a traves de discos, para formar un unico volumen logico. Los volumenes logico eliminan las limitaciones de los dispositivos fisicos, permitiendole trabajar con "grupos" de espacio en dsco que se pueden combinar o distribir de una manera mas flexible que las parciones tradicionales. LVM es util en situaciones en las quencesitaria agergar mas espacion a una particion sin tener que migrar datos a un dispositivo mas grande
+
+
+
+===================================================
+Disenio del esquema de particionado del disco duro
+===================================================
+PUNTOS DE MONTAJE
+Para acceder a  un sistema de archivo linux, debe de estar montado en un punto
+
+-uando se monta un sistsm de archivos en una ruta valida que exista, los archvos que se encuentran en esa carpeta no estaran dispoinles hasta que se demonte la unidad
+-Se puede montar donde sea, sin embargo algunas buenas practicas son:
+	->/mnt tradicionalmente era el directorio en el que se montaban todos los dispositovs externos y para unidades como CD-ROM /mnt/cdrom y disquetes /mnt/floppy, esto ha sido remplazado 		por /media, que es el punto predeterminado de montaje de cualquier unidad 
+
+En la mayoria de las distribuciones modernas de linux, y entornos de escritorios, los dispositivos extraibles se montan automaticmaente en /media/USER/LABEL
+
+
+*Cada vez que se necesite montar un sistema de archivos, es buen practica montarlo en /mnt
+
+
+PARTICIONES SEPARADAS 
+*Algunos directorios que deberina mantnerse en particiones separadas, algunas razones serian por:
+	-mantener los archivos relacionados con el gestor de arranque (almacenados en /boot) en una partición de arranque, se asegura de que su sistema aún pueda arrancar en caso de un bloqu		eo en el sistema de archivos raíz
+
+Mantener el directorio del usuario en /home facilita la reinstalacion del sistema sin el riesgo de tocar accidentalmente los datos del usuario
+Mantener los datos relaciones con un servios web o base de datos (generalmente /var) en una particion o en un disco nuevo
+
+
+LA PARTICION DE ARRANQUE (/BOOT)
+-Contiene arhcivos usados por el gestor de arrnauqe par cargar el sitema operativo, donde el gestor en la mayoria es GRUB2 y en mas antiguos GRUB LEGACY
+-La particion generalmente se monta en /boot y sus archivos se almacenan en /boot/grub
+
+Técnicamente, no se necesita una partición de arranque, ya que en la mayoría de los casos GRUB puede montar la partición raíz (/) y cargar los archivos desde un directorio separado /boot
+
+La particion de arranque se encuentra al comienzo del disco y termina antes del cilindro 1024 (528( MB) para aseugar que se cargue el nucleo pase lo que pase 
+
+
+LA PARTICION DEL SISTEMA EFI (ESP)
+La EFI System Partition (ESP) es utilizada por maquinas basadas en la interfaz del firmware extensible unificada (Unified Extensible Firmware Interface (UEFI)) para almacenar cargadores de arranque e imagenes del nucleo de los sistemas operativos instalados 
+
+**Esta particion esta formateada en un sistema de archivos FAT. Si el disco fue formateado bajo el esquema de particion MBR, la ID de la particion es 0xEF
+
+En las máquinas que ejecutan Microsoft Windows, esta partición suele ser la primera en el disco, aunque esto no es obligatorio. El sistema operativo crea (o completa) el ESP después de la instalación, y en un sistema Linux se monta en /boot/efi
+
+
+LA PARTICION /HOME
+Cada usuario en el sistema tiene un directorio de inicio para almacenar archivos personales y preferencias, y la mayoría de ellos se encuentran en /home. Por lo general, el directorio de inicio es el mismo que el nombre de usuario, por lo que el usuario John tendría su directorio en /home/john.
+
+
+INFORMACION VARIABLE /VAR
+Este directorio contiene “datos variables”, o archivos y directorios en los que el sistema debe poder escribir durante la operación. Esto incluye registros del sistema (en /var/log), archivos temporales (/var/tmp) y datos de aplicaciones en caché (en /var/cache).
+
+Una buena razón para poner /var en una partición separada es la estabilidad. Muchas aplicaciones y procesos escriben en /var y subdirectorios, como /var/log o /var/tmp. Un proceso con un comportamiento anormal puede escribir datos hasta que no quede espacio libre en el sistema de archivos
+
+Si /var está en / esto puede desencadenar en un estado de emergencia del núcleo del sistema operativo (Kernel Panic) y corrupción del sistema de archivos, causando una situación de la que es difícil recuperarse. Pero si /var se mantiene en una partición separada, el sistema de archivos raíz no se verá afectado.
+
+
+PARTICION DE INTERCAMBIO (SWAP)
+La partición de intercambio se utiliza para intercambiar páginas de memoria de RAM a disco según sea necesario. Esta partición debe ser de un tipo específico y configurarse con una utilidad adecuada llamada mkswap antes de poder usarse.
+
+La partición de intercambio no se puede montar como las demás, lo que significa que no puede acceder a ella como un directorio normal y echar un vistazo a su contenido.
+
+Un sistema puede tener múltiples particiones de intercambio (aunque esto es poco común) y Linux también admite el uso de archivos de intercambio en lugar de particiones, lo que puede ser útil para aumentar rápidamente el espacio de intercambio cuando sea necesario
+
+
+
+LVM
+ya se discutio con anterioridad, sin embargo una desventaja es:
+-Una de las desventajas de la partición es que el administrador del sistema tiene que decidir de antemano cómo se distribuirá el espacio disponible en un dispositivo de almacenamiento
+
+Logical Volume Management (LVM) es una forma de virtualización de almacenamiento que ofrece a los administradores de sistemas un enfoque más flexible para administrar el espacio en disco que la partición tradicional. El objetivo de LVM es facilitar la gestión de las necesidades de almacenamiento de sus usuarios finales. La unidad básica es el Physical Volume (PV), que es un dispositivo de bloque en su sistema como una partición de disco o un arreglo RAID
+
+Los PV se agrupan en Grupos de volúmenes (VG) que abstraen los dispositivos subyacentes y se ven como un único dispositivo lógico, con la capacidad de almacenamiento combinada de los componentes del PV.
+
+Cada volumen en un grupo de volúmenes se subdivide en partes de tamaño fijo llamadas extents. Las extensiones en un PV se denominan Physical Extents (PE), mientras que las de un volumen lógico son Logical Extents (LE). En general, cada extensión lógica se asigna a una extensión física, pero esto puede cambiar si se utilizan características como la duplicación de disco.
+
+Los grupos de volúmenes se pueden subdividir en volúmenes lógicos (LV), que funcionan de forma similar a las particiones pero con más flexibilidad
+
+El tamaño de un volumen lógico, tal como se especificó durante su creación, está definido por el tamaño de las extensiones físicas (4 MB por defecto) multiplicado por el número de extensiones en el volumen. A partir de esto, es fácil comprender que para aumentar un Volumen lógico, por ejemplo, todo lo que el administrador del sistema tiene que hacer es agregar más extensiones del grupo disponible en el Grupo de volúmenes. Del mismo modo, se pueden eliminar extensiones para reducir el LV.
+
+Después de crear un volumen lógico, el sistema operativo lo ve como un dispositivo de bloque normal. Se creará un dispositivo en /dev, nombrado como /dev/VGNAME/LVNAME, donde VGNAME es el nombre del grupo de volúmenes y LVNAME es el nombre del volumen lógico.
+
+Estos dispositivos pueden formatearse con el sistema de archivos deseado utilizando utilidades estándares (como mkfs.ext4, por ejemplo) y montarse usando los métodos habituales, ya sea manualmente con el comando mount o automáticamente agregándolos al archivo /etc/fstab.
+

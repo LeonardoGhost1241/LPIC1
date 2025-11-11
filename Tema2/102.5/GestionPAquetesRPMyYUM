@@ -1,0 +1,162 @@
+Uso y gestion de paquetes rpm y YUM
+
+En esta leccion se aprendera a usar 
+	- rpm
+	- yum
+	- dnf 
+	- zypper
+Para obtener, instalar, administrar y eliminar software en un sistema Linux 
+
+
+
+El gestor de paquetes RPM (rmp)
+	Herramienta esencial para adminsitrar paquetes de software en sistemas basados en RED HAT (o derivados)
+
+Instalar Actualizar y eliminar oaquetes
+	Para instalar usaremos: rpm -i packageName
+		(Si hay una version anterior de un paquete en el sistema, puede actualizar a una version mas nueva utilizando el parametro -U)
+			rpm -U packageName (Si no hay instalada una version anterior de packageName, se instalara una copia nueva. Para evitar esro y solo actualizar un paquete instalado, usamos la opcion -F)
+			En ambos casos, puede usar la opcion -v para dar mas detalles y -h para obtener signos hash impresos como una ayuda visual para rastrear el progreso de la instalacion (rpm -i -v -h es lo mismo que rpm -ivh)
+
+	Para eliminar usaremos: rpm -e wget, donde la e es de "erase" (SI UN APQUETE DEPENDE DEL PAQUETE QUE SE ESTA ELIMINANDO, RECIBIRA UNA MENSAJE DE ERROR), PUEDE PASAR VARIOS NOMBRES A RPM PARA ELIIMNARLOS A LA VEZ
+
+	Listar paquetes instalados: rpm -qa (peinse en query all)
+
+	Obtener informacion de paquetes: rpm -qi (piense en query info) packageName
+
+	Para obtener una lista de los archivos que estan dentro de un aquete instalado use: rpm -ql (piense en query list) packageName
+
+Si desea obtener información o una lista de archivos de un paquete que aún no se ha instalado, simplemente agregue el parámetro -p a los comandos anteriores, seguido del nombre del archivo RPM (FILENAME). Entonces, rpm -qi PACKAGENAME se convierte en rpm -qip FILENAME, y rpm -ql PACKAGENAME se convierte en rpm -qlp FILENAME, como se muestra a continuación
+
+
+	Para averiguar que paquete posee un archivo especifico usamos: rpm -qf (piense en query file) seguido de la ruta completa al archivo 
+
+
+
+
+YellowDog Updater Modificado (YUM)
+Funcionalmentes es similar a apt en los sidstemas basados en Debian, yum se puede usar para instalar un solo paquete o para actualizar un sistema completo a la vez
+
+	Buscar paquetes usamos: yum search 7zip
+
+	Para instalar un paquete usamos: yum install packageName 
+	
+	Para actualizar un paquete instalado, usamos: yum update packageName
+		Si omite el nombre de un paquete, puede actualizar cada paquete en el sistema si existen actualizaciones disponibles
+		Para verificar si hay una actualizacion disponible para un paquete especifico usamos: yum check-update PackageName (si omite el nombre del paquete, buscara actualizaciones para cada paquete en el sistema)
+
+	Para eliminar un paquete instalado usaremos: yum remove packageName
+
+Encontrar que paquete proporciona un archivo especifico
+	yum whatprovides PackageName, esto buscara el paqwuete que proporicona el archivo
+		Esto tambien funciona para archivos que ya estan en tu sistema, si deseas por ejemplo saber de donde proviene el archivo /etc/host, usamos: yum whatprovides /etc/hosts
+
+	Obtener informacion sobre un paquete usamos, yum info firefox: yum info packageName
+
+Gestion de repositorios de software 
+Para yum, los repos se enumeran en el directorio /etc/yum.repos.d, cada repositorio esta representado por un archivo .repo, como CentOS-Base.repo
+El usuario puede agregar repositorios adicionales agregando un archivo .repo en el directorio mencionado o al final de /etc/yum.conf, AUNQUE LA FORMA RECOMENDADA DE AGREGAR O ADMINISTRAR REPOSITORIOS ES CON LA HERRAMIENTA yum-config-manager
+
+	Para agregar un repositorios, usamos el parametro --add-repo, seguido de la URL a un archivo .repo
+		yum-config-manager --add-repo https://rpms.remirepo.net/enterprise/remi.repo
+
+	Para ontener una lista de todos los repositorios disponibles usamos: yum repolist all
+		Los repos disabled seran ignorados al instalar o actualizar software, para habilitar o deshabilitar un repositorio, usamos la utilidad, yum-config-manager, seguido de la identificacion del repositorio
+
+	En el resultado anterior, la identificación del repositorio se muestra en la primera columna (repo id) de cada línea. Utilice solo la parte anterior a la primera /, por lo que la identificación para el repositorio CentOS-7 - Updates es updates, y no updates/7/x86_64.
+
+	# yum-config-manager --disable updates
+
+	El comando anterior deshabilitará el repositorio updates. Para volver a habilitarlo use:
+
+	# yum-config-manager --enable updates
+
+Yum almacena los paquetes descargados y los metadatos asociados en un directorio de caché (generalmente /var/cache/yum). A medida que el sistema se actualiza y se instalan nuevos paquetes, esta caché puede ser bastante grande. Para limpiar la caché y recuperar espacio en el disco, puede usar el comando yum clean, seguido de qué limpiar. Los parámetros más útiles son packages (yum clean packages) para eliminar los paquetes descargados y metadata (yum clean metadata) para eliminar los metadatos asociados. Consulte la página del manual para yum (teclee man yum) para obtener más información
+
+
+
+DNF
+dnf es la herramienta de administracion de paqutes utilizada en Fedorra, y es una bifurcacion de yum
+	Para buscar paquetes usaremos: dnf  search pattern, ejemplo, dnf search unzip
+
+	Obtener informacion de un paquete: dnf search pattern (mostrara todos los paquetes que contienen la palabra unzip)
+
+	Obtener informacion de un paquete: dnf info packageName
+
+	Eliminar paquetes: dnf remove packageName
+
+	Actualizar paquetes: dnf upgrade packageName y para actualizar todos los paquetes, omitimos el pakageName
+
+	Encontrar que paquete proporciona un archivo especifico: dnf provides Filename
+
+	Obtener una lista de todos los paquetes instalados en el sistema: dnf list --installed
+
+	Listar el contenido de un paquete: dnf repoquery -l PackageName
+
+
+Para mostrar MAS informacion usamos: dnf help install
+
+
+
+Gestion de repositorios de software
+	Para obtener una lista de repositorios disponibles, usamos: dnf repolist
+		Para listar los repositorios habilitados, agregamos la opcion, --enabled y para listar solo los repositorios deshabilitados, agregamos la opcion --disabled 
+
+
+	Para agregar un repositorio, usamos: dnf config-manager --add-repo URL
+		Para habilitar un repositorio, use dnf config-manager --set-enabled REPO_ID
+		Para deshabilitar usamos: dnf config-manager --set-disabled REPO_ID
+		Los repositorios agregados estan habilitados por defecto
+
+	Los repositorios se almacenan en archivos .repo en el directorio /etc/yum.repos.d/ con la misma sintaxis utilizada para yum
+
+
+
+
+
+
+Zypper
+zypper es la herramienta de gestión de paquetes utilizada en SUSE Linux y OpenSUSE. En cuanto a las características, es similar a apt y yum, pudiendo instalar, actualizar y eliminar paquetes de un sistema, con resolución de dependencias automatizada
+
+
+Actualizar los indices de paquetes 
+al igual que otras herramientas, zyper, funciona con repositorios que contienen paquetes y metadas, estos metadatos deben de  actualizarce de vez en cuando, porlo que
+	Para actualizar los metadatos usamos: zypper refresh
+
+	Para buscar un paquete usamos: zyper search (o podemos usar se, como zypper se) package 
+		El operador de búsqueda también se puede utilizar para obtener una lista de todos los paquetes instalados en el sistema. Para hacerlo, use el parámetro -i sin un nombre de paquete, como en zypper se -i, por ejemplo, el siguiente comando buscara entre los paquetes instalados cualquier contenido que contenga "firefox", zypper se -i firefox
+		Para buscar solo entre paquetes no.instalados, agregue el parametro -u al operador se
+
+
+Instalar, actualizar y eliminar paquetes
+	Instalar paquetes con: zypper install (o in) packageName
+		zypper se puede usar para instalar RPM en disco, para hacerlo, solo proporcionaremos la ruta completa al paquete en lugar del nombre de paquete, como zypper in /home/john/newpackage.rpm
+
+
+	Actualizar los paquetes instalados en el sistema, usamos zypper update 
+		Si solo deseamos listar las actualizaciones disponibles, sin instalar nada, puede usar zypper list-updates
+
+	Para eliminar un paquete, usamos el operador remove packageName, como: zypper rm unrar
+
+	Encontrar que paquete proporciona a un archivo especifico, para ver que paquetes contienen un archivo especifico, usamos el operador de busqueda seguido del parametro --provides y el nombre del archivo (o la ruta completa), ejemplo: zypper se --provides /usr/lib64/libgimpmodule-2.0.so.0
+
+	Obtener informacion de paquetes, para obtener los metadatos asociados con un paquete usamos: zypper info gimp
+
+
+Gestion de repositorios de software 
+	Para ver una lista de todos los repositorios de software actualmente registrados en su sistema, usamos: zypper repos
+		Puedes habilitar o deshabilitar 
+ lista de repositorios con el operador modifyrepo, seguido del parametro -e (habilitar) o -d (deshabilitar) y el alias del repositorios, usamos: zypper modifyrepo -d repo-non-oss
+		Cuando se habilita, el indicador hara que zypper se ejecute una operacion de actualizacion (lo mismo que zypper refresh ) antes de trabajar con el repositorio especificado
+		Esto se puede controlar con los parametros -f y -F del operador modifyrepo, ejemplo: zypper modify -F repo-non-oss
+
+
+Agregar y quitar repositorios
+	Para agregar un nuevo repositorio de software zypper, usamos el operador addrepo, seguido de la URL del repositorios y el nombre del repositorio, como: zypper addrepo http://packman.inode.at/suse/openSUSE_Leap_15.1/ packman
+
+Al agregar un repositorio, puede habilitar las actualizaciones automáticas con el parámetro -f. Los repositorios agregados están habilitados de manera predeterminada, pero puede agregar y deshabilitar un repositorio al mismo tiempo utilizando el parámetro -d.
+
+	Para eliminar un repositorio, usamos el operador removerepo, seguido del nombre del repositorio (Alias), como zypper removerepo packman 
+
+
+

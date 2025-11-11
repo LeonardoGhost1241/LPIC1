@@ -1,0 +1,250 @@
+===================================
+EsquemaPArticionado
+===================================
+EJERCICIOS GUIADOS
+	-En sistemas Linux, ¿dónde se almacenan los archivos para el gestor de arranque GRUB?
+		En la particion de arranque /boot/grub
+
+	-¿Dónde debe terminar la partición de arranque para garantizar que una PC siempre pueda cargar el kernel?
+		desde los 528 MB o antes del cilindr 1024
+
+	-¿Dónde se suele montar la partición EFI?
+		en la particion /boot/efi
+
+	-Al montar manualmente un sistema de archivos, ¿en qué directorio se debe montar normalmente?
+		/mnt. sin embargo no es obligatorios, lo puede montar en donde quiera
+
+
+EJERCICIOS EXPLORATORIOS
+	-¿Cuál es la unidad más pequeña dentro de un grupo de volúmenes?
+		Los grupos de volúmenes se subdividen en extensiones (extends).
+
+	-¿Cómo se define el tamaño de un volumen lógico?
+		Por el tamaño de las extensiones físicas multiplicado por el número de extensiones en el volumen.
+
+	-En un disco formateado con el esquema de partición MBR, ¿cuál es el ID de la partición del sistema EFI?
+		0xEF
+
+	-Además de las particiones de intercambio, ¿cómo puede aumentar rápidamente el espacio de intercambio en un sistema Linux?
+		Se puede usar archivos de intercambio
+
+
+
+===================================
+Instalar un gestor de arranque
+==================================
+EJERCICIOS GUIADOS
+
+	-¿Cuál es la ubicación predeterminada para el archivo de configuración GRUB 2?
+		/boot/grub/grub.cfg
+
+	-¿Cuáles son los pasos necesarios para cambiar la configuración de GRUB 2?
+		modificar el archivo mencionado en la anterior pregunta y despues ejecutar update-grub2
+
+	-¿En qué archivo se deben agregar entradas de menú personalizadas de GRUB 2?
+		en el arhcivo /etc/grub.d/40_custom
+
+	-¿Dónde se almacenan las entradas de menú para GRUB Legacy?
+		en /boot/grub/menu.lst
+
+	-Desde un menú GRUB 2 o GRUB Legacy, ¿cómo puede ingresar a la consola de GRUB?
+		apretando c 
+
+
+EJERCICIOS EXPLORATORIOS 
+	-Imagine un usuario que configura GRUB Legacy para arrancar desde la segunda partición del primer disco. Escribe la siguiente entrada de menú personalizada:
+	title My Linux Distro
+	root (hd0,2)
+	kernel /vmlinuz root=/dev/hda1
+	initrd /initrd.img
+	Sin embargo, el sistema no se iniciará. ¿Qué está mal?
+		La particion, en legacy, los discos se enumeran desde el 1, por lo que seria, root (hd1,2)
+
+	-Imagine que tiene un disco identificado como /dev/sda con múltiples particiones. ¿Qué comando se puede usar para averiguar cuál es la partición de arranque en un sistema?
+		con fdisk -l /dev/sda y la particion deberia de tener un *  
+
+	-¿Qué comando se puede usar para averiguar el UUID de una partición?
+		blkid o ls -l /dev/disk/by-uuid/
+
+	-Considere la siguiente entrada para GRUB 2
+	menuentry "Default OS" {
+	    set root=(hd0,1)
+	    linux /vmlinuz root=/dev/sda1 ro quiet splash
+	    initrd /initrd.img
+	}
+	Cámbiela para que el sistema arranque desde un disco con el UUID 5dda0af3-c995-481a-a6f3-46dcd3b6998d
+		Se debe de agregar la linea, --no-floppy --set-=root --fs-uuid 5dda0af3-c995-481a-a6f3-46dcd3b6998d
+
+	¿Cómo puede configurar GRUB 2 para que espere 10 segundos antes de iniciar la entrada de menú predeterminada?
+		con la opcion del grub, GRUB_TIMEOUT=10
+
+	Desde una consola GRUB Legacy, ¿cuáles son los comandos para instalar GRUB en la primera partición del segundo disco?
+		grub> root (hd1,0)
+	grub> setup (hd1)
+
+
+==================================
+Gestion de librerias compartidas
+==================================
+EJERCICIOS EXPLORATORIOS
+
+	-Divida los siguientes nombres de bibliotecas compartidas en sus partes:
+	 Nombre completo del archivo 	Nombre de la biblioteca 	so sufijo 	Número de versión
+	linux-vdso.so.1				linux-vdso		   so			1
+	libprocps.so.6				libprocps		   so			6
+	libdl.so.2				libdl			   so			2
+	libc.so.6				libc			   so		        6	
+	libsystemd.so.0				libsystemd		   so			0
+	ld-linux-x86-64.so.2			ld-linux-x86-64		   so			2
+
+	-Ha desarrollado un software y desea agregar un nuevo directorio de biblioteca compartida a su sistema (/opt/lib/mylib). Escriba su ruta absoluta en un archivo llamado mylib.conf.
+	    ¿En qué directorio debe almacenar este archivo?
+		/etc/ld.so.conf.d			
+	    ¿Qué comando debe ejecutar para que los cambios sean totalmente efectivos?
+		ldconfig
+
+	¿Qué comando usaría para listar las bibliotecas compartidas requeridas por kill?
+		ldd $(which kill)
+
+
+
+EJERCICIOS GUIADOS
+	-objdump es una utilidad de línea de comandos que muestra información de archivos de objetos. Compruebe si está instalado en su sistema con which objdump. Si no es así, instálelo.
+    		Use objdump con -p (o --private-headers) y grep para imprimir las dependencias de glibc:
+			objdump -p /lib/x86_64-linux-gnu/libc.so.6 | grep NEEDED
+    		Use objdump con -p (o --private-headers) y grep para imprimir el soname de glibc:
+			objdump -p /lib/x86_64-linux-gnu/libc.so.6 | grep SONAME
+    		Use objdump con -p (o --private-headers) y grep para imprimir las dependencias de Bash
+			objdump -p /bin/bash | grep NEEDED
+
+
+
+
+
+============================
+Gestion de paquetes Debian
+============================
+EJERCICIOS GUIADOS
+	-¿Cuál es el comando para instalar un paquete llamado package.deb usando dpkg?
+		dpkg -i package.deb
+
+	-Usando dpkg-query, encuentre qué paquete contiene un archivo llamado 7zr.1.gz.
+		dpkg-query -S 7zr.1.gz	
+
+	-¿Puede eliminar un paquete llamado unzip del sistema usando dpkg -r unzip si el paquete file-roller depende de él? Si no, ¿cuál sería la forma correcta de hacerlo?
+		No. dpkg no resolverá las dependencias y no le permitirá eliminar un paquete si otro paquete instalado depende de él. En este ejemplo, primero puede eliminar file-roller (suponiendo que nada depende de él) y luego eliminar unzip, o eliminar ambos al mismo tiempo con:
+		# dpkg -r unzip file-roller
+
+	-Usando apt-file, ¿cómo puede averiguar qué paquete contiene el archivo unrar?
+	apt-file search unrar 
+
+	-Usando apt-cache, ¿cuál es el comando para mostrar información para el paquete gimp?
+		apt-cache show gimp
+
+
+EJERCICIOS EXPLORATORIOS
+	-Considere un repositorio con paquetes fuente de Debian para la distribución xenial, alojado en http://us.archive.ubuntu.com/ubuntu/ y con paquetes para el componente universe. ¿Cuál sería la línea correspondiente que se agregará a /etc/apt/sources.list?
+		deb-src http://us.archive.ubuntu.com/ubuntu/ xential universe
+
+	-Mientras compila un programa, se encuentra con un mensaje de error indicándole que el archivo de cabecera zzip-io.h no está presente en su sistema. ¿Cómo puede averiguar qué paquete proporciona ese archivo?
+		sudo apt-file search zzip-io.h
+
+	-¿Cómo puede ignorar una advertencia de dependencia y eliminar un paquete usando dpkg, incluso si hay paquetes que dependen de él en el sistema?
+			dpkg -f -r paquete  o con --force
+
+	-¿Cómo puede obtener más información sobre un paquete llamado midori usando apt?
+		sudo apt-cache show midori
+
+	-Antes de instalar o actualizar paquetes con apt, ¿qué comando se debe usar para garantizar que el índice de paquetes esté actualizado?
+		aot-get update, Esto descargará los últimos índices de paquetes de los repositorios descritos en el archivo /etc/apt/sources.list o en el directorio /etc/apt/sources.list.d/.
+
+
+
+==============================
+Gestion de paquetes RPM y YUM
+==============================
+EJERCICIOS GUIADOS
+	-Usando rpm en un sistema Red Hat Enterprise Linux, ¿cómo instalaría el paquete file-roller-3.28.1-2.el7.x86_64.rpm mostrando una barra de progreso durante la instalación?
+		rpm -ihv file-roller-3.28.1-2.el7.x86_64.rpm
+
+	-Usando rpm, descubra qué paquete contiene el archivo /etc/redhat-release.
+		rpm -qf /etc/redhat-release
+
+	-¿Cómo usaría yum para buscar actualizaciones para todos los paquetes en el sistema?
+		yum check-update
+
+	-Usando zypper, ¿cómo deshabilitaría un repositorio llamado repo-extras?
+		zypper modifyrepo -d repo-extras
+
+	-Si tiene un archivo .repo que describe un nuevo repositorio, ¿dónde se debe colocar este archivo para que DNF lo reconozca?
+		en la ruta /etc/yum.repos.d/
+
+EJERCICIOS EXPLORATORIOS
+	-¿Cómo usaría zypper para averiguar qué paquete posee el archivo /usr/sbin/swapon?
+		zypper search --provides /usr/sbin/swapon
+
+	-¿Cómo puede obtener una lista de todos los paquetes instalados en el sistema usando dnf?
+		dnf list -installed 
+
+	-Usando dnf, ¿cuál es el comando para agregar un repositorio ubicado en https://www.example.url/home:reponame.repo al sistema?
+		Trabajar con repositorios es un “configuration change”, así que utilice el parámetro config-manager y el parámetro --add_repo: dnf config-manager --add_repo https://www.example.url/home:reponame.repo.
+
+	-¿Cómo puede usar zypper para verificar si el paquete unzip está instalado?
+		Debe hacer una búsqueda (se) en los paquetes instalados (-i): zypper se -i unzip.
+
+	-Usando yum, descubra qué paquete proporciona el archivo /bin/wget
+		yum whatprovides /bin/wget 
+
+===============================
+Linux como sistema virtualizado
+===============================
+
+EJERCICIOS GUIADOS
+
+	-¿Qué extensiones de CPU son necesarias en una plataforma de hardware basada en x86 que ejecutará invitados (guest) totalmente virtualizados?
+		las extensiones de CPU Intel VT-x o AMD-V deben estar habilitadas en elsistema que tiene instalado el hipervisor
+
+	-¿Una instalación de un servidor de misión crítica que requerirá el rendimiento más rápido probablemente usará qué tipo de virtualización?
+		Un sistema operativo que utiliza la paravirtualización, como Xen, ya que el sistema operativo invitado puede hacer un mejor uso de los recursos de hardware disponibles es mediante el uso de controladores de software diseñados para trabajar con el hipervisor
+
+	-Dos máquinas virtuales que se han clonado a partir de la misma plantilla y que utilizan D-Bus funcionan de manera irregular. Ambos tienen nombres de host y configuraciones de red separadas. ¿Qué comando se usaría para determinar si cada una de las máquinas virtuales tienen diferentes ID de máquina D-Bus?
+	dbus-uuidgen --get
+
+
+EJERCICIOS EXPLORATORIOS 
+	Ejecute el siguiente comando para ver si su sistema ya tiene extensiones de CPU habilitadas para ejecutar una máquina virtual (sus resultados pueden variar según su CPU):
+	grep --color -E "vmx|svm" /proc/cpuinfo.  Dependiendo de la salida, puede tener resaltado vmx (para CPU habilitadas con Intel VT-x) o svm resaltado (para CPU habilitadas con AMD SVM). Si no obtiene resultados, consulte las instrucciones de su BIOS o firmware UEFI sobre cómo habilitar la virtualización para su procesador.
+
+	Los resultados variarán según la CPU que tenga. Aquí hay un ejemplo de salida de una computadora con una CPU Intel con extensiones de virtualización habilitadas en el firmware UEFI:
+
+	$ grep --color -E "vmx|svm" /proc/cpuinfo
+	flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d
+
+
+
+	-Si su procesador admite virtualizaciones, busque la documentación de su distribución para ejecutar un hipervisor KVM.
+	    Instale los paquetes necesarios para ejecutar un hipervisor KVM.
+		Esto variará dependiendo de su distribución, pero aquí hay algunos puntos de partida:
+
+		Ubuntu — https://help.ubuntu.com/lts/serverguide/libvirt.html
+
+		Fedora — https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-virtualization/
+
+		Arch Linux — https://wiki.archlinux.org/index.php/KVM
+
+
+
+	    Si está utilizando un entorno de escritorio gráfico, se recomienda instalar también la aplicación virt-manager, que es una interfaz gráfica que se puede utilizar en una instalación de KVM. Esto ayudará en la instalación y gestión de máquinas virtuales.
+
+		Nuevamente, esto variará según la distribución. Un ejemplo usando Ubuntu se ve así:
+		$ sudo apt install virt-manager
+
+	    Descargue una imagen ISO de la distribución de Linux de su elección y, siguiendo la documentación de su distribución, cree una nueva máquina virtual utilizando esta ISO
+		Esta tarea es manejada fácilmente por el paquete virt-manager. Sin embargo, se puede crear una máquina virtual desde la línea de comandos utilizando el comando virt-install. Pruebe ambos métodos para comprender cómo se implementan las máquinas virtuales
+
+
+
+
+
+
+

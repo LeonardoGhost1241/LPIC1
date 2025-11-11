@@ -1,0 +1,383 @@
+Linux como sistema virtualizado
+
+Descripcion general de virtualizacion
+La virtualización es una tecnología que permite que una plataforma de software, llamada hipervisor (hypervisor), ejecute procesos que contienen un sistema informático completamente emulado. El hipervisor es responsable de administrar los recursos del hardware físico que pueden ser utilizados por máquinas virtuales individuales. Estas máquinas virtuales se denominan guests del hipervisor. Una máquina virtual tiene muchos aspectos de una computadora física emulada en software, como el BIOS del sistema y los controladores de disco del disco duro. Una máquina virtual a menudo usará imágenes de disco duro que se almacenan como archivos individuales, y tendrá acceso a la RAM y CPU de la máquina host a través del software del hipervisor. El hipervisor separa el acceso a los recursos de hardware del sistema host entre los guest, lo que permite que múltiples sistemas operativos se ejecuten en un solo sistema host.
+
+Los hipervisores de uso común en Linux son:
+	-Xen: Xen es un hipervisor de código abierto de tipo 1, lo que significa que no depende de un sistema operativo subyacente para funcionar. Un hipervisor de este tipo se conoce como un hipervisor de bare-metal hypervisor, ya que la computadora puede arrancar directamente en el hipervisor
+
+	-KVM: Kernel Virtual Machine es un módulo de kernel de Linux para virtualización. KVM es un hipervisor tanto del hipervisor Tipo 1 como del Tipo 2 porque, aunque necesita un sistema operativo Linux genérico para funcionar, puede funcionar perfectamente como hipervisor al integrarse con una instalación Linux en ejecución. Las máquinas virtuales implementadas con KVM usan el demonio libvirt y las utilidades de software asociadas para ser creadas y administradas
+
+	-VirtualBox: Una aplicación de escritorio popular que facilita la creación y administración de máquinas virtuales. Oracle VM VirtualBox es multiplataforma y funciona en Linux, macOS y Microsoft Windows. Como VirtualBox requiere de un sistema operativo subyacente para ejecutarse, es un hipervisor de tipo 2
+
+
+
+
+Tipos de maquinas virtuales
+Hay tres tipos de maquinas virtuales: 
+	- fully virtualized guest (un invitado totalmente virtualizado)
+	- paravirtualized guest (un invitado paravirtualizado)
+	- Hybrid guest (un invitado hibrido)
+
+
+Totalmente virtualizado (Fully Virtualized)
+    Todas las instrucciones que se espera que ejecute un sistema operativo invitado deben poder ejecutarse dentro de una instalación de sistema operativo totalmente virtualizada. La razón de esto es que no se instalan controladores de software adicionales dentro del huésped para traducir las instrucciones a hardware simulado o real. Un invitado totalmente virtualizado es aquel en el que el invitado (o HardwareVM) desconoce que es una instancia de máquina virtual en ejecución. Para que este tipo de virtualización tenga lugar en hardware basado en x86, las extensiones de CPU Intel VT-x o AMD-V deben estar habilitadas en el sistema que tiene instalado el hipervisor. Esto se puede hacer desde un menú de configuración de firmware BIOS o UEFI.
+
+
+Paravirtualizado (Paravirtualized)
+    Un invitado paravirtualizado (o PVM) es aquel en el que el sistema operativo invitado es consciente de que es una instancia de máquina virtual en ejecución. Este tipo de invitados utilizará un kernel modificado y controladores especiales (conocidos como "controladores invitados") que ayudarán al sistema operativo invitado a utilizar los recursos de software y hardware del hipervisor. El rendimiento de un huésped paravirtualizado es a menudo mejor que el del huésped totalmente virtualizado debido a la ventaja que proporcionan estos controladores de software
+
+
+Hibrido (Hybrid)
+	La paravirtualización y la virtualización completa se pueden combinar para permitir que los sistemas operativos no modificados reciban un rendimiento de E/S casi nativo mediante el uso de controladores paravirtualizados en sistemas operativos completamente virtualizados. Los controladores paravirtualizados contienen controladores de almacenamiento y dispositivos de red con disco mejorado y rendimiento de E/S de red
+
+Las plataformas de virtualización a menudo proporcionan controladores invitados empaquetados para sistemas operativos virtualizados. El KVM utiliza controladores del proyecto Virtio, mientras que Oracle VM VirtualBox utiliza Guest Extensions disponibles desde un archivo de imagen de CD-ROM ISO descargable
+
+
+
+Ejemplo de maquina virtual (libvirt)
+Una maquina virtual a menudo consiste en un grupo de archivos, principalmente XML que define la maquinavirtual o su configuracion como hardware, red, capacidades de visualizacion y mas
+
+La ruta es /etc/libvirt/qemu
+	la parte de la ruta del directorio se refiere al software subyacente en el que confian las maquinas basadas en KVM
+	Dentro de este directorio hay otro llamado networks que contiene archivos de definicion (tambien usando XML)
+
+Ejemplo de red 
+
+	<!--
+	WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+	OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+	  virsh net-edit default
+	or other application using the libvirt API.
+	-->
+
+	<network>
+	  <name>default</name>
+	  <uuid>55ab064f-62f8-49d3-8d25-8ef36a524344</uuid>
+	  <forward mode='nat'/>
+	  <bridge name='virbr0' stp='on' delay='0'/>
+	  <mac address='52:54:00:b8:e0:15'/>
+	  <ip address='192.168.122.1' netmask='255.255.255.0'>
+	    <dhcp>
+	      <range start='192.168.122.2' end='192.168.122.254'/>
+	    </dhcp>
+	  </ip>
+	</network>
+
+Esta definición incluye una red privada de Clase C y un dispositivo de hardware emulado para actuar como enrutador para esta red. También hay un rango de direcciones IP para que el hipervisor las use con una implementación de servidor DHCP que puede asignarse a las máquinas virtuales que usan esta red. Esta configuración de red también utiliza la traducción de direcciones de red (NAT) para reenviar paquetes a otras redes, como la LAN del hipervisor
+
+
+Archivo de configuracion de  la mquina Red Hat Enterprise 
+
+	<!--
+	WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+	OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+	  virsh edit rhel8.0
+	or other application using the libvirt API.
+	-->
+
+	<domain type='kvm'>
+	  <name>rhel8.0</name>
+	  <uuid>fadd8c5d-c5e1-410e-b425-30da7598d0f6</uuid>
+	  <metadata>
+	    <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+	      <libosinfo:os id="http://redhat.com/rhel/8.0"/>
+	    </libosinfo:libosinfo>
+	  </metadata>
+	  <memory unit='KiB'>4194304</memory>
+	  <currentMemory unit='KiB'>4194304</currentMemory>
+	  <vcpu placement='static'>2</vcpu>
+	  <os>
+	    <type arch='x86_64' machine='pc-q35-3.1'>hvm</type>
+	    <boot dev='hd'/>
+	  </os>
+	  <features>
+	    <acpi/>
+	    <apic/>
+	    <vmport state='off'/>
+	  </features>
+	  <cpu mode='host-model' check='partial'>
+	    <model fallback='allow'/>
+	  </cpu>
+	  <clock offset='utc'>
+	    <timer name='rtc' tickpolicy='catchup'/>
+	    <timer name='pit' tickpolicy='delay'/>
+	    <timer name='hpet' present='no'/>
+	  </clock>
+	  <on_poweroff>destroy</on_poweroff>
+	  <on_reboot>restart</on_reboot>
+	  <on_crash>destroy</on_crash>
+	  <pm>
+	    <suspend-to-mem enabled='no'/>
+	    <suspend-to-disk enabled='no'/>
+	  </pm>
+	  <devices>
+	    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+	    <disk type='file' device='disk'>
+	      <driver name='qemu' type='qcow2'/>
+	      <source file='/var/lib/libvirt/images/rhel8'/>
+	      <target dev='vda' bus='virtio'/>
+	      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+	    </disk>
+	    <controller type='usb' index='0' model='qemu-xhci' ports='15'>
+	      <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
+	    </controller>
+	    <controller type='sata' index='0'>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/>
+	    </controller>
+	    <controller type='pci' index='0' model='pcie-root'/>
+	    <controller type='pci' index='1' model='pcie-root-port'>
+	      <model name='pcie-root-port'/>
+	      <target chassis='1' port='0x10'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0' multifunction='on'/>
+	    </controller>
+	    <controller type='pci' index='2' model='pcie-root-port'>
+	      <model name='pcie-root-port'/>
+	      <target chassis='2' port='0x11'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x1'/>
+	    </controller>
+	    <controller type='pci' index='3' model='pcie-root-port'>
+	      <model name='pcie-root-port'/>
+	      <target chassis='3' port='0x12'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x2'/>
+	    </controller>
+	    <controller type='pci' index='4' model='pcie-root-port'>
+	      <model name='pcie-root-port'/>
+	      <target chassis='4' port='0x13'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x3'/>
+	    </controller>
+	    <controller type='pci' index='5' model='pcie-root-port'>
+	      <model name='pcie-root-port'/>
+	      <target chassis='5' port='0x14'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x4'/>
+	    </controller>
+	    <controller type='pci' index='6' model='pcie-root-port'>
+	      <model name='pcie-root-port'/>
+	      <target chassis='6' port='0x15'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x5'/>
+	    </controller>
+	    <controller type='pci' index='7' model='pcie-root-port'>
+	      <model name='pcie-root-port'/>
+	      <target chassis='7' port='0x16'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x6'/>
+	    </controller>
+	    <controller type='virtio-serial' index='0'>
+	      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+	    </controller>
+	    <interface type='network'>
+	      <mac address='52:54:00:50:a7:18'/>
+	      <source network='default'/>
+	      <model type='virtio'/>
+	      <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
+	    </interface>
+	    <serial type='pty'>
+	      <target type='isa-serial' port='0'>
+		<model name='isa-serial'/>
+	      </target>
+	    </serial>
+	    <console type='pty'>
+	      <target type='serial' port='0'/>
+	    </console>
+	    <channel type='unix'>
+	      <target type='virtio' name='org.qemu.guest_agent.0'/>
+	      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+	    </channel>
+	    <channel type='spicevmc'>
+	      <target type='virtio' name='com.redhat.spice.0'/>
+	      <address type='virtio-serial' controller='0' bus='0' port='2'/>
+	    </channel>
+	    <input type='tablet' bus='usb'>
+	      <address type='usb' bus='0' port='1'/>
+	    </input>
+	    <input type='mouse' bus='ps2'/>
+	    <input type='keyboard' bus='ps2'/>
+	    <graphics type='spice' autoport='yes'>
+	      <listen type='address'/>
+	      <image compression='off'/>
+	    </graphics>
+	    <sound model='ich9'>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x1b' function='0x0'/>
+	    </sound>
+	    <video>
+	      <model type='virtio' heads='1' primary='yes'/>
+	      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
+	    </video>
+	    <redirdev bus='usb' type='spicevmc'>
+	      <address type='usb' bus='0' port='2'/>
+	    </redirdev>
+	    <redirdev bus='usb' type='spicevmc'>
+	      <address type='usb' bus='0' port='3'/>
+	    </redirdev>
+	    <memballoon model='virtio'>
+	      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+	    </memballoon>
+	    <rng model='virtio'>
+	      <backend model='random'>/dev/urandom</backend>
+	      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+	    </rng>
+	  </devices>
+	</domain>
+
+
+
+
+Ejemplo de almacenamiento en disco de una maquina virtual
+La imagen del disco duro de esta máquina virtual reside en /var/lib/libvirt/images/rhel8. Aquí está la imagen de disco en este hipervisor:
+
+$ sudo ls -lh /var/lib/libvirt/images/rhel8
+-rw------- 1 root root 5.5G Oct 25 15:57 /var/lib/libvirt/images/rhel8
+
+El tamaño actual de esta imagen de disco ocupa solo 5,5 GB de espacio en el hipervisor. Sin embargo, el sistema operativo dentro de este invitado ve un disco de 23,3 GB de tamaño, como lo demuestra la salida del siguiente comando desde la máquina virtual en ejecución:
+
+$ lsblk
+NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+vda           252:0    0 23.3G  0 disk
+├─vda1        252:1    0    1G  0 part /boot
+└─vda2        252:2    0 22.3G  0 part
+  ├─rhel-root 253:0    0   20G  0 lvm  /
+  └─rhel-swap 253:1    0  2.3G  0 lvm  [SWAP]
+
+Esto se debe al tipo de aprovisionamiento de disco utilizado para este invitado. Hay varios tipos de imágenes de disco que una máquina virtual puede usar, pero los dos tipos principales son:
+
+
+COW
+
+    Copy-on-write (también conocido como thin-provisioning o sparse images) es un método en el que se crea un archivo de disco con un límite de tamaño superior predefinido. El tamaño de la imagen del disco solo aumenta a medida que se escriben nuevos datos en el disco. Al igual que en el ejemplo anterior, el sistema operativo invitado ve el límite de disco predefinido de 23,3 GB, pero solo ha escrito 5,5 GB de datos en el archivo del disco. El formato de imagen de disco utilizado para la máquina virtual de ejemplo es qcow2, que es un formato de archivo QEMU COW.
+RAW
+
+    Un tipo de disco raw o full es un archivo que tiene todo su espacio preasignado. Por ejemplo, un archivo de imagen de disco sin formato de 10 GB consume 10 GB de espacio real en el hipervisor. Hay un beneficio de rendimiento para este estilo de disco, ya que todo el espacio en disco necesario ya existe, por lo que el hipervisor subyacente puede simplemente escribir datos en el disco sin el impacto del rendimiento de monitorear la imagen del disco para asegurarse de que aún no ha alcanzado su límite y extender el tamaño del archivo a medida que se escriben nuevos datos
+
+
+
+
+
+
+
+El D-Bus Machine ID
+
+Muchas instalaciones de Linux utilizarán un número de identificación de máquina generado en el momento de la instalación, llamado D-Bus machine ID. Sin embargo, si una máquina virtual se clona para ser utilizada como plantilla para otras instalaciones de máquinas virtuales, se necesitaría crear una nueva ID de máquina D-Bus para garantizar que los recursos del sistema del hipervisor se dirijan al sistema invitado (guest) apropiadamente.
+
+El siguiente comando se puede usar para validar que existe una ID de máquina D-Bus para el sistema en ejecución:
+
+$ dbus-uuidgen --ensure
+
+Si no se muestran mensajes de error, existe una ID para el sistema. Para ver la ID actual de la máquina D-Bus, ejecute lo siguiente:
+
+$ dbus-uuidgen --get
+17f2e0698e844e31b12ccd3f9aa4d94a
+
+La cadena de texto que se muestra es el número de identificación actual. No hay dos sistemas Linux que se ejecuten en un hipervisor que tengan la misma ID de máquina D-Bus.
+
+La ID de la máquina D-Bus se encuentra en /var/lib/dbus/machine-id y está simbólicamente vinculada a /etc/machine-id. Se desaconseja cambiar este número de identificación en un sistema en ejecución, ya que es probable que ocurran inestabilidades y fallas del sistema. Si dos máquinas virtuales tienen la misma ID de máquina D-Bus, siga el procedimiento a continuación para generar una nueva:
+
+$ sudo rm -f /etc/machine-id
+$ sudo dbus-uuidgen --ensure=/etc/machine-id
+
+En el caso de que /var/lib/dbus/machine-id no sea un enlace simbólico a /etc/machine-id, entonces será necesario eliminar /var/lib/dbus/machine-id
+
+
+
+Implementación de máquinas virtuales en la nube
+
+Hay una multitud de proveedores de IaaS (infrastructure as a service) disponibles que ejecutan sistemas de hipervisor y que pueden implementar imágenes virtuales de invitados (guest) para una organización. Prácticamente todos estos proveedores cuentan con herramientas que permiten a un administrador construir, implementar y configurar máquinas virtuales personalizadas basadas en una variedad de distribuciones de Linux. Muchas de estas compañías también tienen sistemas que permiten el despliegue y las migraciones de máquinas virtuales creadas desde la organización de un cliente.
+
+Al evaluar la implementación de un sistema Linux en un entorno IaaS, hay algunos elementos claves que un administrador debe tener en cuenta:
+
+Instancias de computación
+
+    Muchos proveedores de la nube cobrarán tasas de uso basadas en “instancias de computación”, o cuánto tiempo de CPU utilizará su infraestructura basada en la nube. Una planificación cuidadosa de cuánto tiempo de procesamiento requerirán realmente las aplicaciones ayudará a mantener manejables los costos de una solución en la nube.
+
+    Las instancias de computación a menudo también se refieren a la cantidad de máquinas virtuales que se aprovisionan en un entorno de nube. Una vez más, la mayor cantidad de instancias de sistemas que se ejecutan a la vez también influirá en la cantidad de tiempo total de CPU que se le cobrará a una organización.
+Bloque de almacenamiento
+
+    Los proveedores de la nube también tienen varios niveles de almacenamiento en bloque disponibles para que una organización los use. Algunas ofertas están destinadas simplemente a ser un almacenamiento de red basado en la web para archivos, y otras ofertas se relacionan con el almacenamiento externo para una máquina virtual aprovisionada en la nube para usar y alojar archivos.
+
+    El costo de tales ofertas variará según la cantidad de almacenamiento utilizado y la velocidad del almacenamiento dentro de los centros de datos del proveedor. El acceso al almacenamiento más rápido generalmente costará más y, por el contrario, los datos "en reposo" (como en el almacenamiento de archivos) a menudo son muy económicos.
+Redes
+
+    Uno de los componentes principales de trabajar con un proveedor de soluciones en la nube es cómo se configurará la red virtual. Muchos proveedores de IaaS tendrán alguna forma de utilidades basadas en la web que pueden utilizarse para el diseño e implementación de diferentes rutas de red, subredes y configuraciones de firewall. Algunos incluso proporcionarán soluciones de DNS para que se puedan asignar FQDN de acceso público (nombres de dominio completos) a sus sistemas orientados a Internet. Incluso hay soluciones “híbridas” disponibles que pueden conectarse de una infraestructura de red existente en las instalaciones de su empresa a una infraestructura basada en la nube a través de una VPN (virtual private network), uniendo las dos infraestructuras.
+
+
+
+
+
+
+
+Acceso seguro a los invitados (guest) en la nube
+
+El método más frecuente para acceder a un invitado virtual remoto en una plataforma en la nube es mediante el uso del software OpenSSH. Un sistema Linux que reside en la nube tendría el servidor OpenSSH ejecutándose, mientras que un administrador usaría un cliente OpenSSH con claves precompartidas para acceso remoto.
+
+Un administrador ejecutaría el siguiente comando
+
+$ ssh-keygen
+
+y seguiría las instrucciones para crear un par de claves SSH públicas y privadas. La clave privada permanece en el sistema local del administrador (almacenado en ~/.ssh/) y la clave pública se copia en el sistema remoto de la nube, exactamente el mismo método que se usaría al trabajar con máquinas en red en una LAN corporativa.
+
+El administrador entonces ejecutaría el siguiente comando:
+
+$ ssh-copy-id -i <public_key> user@cloud_server
+
+Esto copiará la clave SSH pública del par de claves recién generadas en el servidor remoto de la nube. La clave pública se registrará en el archivo ~/.ssh/authorized_keys del servidor de la nube y establecerá los permisos apropiados en el archivo.
+
+	Si solo hay un archivo de clave pública en el directorio ~/.ssh/, entonces se puede omitir el modificador -i, ya que el comando ssh-copy-id pasará por defecto al archivo de clave pública en el directorio (normalmente el archivo que termina con la extensión .pub
+
+Algunos proveedores de la nube generarán automáticamente un par de claves cuando se aprovisione un nuevo sistema Linux. El administrador deberá descargar la clave privada para el nuevo sistema desde el proveedor de la nube y almacenarla en su sistema local. Tenga en cuenta que los permisos para las claves SSH deben ser 0600 para una clave privada y 0644 para una clave pública
+
+
+
+
+
+Preconfigurar sistemas en la nube
+Una herramienta útil que simplifica los despliegues de máquinas virtuales basadas en la nube es la utilidad cloud-init. Este comando, junto con los archivos de configuración asociados y la imagen de máquina virtual predefinida, es un método independiente del proveedor para implementar un invitado (guest) Linux en una gran cantidad de proveedores de IaaS. Utilizando archivos de texto plano YAML (YAML Ain’t Markup Language), un administrador puede preconfigurar configuraciones de red, selecciones de paquetes de software, configuración de claves SSH, creaciones de cuentas de usuario, configuraciones regionales, junto con una miríada de otras opciones para construir rápidamente nuevas sistemas.
+
+Durante el arranque inicial de un nuevo sistema, cloud-init leerá la configuración de los archivos de configuración de YAML y los aplicará. Este proceso solo necesita aplicarse a la configuración inicial de un sistema y facilita la implementación de una flota de nuevos sistemas en la plataforma de un proveedor de la nube.
+
+La sintaxis del archivo YAML utilizada con cloud-init se llama cloud-config. Aquí hay un archivo de ejemplo cloud-config:
+
+#cloud-config
+timezone: Africa/Dar_es_Salaam
+hostname: test-system
+
+# Update the system when it first boots up
+apt_update: true
+apt_upgrade: true
+
+# Install the Nginx web server
+packages:
+ - nginx
+
+
+
+
+Tenga en cuenta que en la línea superior no hay espacio entre el símbolo hash (#) y el término cloud-config.
+Note:cloud-init no es solo para máquinas virtuales. El conjunto de herramientas cloud-init también se puede usar para preconfigurar contenedores (como los contenedores LXD Linux) antes de la implementación
+
+Los contenedores utilizan el mecanismo control groups (mejor conocido como cgroups) dentro del kernel de Linux. El cgroup es una forma de particionar los recursos del sistema, como la memoria, el tiempo del procesador y el ancho de banda del disco y la red para una aplicación individual. Un administrador puede usar cgroups directamente para establecer límites de recursos del sistema en una aplicación, o un grupo de aplicaciones que podrían existir dentro de un solo cgroup. En esencia, esto es lo que hace el software contenedor para el administrador, además de proporcionar herramientas que facilitan la administración y la implementación de cgroups
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
