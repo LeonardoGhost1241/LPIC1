@@ -152,11 +152,88 @@ Gestion de repositorios de software
 
 
 Agregar y quitar repositorios
-	Para agregar un nuevo repositorio de software zypper, usamos el operador addrepo, seguido de la URL del repositorios y el nombre del repositorio, como: zypper addrepo http://packman.inode.at/suse/openSUSE_Leap_15.1/ packman
+	-Para agregar un nuevo repositorio de software zypper, usamos el operador addrepo, seguido de la URL del repositorios y el nombre del repositorio, como: zypper addrepo http://packman.inode.at/suse/openSUSE_Leap_15.1/ packman
 
 Al agregar un repositorio, puede habilitar las actualizaciones automáticas con el parámetro -f. Los repositorios agregados están habilitados de manera predeterminada, pero puede agregar y deshabilitar un repositorio al mismo tiempo utilizando el parámetro -d.
 
 	Para eliminar un repositorio, usamos el operador removerepo, seguido del nombre del repositorio (Alias), como zypper removerepo packman 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+rpm. Administra los paquetes de Red Hat y derivados como Fedora o CentOS
+	-i 	instala un paquete. Necesita la ruta completa del fichero .rpm a instalar
+	-U	Instala un paquete si no existe o lo actualiza si ya esta instalado
+	-F 	Actualiza un paquete solo si esta instalado
+	-e	Elimina un paquete
+	-V Verifica un paquete. Muestra si esta instalado, si ha sido cambiado, etc
+
+Para todas las opciones anteriores se puede agregar
+	-h	Indica el progreso de la operacion
+	-v	muestra el progreso para cada paquete
+
+	
+-q Consultar sobre paquetes como (-qi, -qa, etc)
+	a: todos lo paquetes
+	i: info de un paquete en particular
+	f: muestra los paquetes que contienen un fichero especificado
+	l: ficheros instalados por un paquete
+	p: info sobre un paquete que no esta instalado
+
+
+Comando rpm2Cpio
+Trasforma un fichero rpm en formato cpio y lo muestra por salida estandar
+ejemplo:
+	rpm2cpio htop-2.2.0-3.el7x86_64.rpm > htop.cpio
+
+Con el fichero .cpio podemos extraer el contenido del paquete
+Es recomendable hacerlo en un directorio vacio
+	cpio -i --make-directories < htop.cpio
+
+
+Paquetes rpm y repositorios: YUM
+
+yum: utiliza  repositorios que se configuran en ficheros dentro del directorio /etc/yum.repos.d/. Ejemplo de fichero:CentOS-Base.repo
+Comando yum
+	update: actualiza uno o varios paquetes
+	install: instala uno o varios paquetes
+	remove: desinstala uno o varios paquetes
+	check-update: Comprueba actualizaciones de lo spaquetes que estan instalados
+	upgrade: Actualiza la version a la ultima que tengamos configurada en los repositorios
+	clean: Limpia el directorio cache
+	list: lista los paquetes, podemos especificar: all, available, updates, installed, obsoletes, recent
+	repolist:lista los repositorios activos
+	info: muestra informacion de un paquete determinado
+	search: busca un paquete que contenga un patron determinado ensu nombre o descripcion 
+
+
+Paquetes en Fedora y Suse. Comandos dnf y zypper
+dnf. Es una evolucion de YUM creada por fedora. Esta programado de una forma mas moderna y mejora la eficiencia de su YUM
+
+zypper. Es el gestor de paquetes de SUSE
+
+
+
+
 
 
 

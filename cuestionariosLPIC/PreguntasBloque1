@@ -1,0 +1,679 @@
+Cuestionario (https://www.gratisexam.com/download/lpi/101-500/LPI.onlinetest.101-500.v2021-04-29.by.mason.66q.pdf)
+
+
+
+QUESTION 1
+Which type of file system is created by mkfs when it is executed with the block device name only and without any additional parameters?
+https://www.gratisexam.com/
+A. XFS
+B. VFAT
+C. ext2 # 
+D. ext3
+E. ext4
+
+Which of the following commands changes the number of days before the ext3 filesystem on /dev/sda1 has to run through a full filesystem check while booting?
+A. tune2fs –d 200 /dev/sda1
+B. tune2fs –i 200 /dev/sda1 #
+C. tune2fs –c 200 /dev/sda1
+D. tune2fs –n 200 /dev/sda1
+E. tune2fs --days 200 /dev/sda1
+
+Which is the default percentage of reserved space for the root user on new ext4 filesystems?
+A. 10%
+B. 3%
+C. 15%
+D. 0%
+E. 5% # 
+
+
+QUESTION 4 ***
+Which of the following is true when a file system, which is neither listed in /etc/fstab nor known to system, is mounted manually?
+A. systemd ignores any manual mounts which are not done using the systemctl mount command
+B. The command systemctl mountsync can be used to create a mount unit based on the existing mount
+C. systemd automatically generates a mount unit and monitors the mount point without changing it
+D. Unless a systemd mount unit is created, systemd unmounts the file system after a short period of time
+E. systemctl unmount must be used to remove the mount because system opens a file descriptor on the mount point
+
+
+QUESTION 5
+Consider the following output from the command ls –i:
+525385 -rw-rw-r-- 2 1000 1000 0 Feb 12 19:44 a.txt
+526255 lrwxrwxrwx 1 1000 1000 5 Feb 12 19:44 b.txt -> a.txt
+
+How would a new file named c.txt be created with the same inode number as a.txt (Inode 525385)?
+A. ln –h a.txt c.txt
+B. ln c.txt a.txt
+C. ln a.txt c.txt #
+D. ln –f c.txt a.txt
+E. ln –i 525385 c.txt
+
+
+QUESTION 6
+When considering the use of hard links, what are valid reasons not to use hard links?
+A. Hard links are not available on all Linux systems because traditional filesystems, such as ext4, do not support them
+B. Each hard link has individual ownership, permissions and ACLs which can lead to unintended disclosure of file content
+C. Hard links are specific to one filesystem and cannot point to files on another filesystem #
+D. If users other than root should be able to create hard links, suln has to be installed and configured
+
+
+QUESTION 7
+In compliance with the FHS, in which of the directories are man pages found?
+A. /opt/man/
+B. /usr/doc/
+C. /usr/share/man/ #
+D. /var/pkg/man
+
+QUESTION 8
+What is the process ID number of the init process on a System V init based system?
+A. -1
+B. 0
+C. 1 #
+D. It is different with each reboo
+
+QUESTION 9
+Which daemon handles power management events on a Linux system?
+A. acpid #
+B. batteryd
+C. pwrmgntd
+D. psd
+E. inetd
+
+QUESTION 10
+Which of the following statements are true about the boot sequence of a PC using a BIOS? (Choose two.)
+A. Some parts of the boot process can be configured from the BIOS #
+B. Linux does not require the assistance of the BIOS to boot a computer
+C. The BIOS boot process starts only if secondary storage, such as the hard disk, is functional
+D. The BIOS initiates the boot process after turning the computer on #
+E. The BIOS is started by loading hardware drivers from secondary storage, such as the hard disk 
+
+
+QUESTION 11 ***
+What is true regarding UEFI firmware? (Choose two.)
+A. It can read and interpret partition tables
+B. It can use and read certain file systems #
+C. It stores its entire configuration on the /boot/ partition 
+D. It is stored in a special area within the GPT metadata #
+E. It is loaded from a fixed boot disk position
+
+La configuracion del firmware UEFI no se guarda en el disco duro, sino, en una memoria flash integrada en la placa base, como el BIOS. (/boot o /boot/efi son particiones del sistema operativo, no del firmware)
+
+
+
+QUESTION 12
+A faulty kernel module is causing issues with a network interface card. Which of the following actions ensures that this module is not loaded automatically when the
+system boots?
+A. Using lsmod --remove --autoclean without specifying the name of a specific module
+B. Using modinfo –k followed by the name of the offending module
+C. Using modprobe –r followed by the name of the offending module
+D. Adding a blacklist line including the name of the offending module to the file /etc/modprobe.d/blacklist.conf #
+E. Deleting the kernel module’s directory from the file system and recompiling the kernel, including its modules
+
+QUESTION 13
+What is the first program the Linux kernel starts at boot time when using System V init?
+A. /lib/init.so
+B. /proc/sys/kernel/init
+C. /etc/rc.d/rcinit
+D. /sbin/init # 
+E. /boot/init
+
+
+
+QUESTION 14
+A Debian package creates several files during its installation. Which of the following commands searches for packages owning the file /etc/debian_version?
+A. apt-get search /etc/debian_version
+B. apt –r /etc/debian_version
+C. find /etc/debian_version -dpkg
+D. dpkg –S /etc/debian_version  # tanto dpkg-query -S y dpkg -S hacen lo mismo
+E. apt-file /etc/debian_version
+
+
+
+QUESTION 15 ***
+Which of the following files exist in a standard GRUB 2 installation? (Choose two.)
+A. /boot/grub/stages/stage0
+B. /boot/grub/i386-pc/lvm.mod # En grub, los modulos (funcionealidades adicionales) se almacenan dentro de una carpeta como /boot/grub/i386-pc/ y si el sistema es EFI /boot/grub/x86_64-efi/
+C. /boot/grub/fstab
+D. /boot/grub/grub.cfg # 
+E. /boot/grub/linux/vmlinuz
+
+la opcion A
+En GRUB 2 ya no existen los archivos “stage0”, “stage1”, “stage2”, porque el nuevo GRUB usa un sistema modular con .mod en lugar de “stages”.
+
+la opcion E no es por que el kernel esta en el directorio /boot/vmlinuz-<version>
+
+
+QUESTION 16
+Which of the following commands installs all packages with a name ending with the string foo?
+A. zypper get “*foo”
+B. zypper update “foo?”
+C. zypper force “foo*”
+D. zypper install “*foo” #
+E. zypper add “.*foo”
+
+
+QUESTION 17 ***
+Which of the following properties of a Linux system should be changed when a virtual machine is cloned? (Choose two.)
+A. The partitioning scheme
+B. The file system
+C. The D-Bus Machine ID #
+D. The permissions of /root/
+E. The SSH host keys # 
+
+QUESTION 18 - REPASAR 
+Which of the following commands installs GRUB 2 into the master boot record on the third hard disk?
+A. grub2 install /dev/sdc
+B. grub-mkrescue /dev/sdc
+C. grub-mbrinstall /dev/sdc
+D. grub-setup /dev/sdc
+E. grub-install /dev/sdc # 
+
+
+QUESTION 19
+What is true regarding the configuration of yum? (Choose two.)
+A. Changes to the repository configuration become active after running yum confupdate
+B. Changes to the yum configuration become active after restarting the yumd service
+C. The configuration of package repositories can be divided into multiple files # 
+D. Repository configurations can include variables such as $basearch or $releasever # 
+E. In case /etc/yum.repos.d/ contains files, /etc/yum.conf is ignored
+
+
+QUESTION 20 ***
+Which of the following apt-get subcommands installs the newest versions of all currently installed packages?
+A. auto-update
+B. dist-upgrade #
+C. full-upgrade
+D. install
+E. update
+
+apt-get dist-upgrade (o su nombre moderno apt full-upgrade) se usa para:
+
+Instalar las nuevas versiones de todos los paquetes ya instalados
+Y además manejar los cambios en dependencias (por ejemplo, eliminar paquetes obsoletos o instalar nuevos requeridos)
+
+
+QUESTION 21
+Which command uninstalls a package but keeps its configuration files in case the package is re-installed?
+A. dpkg –s pkgname
+B. dpkg –L pkgname
+C. dpkg –P pkgname
+D. dpkg –v pkgname
+E. dpkg –r pkgname # Para eliminar todos los archivos de configuracion usamos -P o --purge 
+
+
+
+QUESTION 22 ***
+Which of the following commands lists the dependencies of the RPM package file foo.rpm?
+A. rpm –qpR foo.rpm # 
+B. rpm –dep foo
+C. rpm –ld foo.rpm
+D. rpm –R foo.rpm
+E. rpm –pD foo
+
+
+QUESTION 23 ***
+What is the maximum niceness value that a regular user can assign to a process with the nice command when executing a new process?
+A. 9
+B. 15
+C. 19 ##
+D. 49
+E. 99 
+
+
+QUESTION 24 
+Which of the following commands list all files and directories within the /tmp/ directory and its subdirectories which are owned by the user root? (Choose two.)
+A. find /tmp –user root -print #
+B. find –path /tmp –uid root
+C. find /tmp –uid root -print
+D. find /tmp –user root # 
+E. find –path /tmp –user root -print
+
+
+QUESTION 25 ****
+Which of the following vi commands deletes two lines, the current and the following line?
+A. d2
+B. 2d
+C. 2dd ##
+D. dd2
+E. de12
+
+
+QUESTION 26 ***
+From a Bash shell, which of the following commands directly execute the instructions from the file /usr/local/bin/runme.sh without starting a subshell?
+(Choose two.)
+A. source /usr/local/bin/runme.sh
+B. /usr/local/bin/runme.sh
+C. /bin/bash /usr/local/bin/runme.sh #
+D. ./usr/local/bin/runme.sh #
+E. run /usr/local/bin/runme.sh
+
+Documento dice que es la AD
+
+
+QUESTION 27
+Immediately after deleting 3 lines of text in vi and moving the cursor to a different line, which single character command will insert the deleted content below the
+current line?
+A. i (lowercase)
+B. p (lowercase) # 
+C. P (uppercase)
+D. U (uppercase)
+E. u (lowercase)
+
+QUESTION 28 ***
+Which of the following commands changes all CR-LF line breaks in the text file userlist.txt to Linux standard LF line breaks and stores the result in
+newlist.txt?
+A. tr –d ‘\r’ < userlist.txt > newlist.txt #
+B. tr –c ‘\n\r’ ‘’ <newlist.txt> userlist.txt
+C. tr ‘\r\n’ ‘’ <userlist.txt> newlist.txt
+D. tr ‘\r’ ‘\n’ userlist.txt newlist.txt
+E. tr –s ‘/^M/^J/’ userlist.txt newlist.txt
+
+
+QUESTION 29
+Given the following input stream:
+txt1.txt
+atxt.txt
+txtB.txt
+Which of the following regular expressions turns this input stream into the following output stream?
+txt1.bak.txt
+atxt.bak.txt
+txtB.bak.txt
+A. s/^.txt/.bak/
+B. s/txt/bak.txt/
+C. s/txt$/bak.txt/ # 
+D. s/^txt$/.bak^/
+E. s/[.txt]/.bak$1/
+
+
+QUESTION 30
+Which command must be entered before exiting vi to save the current file as filea.txt?
+A. %s filea.txt
+B. %w filea.txt
+C. :save filea.txt
+D. :w filea.txt # 
+E. :s filea.txt
+
+
+
+QUESTION 31 ***
+Which of the following signals is sent to a process when the key combination Ctrl+C is pressed on the keyboard?
+A. SIGTERM
+B. SIGCONT
+C. SIGSTOP
+D. SIGKILL 
+E. SIGINT #
+
+Interrupción del Proceso: SIGINT le indica al proceso que debe interrumpirse y finalizar. Es comúnmente utilizado para detener programas que están ejecutándose en la terminal.
+
+
+
+QUESTION 32
+Which of the following commands displays the output of the foo command on the screen and also writes it to a file called /tmp/foodata?
+A. foo | less /tmp/foodata
+B. foo | cp /tmp/foodata
+C. foo > /tmp/foodata
+D. foo | tee /tmp/foodata # 
+E. foo > stdout >> /tmp/foodata
+
+
+QUESTION 33
+Which of the following commands displays the path to the executable file that would be executed when the command foo is invoked?
+A. lsattr foo
+B. apropos foo
+C. locate foo
+D. whatis foo
+E. which foo #
+
+
+QUESTION 34
+What is true regarding the command
+ls > files
+if files does not exist?
+A. The output of ls is printed to the terminal
+B. files is created and contains the output of ls # 
+C. An error message is shown and ls is not executed
+D. The command files is executed and receives the output of ls
+E. Any output of ls is discarded
+
+
+
+QUESTION 35 **
+Which of the following commands displays the contents of a gzip compressed tar archive?
+A. gzip archive.tgz | tar xvf -
+B. tar –fzt archive.tgz 
+C. gzip –d archive.tgz | tar tvf -
+D. tar cf archive.tgz
+E. tar ztf archive.tgz # Funciona  aun si no pones el signo de "-"
+
+
+QUESTION 36
+Which of the following commands prints a list of usernames (first column) and their primary group (fourth column) from the /etc/passwd file?
+A. fmt –f 1,4 /etc/passwd
+B. cut –d : -f 1,4 /etc/passwd #
+C. sort –t : -k 1,4 /etc/passwd
+D. paste –f 1,4 /etc/passwd
+E. split –c 1,4 /etc/passwd
+
+
+QUESTION 37
+Given a log file loga.log with timestamps of the format DD/MM/YYYY:hh:mm:ss, which command filters out all log entries in the time period between 8:00 am
+and 8:59 am?
+A. grep –E ‘:08:[09]+:[09]+’ loga.log
+B. grep –E ‘:08:[00]+’ loga.log
+C. grep –E loga.log ‘:08:[0-9]+:[0-9]+’
+D. grep loga.log ‘:08:[0-9]:[0-9]’
+E. grep –E ‘:08:[0-9]+:[0-9]+’ loga.log # 
+
+
+
+QUESTION 38
+Instead of supplying an explicit device in /etc/fstab for mounting, what other options may be used to identify the intended partition? (Choose two.)
+A. LABEL #
+B. ID
+C. FIND
+D. NAME
+E. UUID # 
+
+
+
+QUESTION 39 ***
+Which of the following commands installs the GRUB boot files into the currently active file systems and the boot loader into the first partition of the first disk?
+A. grub-install /dev/sda # 
+B. grub-install /dev/sda1  
+C. grub-install current /dev/sda0
+D. grub-install /dev/sda0
+E. grub-install current /dev/sda1
+
+
+
+
+QUESTION 40
+When removing a package on a system using dpkg package management, which dpkg option ensures configuration files are removed as well?
+A. --clean
+B. --purge # 
+C. --vacuum
+D. --remove
+E. --declare
+
+
+QUESTION 41 - REPASAR CONCEPTORS
+Which of the following statements are correct when comparing Linux containers with traditional virtual machines (e.g. LXC vs. KVM)? (Choose three.)
+A. Containers are a lightweight virtualization method where the kernel controls process isolation and resource management. # 
+B. Fully virtualized machines can run any operating system for a specific hardware architecture within the virtual machine.#
+C. Containers are completely decoupled from the host system’s physical hardware and can only use emulated virtual hardware devices.
+D. The guest environment for fully virtualized machines is created by a hypervisor which provides virtual and emulated hardware devices. ##
+E. Containers on the same host can use different operating systems, as the container hypervisor creates separate kernel execution 
+
+
+QUESTION 42 ***
+Which of the following commands lists all currently installed packages when using RPM package management?
+A. yum --query --all
+B. yum --list --installed
+C. rpm --query --list
+D. rpm --list --installed 
+E. rpm --query --all ##
+
+
+
+
+QUESTION 43 **
+A backup software heavily uses hard links between files which have not been changed in between two backup runs. Which benefits are realized due to these hard
+links? (Choose two.)
+A. The old backups can be moved to slow backup media, such as tapes, while still serving as hard link target in new backups. #
+B. The backup runs faster because hard links are asynchronous operations, postponing the copy operation to a later point in time.
+C. The backup is guaranteed to be uncharged because a hard linked file cannot be modified after its creation.
+D. The backup consumes less space because the hard links point to the same data on disk instead of storing redundant copies. #
+E. The backup runs faster because, instead of copying the data of each file, hard links only change file system meta data 
+
+
+QUESTION 44 - REPASAR TEMA 
+How many fields are in a syntactically correct line of /etc/fstab?
+A. 3
+B. 4
+C. 5
+D. 6 # 
+E. 7
+
+
+
+QUESTION 45
+Which of the following commands can be used to display the inode number of a given file? (Choose two.)
+A. inode
+B. ln
+C. ls # 
+D. cp
+E. stat #
+
+
+
+
+QUESTION 46
+After a power outage, the XFS file system of /dev/sda3 is inconsistent. How can the existing file system errors be fixed?
+A. By using mount -f to force a mount of the file system
+B. By running xfsck on the file system
+C. By mounting the file system with the option xfs_repair
+D. By running xfsadmin repair on the file system
+E. By running xfs_repair on the file system #
+
+
+QUESTION 47
+Which of the following commands show how the shell handles a specific command?
+A. where
+B. type # 
+C. stat
+D. case
+E. fileinfo
+
+
+QUESTION 48 - REPASAR TEMA
+When in Normal mode in vi, which character can be used to begin a reverse search of the text?
+A. r
+B. / 
+C. F
+D. ? # 
+E. s
+
+
+
+QUESTION 49 - REPASAR TEMA 
+Which of the following commands displays the manual page command from section 1?
+A. man command(1)
+B. man command@1
+C. man 1 command # 
+D. man 1.command
+E. man -s 1 command
+
+
+QUESTION 50 - REPASAR TEMA 
+Which of the following commands display the IDs of all processes owned by root? (Choose two.)
+A. pgrep -c root
+B. pgrep -u root #
+C. pgrep -f root # 
+D. pgrep -U 0
+E. pgrep -c 0
+
+
+QUESTION 51
+What is the effect of the -v option for the grep command?
+A. It enables color to highlight matching parts.
+B. It shows the command’s version information.
+C. It only outputs non-matching lines. # 
+D. It changes the output order showing the last matching line first.
+E. It outputs all lines and prefixes matching lines with a+.i
+
+
+
+QUESTION 52
+Which of the following signals is sent to a process when the key combination Ctrl+Z is pressed on the keyboard?
+A. SIGTERM
+B. SIGCONT
+C. SIGSTOP # 
+D. SIGKILL
+E. SIGINT
+
+
+
+QUESTION 53
+Which of the following commands print the current working directory when using a Bash shell? (Choose two.)
+A. echo “${PWD}” # 
+B. echo “${WD}”
+C. printwd
+D. pwd # 
+E. echo “${pwd}”
+
+
+
+QUESTION 54 - REPASAR TEMA 
+Which of the following commands outputs test to the shell?
+A. cat <!EOT
+test
+EOT
+B. cat <|EOT
+test
+EOT
+C. cat !<EOT
+test
+EOT
+D. cat &<EOT
+test
+EOT
+E. cat <<EOT # 
+test
+EOT
+
+
+
+QUESTION 55 *** 
+What is the default nice level when a process is started using the nice command?
+A. -10
+B. 0 #
+C. 10
+D. 15
+E. 20
+
+QUESTION 56 - REPASAR TEMA 
+A user accidentally created the subdirectory \dir in his home directory. Which of the following commands will remote that directory?
+A. rmdir ~/\\dir
+B. rmdir “~/\dir”
+C. rmdir ~/’dir’
+D. rmdir ~/\dir # 
+E. rmdir ‘~/\dir’
+
+
+QUESTION 57
+Which of the following commands can perform searches on file contents using regular expressions?
+A. find
+B. locate
+C. grep # 
+D. reggrep
+E. pgrep
+
+
+
+
+QUESTION 58
+In a nested directory structure, which find command line option would be used to restrict the command to searching down a particular number of subdirectories?
+A. -maxdepth # 
+B. -dirmax
+C. -maxlevels
+D. -s
+E. -n
+
+
+QUESTION 59
+Which of the following commands generates a list of user names from /etc/passwd along with their login shell?
+A. column -s : 1,7 /etc/passwd
+B. chop -c 1,7 /etc/passwd
+C. colrm 1,7 /etc/passwd
+https://www.gratisexam.com/
+885CB989129A5F974833949052CFB2F2
+D. sort -t: -k1,7 /etc/passwd
+E. cut -d: -f1,7 /etc/passwd # 
+
+
+
+QUESTION 60 ******************** INVESTIAR
+If the gzip compressed tar archive texts.tgz contains the files a.txt and b.txt, which files will be present in the current directory after running gunzip
+texts.tgz?
+A. Only a.txt, b.txt, and texts.tgz
+B. Only texts.tar and texts.tgz
+C. Only a.txt.gz and b.txt.gz
+D. Only a.txt and b.txt # Ya que gunzip elimina el archivo comprimido 
+E. Only texts.tar
+
+
+
+QUESTION 61
+Which of the following statements is correct for a command ending with an & character?
+A. The command’s output is redirected to /dev/null.
+B. The command is run in background of the current shell. # 
+C. The command’s output is executed by the shell.
+D. The command is run as a direct child of the init process.
+E. The command’s input is read from /dev/null.
+
+
+QUESTION 62
+Which of the following commands reads a file and creates separate chunks of a given size from the file’s contents?
+A. ar
+B. cat
+C. break
+D. split # 
+E. parted
+
+
+
+QUESTION 63 - REPASAR TEMA 
+In Bash, inserting 1>&2 after a command redirects…
+A. …standard error to standard input.
+B. …standard output to standard error. # 
+C. …standard input to standard error. 
+D. …standard error to standard output.
+E. …standard output to standard input.
+
+
+
+QUESTION 64 *** 
+Which of the following statements are correct about the initial RAM disk involved in the boot process of Linux? (Choose two.)
+A. An initramfs is a compressed file system archive, which can be unpacked to examine its contents.
+B. An initramfs file contains the MBR, the bootloader and the Linux kernel.
+C. After a successful boot, the initramfs contents are available in /run/initramfs/.
+D. The kernel uses the initramfs temporarily before accessing the real root file system. # 
+E. An initramfs does not depend on a specific kernel version and is not changed after the initial installation # 
+
+Segun el documento es AC 
+
+
+
+QUESTION 65
+What information can the lspci command display about the system hardware? (Choose three.)
+A. System battery type
+B. Device IRQ settings #
+C. PCI bus speed #
+D. Ethernet MAC address
+E. Device vendor identification # 
+
+
+QUESTION 66
+Given the following two symbolic links in a System V init configuration:
+/etc/rc1.d/K01apache2
+/etc/rc2.d/S02apache2
+When are the scripts executed that are referenced by these links? (Choose two.)
+A. S02apache2 is run when runlevel 2 is entered ##
+B. S02apache2 is run when runlevel 2 is left.
+C. K01apache2 is never run because K indicates a deactivated service.
+D. Both S02apache2 and K01apache2 are run during a system shutdown.
+E. K01apache2 is run when runlevel 1 is entered. ## 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
