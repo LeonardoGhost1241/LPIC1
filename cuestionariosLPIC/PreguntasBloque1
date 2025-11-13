@@ -34,6 +34,7 @@ C. systemd automatically generates a mount unit and monitors the mount point wit
 D. Unless a systemd mount unit is created, systemd unmounts the file system after a short period of time
 E. systemctl unmount must be used to remove the mount because system opens a file descriptor on the mount point
 
+En algunas partes, dicen que es la B y en otros la C y la IA me dijo que la D ????????????????
 
 QUESTION 5
 Consider the following output from the command ls –i:

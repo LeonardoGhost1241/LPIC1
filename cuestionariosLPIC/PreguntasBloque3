@@ -1,0 +1,35 @@
+Cuestionario (https://www.examtopics.com/exams/lpi/102-500/)
+
+
+FILL BLANK - ***
+Which command is used to set the hostname of the local system? (Specify only the command without any path or parameters.)
+answer: hostname 
+
+
+Which of the following is a valid IPv6 address?
+    A. 2001:db8:0g21::1
+    B. 2001::db8:4581::1
+    C. 2001:db8:3241::1 # 
+    D. 2001%db8%9990%%1
+    E. 2001.db8.819f..1
+
+
+
+FILL BLANK -
+What command, depending on its options, can display the open TCP connections, the routing tables, as well as network interface statistics? (Specify only the command without any path or parameters.)
+Answer: netstat
+
+
+
+
+FILL BLANK -
+Which command included in NetworkManager is a curses application which provides easy acces to the NetworkManager on the command line? (Specify only the command without any path or parameters.)
+Answer:  nmtui 
+
+
+
+
+
+
+
+

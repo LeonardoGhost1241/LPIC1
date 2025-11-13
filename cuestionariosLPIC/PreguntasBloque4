@@ -1,0 +1,389 @@
+Cuestionario  (https://www.linux-praxis.de/lpisim/lpi101sim/exam.php)
+
+
+You want to install a Linux-Server without keyboard. What of the following
+is necessary to avoid error messages during startup? 
+1 Create an empty file /etc/nokeyb
+2 Load the module nokeyb.o
+3 Configure the CMos-Setup "Halt on" to "All but keyboard"
+4 Enter an entry "alias keyboard off" in /etc/modules.conf
+5 Nothing 
+
+
+
+Which of the following statements are true?
+Choose every correct answer.
+Mark question for review    
+The LBA-mode of a harddisk is used to turn on DMA or UDMA
+A harddisk with more than 1024 cylinders should be used in LBA-mode
+A harddisk with more than 1.2 GByte capacity can only be used in LBA-mode
+A LBA-mode does not change the capacity of a harddisk
+A harddisk with more than 1024 cylinders can't be mounted without LBA-mode 
+
+
+How could you get the physical SCSI address of /dev/sda ?
+Choose the best answer.
+Mark question for review    
+Using the command scsi-info /dev/sda
+Using the command scsi_info /dev/sda
+Using the command scsiinfo /dev/sda
+Using the command get_scsi_info /dev/sda
+Using the command lsscsi 
+
+
+
+ You detect a VIA USB controler in your computer. Which USB module would you
+load to use this controler?
+
+ 
+
+	
+
+Choose the best answer.
+Mark question for review    
+usb-via
+usb-ohci
+usb-uhci
+usb-intel
+usb-compaq 
+
+
+
+Which of the following directories have to be placed on the root partition?
+Choose every correct answer.
+Mark question for review    
+/usr
+/boot
+/lib
+/sbin
+/dev 
+
+
+
+
+ Which of the following directories have to be placed on the root partition?
+Choose every correct answer.
+Mark question for review    
+/usr
+/boot
+/lib
+/sbin
+/dev 
+
+
+When do you need to rerun the grub-install command?
+Choose every correct answer.
+Mark question for review    
+After every boot
+After every modification of the grub configuration file
+After installing a new kernel with a new name in /boot
+After overwriting the old kernel in /boot with a new one
+Only the first time after installing GRUB 
+
+
+
+
+ After unpacking the sourcecode of a GNU software package, you want to
+compile and install it on your system. Which of the following lines could be
+used?
+Choose the best answer.
+Mark question for review    
+make configure; make all; make install
+./configure;make;make install #
+make config;make;make install
+configure;make;make install
+./configure;make; install 
+
+
+
+
+
+
+You have just installed the new program foobar manually. This program uses
+shared libraries, which are installed to /usr/local/foobar/lib.
+What is neccesary to do after the installation so that the libraries can be
+used?
+Choose the best answer.
+Mark question for review    
+Restart your computer
+run ldconfig ##
+edit /etc/ld.so.conf to add the new library path and then run ldconfig
+edit /etc/ld.so.conf to add the new library path and then run ld.so
+create symbolic links from every library in /usr/local/foobar/lib to /usr/lib 
+
+
+
+You want to install the debian package file foobar.deb. This file is located
+in /home/bob. Which command would you use to install this file?
+Choose the best answer.
+Mark question for review    
+install /home/bob/foobar.deb
+apt-get install /home/bob/foobar.deb
+debinst -f /home/bob/foobar.deb
+dpkg -i /home/bob/foobar.deb # 
+dselect /home/bob/foobar.deb 
+
+
+
+Which command would you use to get a list of all files inside the rpm-packet ****
+foobar.rpm in /home/bob?
+Choose the best answer.
+Mark question for review    
+rpm -ql /home/bob/foobar.rpm
+rpm -ql -p /home/bob/foobar.rpm # 
+rpm -l /home/bob/foobar.rpm
+rpm -l -p /home/bob/foobar.rpm 
+
+
+Which command is NOT usable to install debian packages?
+Choose the best answer.
+Mark question for review    
+dpkg
+dselect
+apt-get
+dinst  ##
+
+
+
+ How can you describe the function of the following commands?
+foo | tee bar | foobar
+Choose the best answer.
+Mark question for review    
+The command foo redirects its output to the command tee. After that the command bar redirects its output to the command foobar
+The command foo writes its output to the file tee; the command bar writes its output to the file foobar
+The command foo redirects its output to the command tee which writes it into the file bar and sends the same further to the command foobar #
+The command foobar gets its input from the command bar which gets its input from the command foo
+This isn't a valid commandline 
+
+
+ How could you describe the following commandline?
+foo > bar 2>&1
+Choose the best answer.
+Mark question for review    
+The command foo redirects its output to the command bar and bar redirects its input back to foo.
+The command bar is only processed if the command foo returns a status of 1 or 2.
+The command foo writes its STDOUT and STDERR into the file bar. # 
+The command foo writes its output into the file bar and into the file 2.
+This isn't a valid commandline
+
+
+What would the following command result in?
+echo $(date +%H:%M) > file
+Choose the best answer.
+Mark question for review    
+The string "date +%H:%M" will be written into the file
+The content of the variable named "date +%H:%M" will be written into the file
+The content of the variable named after the current time (Hours:Minutes) will be written into the file
+The current time (Hours:Minutes) will be written into the file # 
+This isn't a valid command 
+
+
+
+Which of the following commands could be used to search for a particular
+term inside a textfile without opening the file?
+Choose every correct answer.
+Mark question for review    
+grep #
+vi
+ex
+less
+sed #
+
+What command is used to connect lines of different textfiles to one line, *******************************
+without concerning common fields (just the command - no options)? 
+Answer: Paste 
+
+
+
+ How could you create a directory /foo/bar if /foo does not exist?
+Choose the best answer.
+Mark question for review    
+md /foo/bar
+mkdir /foo/bar
+mkdir -p /foo/bar ### 
+createdir /foo/bar
+newdir /foo/bar 
+
+
+
+
+How could you start the command foo in the background?
+Choose the best answer.
+Mark question for review    
+bg foo
+background foo
+foo --background
+foo & ####
+foo -bg 
+
+
+
+
+What is a zombie-process?
+Choose the best answer.
+Mark question for review    
+A hung process which refuses to accept keyboard input
+A process which has already done its work but couldn't die due to other reasons # 
+A process without own terminal
+A process which isn't reachable by any signals
+A process which kills other processes 
+
+
+
+ Which statements are true? ************
+Choose every correct answer.
+Mark question for review    
+A nice value reaches from 0 to 20
+Only root can use negative nice values #
+A less nice value means higher priority #
+Nice-values can be changed with the ps-command
+An even nice-value means high, an odd value low priority 
+
+
+
+
+How could you display all lines of text from the file foo which are not*************
+empty?
+Choose the best answer.
+Mark question for review    
+grep ".*" foo
+grep -v ^$ foo ##
+grep -v ^\r\n foo
+grep -v \r\n foo
+grep -v "[]" foo 
+
+
+
+
+ What command would you use to copy all files inside the current directory
+which names begin with a number to /tmp
+Choose the best answer.
+Mark question for review    
+cp [:num:]* /tmp
+cp [0-9]* /tmp #####
+cp [0-9] /tmp
+cp [0-9*] /tmp
+cp [0-9].* /tmp 
+
+
+
+/dev/____ ist the first logical partition of the slave on the second ********************
+IDE-channel. 
+Answer:hdb1
+
+
+
+ While monitoring the integrity of the filesystems, you detect, that there *********************
+are no more free inodes left on the /home partition although there are many
+megabytes free space. What could be the reason?
+Choose the best answer.
+Mark question for review    
+This is a typical filesystem error on ext2 partitions.
+A user has created lots of very small files. ###
+The inode table is corrupted.
+There are lots of cross-linked files.
+The report of many megabytes free space is wrong due to an overflow of the 32 Bit Free-Space-Variable. 
+
+
+
+
+ What command is used to unmount mounted filesystems? (Just the command - no
+options)
+Answer: umount
+
+
+
+ How could you get the information, what kind of quota is activated for user *********************
+foo?
+Choose the best answer.
+Mark question for review    
+repquota foo
+repquota --user foo
+quota foo ####
+quota --user foo
+quotainfo foo 
+
+
+
+
+
+ What is the meaning of the Substitute Group ID Bit applied to a directory?
+Choose the best answer.
+Mark question for review    
+Every file created inside this directory will be owned by the group of the directory instead of the group of the creating user. # 
+Every user inside the directory has the rights of the group of the directory.
+Only members of the group of the directory can create files inside the directory, even if they otherwise would have the right to write inside the directory.
+A user with write permission in this directory may not remove any file inside.
+Nothing. The SGID bit is only used for regular files. 
+
+
+
+
+
+ How could you read the current umask setting?
+Choose the best answer.
+Mark question for review    
+umask --show
+echo $UMASK
+echo $umask
+umask # 
+which umask 
+
+
+
+ How could you change the ownership of the file foobar to user foo?
+Choose the best answer.
+Mark question for review    
+chown foo:foobar
+chown foobar foo
+chown foo foobar # 
+chmod --user foo foobar
+chperm --user foo --file foobar 
+
+
+
+
+ How could you detect if the file foo and bar are hardlinked together or not?
+Choose the best answer.
+Mark question for review    
+The command "ls --link foo" shows a list of all files which are hardlinked to foo.
+The command "ls -i foo bar" shows the used inodes of foo and bar. If they are the same, they are linked together. # 
+The command "islink foo bar" shows "yes" if the files are linked together, "no" if not.
+The command "find . --hardlink foo" shows a list of all files which are hardlinked to foo.
+There is no way to detect this. 
+
+
+
+
+
+
+
+ You (as a normal user) have created a new file named foo inside /tmp. But if you try to find
+this file using the command
+locate foo
+there is no result. What is the reason?
+Choose the best answer.
+Mark question for review    
+The /tmp directory is not searched by locate
+locate only looks for commands inside the searchpath of the shell (PATH)
+Only the superuser (root) may use locate in /tmp
+locate only searches the system-database. The command will work after the next run of updatedb. # 
+You have no search-permission for /tmp 
+
+
+
+
+
+
+
+ In what section of your XF86Config file would you enter the directive to use ************
+a particular font server?
+Choose the best answer.
+Mark question for review    
+Section "Module"
+Section "Files"
+Section "ServerFlags"
+Section "InputDevice"
+Section "Screen" 
+
+
