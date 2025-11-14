@@ -1,0 +1,288 @@
+QUESTION 4 ***
+Which of the following is true when a file system, which is neither listed in /etc/fstab nor known to system, is mounted manually?
+A. systemd ignores any manual mounts which are not done using the systemctl mount command
+B. The command systemctl mountsync can be used to create a mount unit based on the existing mount
+C. systemd automatically generates a mount unit and monitors the mount point without changing it
+D. Unless a systemd mount unit is created, systemd unmounts the file system after a short period of time
+E. systemctl unmount must be used to remove the mount because system opens a file descriptor on the mount point
+
+QUESTION 11 ***
+What is true regarding UEFI firmware? (Choose two.)
+A. It can read and interpret partition tables
+B. It can use and read certain file systems #
+C. It stores its entire configuration on the /boot/ partition 
+D. It is stored in a special area within the GPT metadata #
+E. It is loaded from a fixed boot disk position
+
+QUESTION 15 ***
+Which of the following files exist in a standard GRUB 2 installation? (Choose two.)
+A. /boot/grub/stages/stage0
+B. /boot/grub/i386-pc/lvm.mod # En grub, los modulos (funcionealidades adicionales) se almacenan dentro de una carpeta como /boot/grub/i386-pc/ y si el sistema es EFI /boot/grub/x86_64-efi/
+C. /boot/grub/fstab
+D. /boot/grub/grub.cfg # 
+E. /boot/grub/linux/vmlinuz
+
+QUESTION 17 ***
+Which of the following properties of a Linux system should be changed when a virtual machine is cloned? (Choose two.)
+A. The partitioning scheme
+B. The file system
+C. The D-Bus Machine ID #
+D. The permissions of /root/
+E. The SSH host keys # 
+
+QUESTION 20 ***
+Which of the following apt-get subcommands installs the newest versions of all currently installed packages?
+A. auto-update
+B. dist-upgrade #
+C. full-upgrade
+D. install
+E. update
+
+QUESTION 22 ***
+Which of the following commands lists the dependencies of the RPM package file foo.rpm?
+A. rpm –qpR foo.rpm # 
+B. rpm –dep foo
+C. rpm –ld foo.rpm
+D. rpm –R foo.rpm
+E. rpm –pD foo
+
+QUESTION 23 ***
+What is the maximum niceness value that a regular user can assign to a process with the nice command when executing a new process?
+A. 9
+B. 15
+C. 19 ##
+D. 49
+E. 99 
+
+QUESTION 25 ****
+Which of the following vi commands deletes two lines, the current and the following line?
+A. d2
+B. 2d
+C. 2dd ##
+D. dd2
+E. de12
+
+QUESTION 26 ***
+From a Bash shell, which of the following commands directly execute the instructions from the file /usr/local/bin/runme.sh without starting a subshell?
+(Choose two.)
+A. source /usr/local/bin/runme.sh
+B. /usr/local/bin/runme.sh
+C. /bin/bash /usr/local/bin/runme.sh #
+D. ./usr/local/bin/runme.sh #
+E. run /usr/local/bin/runme.sh
+QUESTION 28 ***
+Which of the following commands changes all CR-LF line breaks in the text file userlist.txt to Linux standard LF line breaks and stores the result in
+newlist.txt?
+A. tr –d ‘\r’ < userlist.txt > newlist.txt #
+B. tr –c ‘\n\r’ ‘’ <newlist.txt> userlist.txt
+C. tr ‘\r\n’ ‘’ <userlist.txt> newlist.txt
+D. tr ‘\r’ ‘\n’ userlist.txt newlist.txt
+E. tr –s ‘/^M/^J/’ userlist.txt newlist.txt
+QUESTION 31 ***
+Which of the following signals is sent to a process when the key combination Ctrl+C is pressed on the keyboard?
+A. SIGTERM
+B. SIGCONT
+C. SIGSTOP
+D. SIGKILL 
+E. SIGINT #
+
+QUESTION 35 **
+Which of the following commands displays the contents of a gzip compressed tar archive?
+A. gzip archive.tgz | tar xvf -
+B. tar –fzt archive.tgz 
+C. gzip –d archive.tgz | tar tvf -
+D. tar cf archive.tgz
+E. tar ztf archive.tgz # Funciona  aun si no pones el signo de "-"
+
+QUESTION 39 ***
+Which of the following commands installs the GRUB boot files into the currently active file systems and the boot loader into the first partition of the first disk?
+A. grub-install /dev/sda # 
+B. grub-install /dev/sda1  
+C. grub-install current /dev/sda0
+D. grub-install /dev/sda0
+E. grub-install current /dev/sda1
+
+QUESTION 42 ***
+Which of the following commands lists all currently installed packages when using RPM package management?
+A. yum --query --all
+B. yum --list --installed
+C. rpm --query --list
+D. rpm --list --installed 
+E. rpm --query --all ##
+
+QUESTION 43 **
+A backup software heavily uses hard links between files which have not been changed in between two backup runs. Which benefits are realized due to these hard
+links? (Choose two.)
+A. The old backups can be moved to slow backup media, such as tapes, while still serving as hard link target in new backups. #
+B. The backup runs faster because hard links are asynchronous operations, postponing the copy operation to a later point in time.
+C. The backup is guaranteed to be uncharged because a hard linked file cannot be modified after its creation.
+D. The backup consumes less space because the hard links point to the same data on disk instead of storing redundant copies. #
+E. The backup runs faster because, instead of copying the data of each file, hard links only change file system meta data 
+What is true regarding UEFI firmware? (Choose two.) ****
+A. It can read and interpret partition tables 
+B. It can use and read certain file systems #
+C. It stores its entire configuration on the /boot/ partition 
+D. It is stored in a special area within the GPT metadata #
+E. It is loaded from a fixed boot disk position 
+
+
+FILL BLANK - ***
+Which command is used to set the hostname of the local system? (Specify only the command without any path or parameters.)
+answer: hostname 
+
+
+Which of the following is a valid IPv6 address?
+    A. 2001:db8:0g21::1
+    B. 2001::db8:4581::1
+Which command would you use to get a list of all files inside the rpm-packet ****
+foobar.rpm in /home/bob?
+Choose the best answer.
+Mark question for review    
+rpm -ql /home/bob/foobar.rpm
+rpm -ql -p /home/bob/foobar.rpm # 
+rpm -l /home/bob/foobar.rpm
+rpm -l -p /home/bob/foobar.rpm 
+What command is used to connect lines of different textfiles to one line, *******************************
+without concerning common fields (just the command - no options)? 
+Answer: Paste 
+
+
+
+ How could you create a directory /foo/bar if /foo does not exist?
+Choose the best answer.
+ Which statements are true? ************
+Choose every correct answer.
+Mark question for review    
+A nice value reaches from 0 to 20
+Only root can use negative nice values #
+A less nice value means higher priority #
+Nice-values can be changed with the ps-command
+An even nice-value means high, an odd value low priority 
+How could you display all lines of text from the file foo which are not*************
+empty?
+Choose the best answer.
+Mark question for review    
+grep ".*" foo
+grep -v ^$ foo ##
+grep -v ^\r\n foo
+grep -v \r\n foo
+/dev/____ ist the first logical partition of the slave on the second ********************
+IDE-channel. 
+Answer:hdb1
+
+
+
+ While monitoring the integrity of the filesystems, you detect, that there *********************
+are no more free inodes left on the /home partition although there are many
+ How could you get the information, what kind of quota is activated for user *********************
+foo?
+Choose the best answer.
+Mark question for review    
+repquota foo
+repquota --user foo
+quota foo ####
+quota --user foo
+ In what section of your XF86Config file would you enter the directive to use ************
+a particular font server?
+Choose the best answer.
+Mark question for review    
+Section "Module"
+Section "Files"
+Section "ServerFlags"
+Section "InputDevice"
+Suppose that you have an application whose behavior depends on the environment variable BAR. Which of the following command lines may be used in a bash shell to configure the application? ******
+    A. export $BAR=baz; echo $BAR
+    B. set BAR=baz
+    C. BAR=baz ; export BAR ##
+    D. echo $BAR=baz
+    E. declare -x BAR=baz ###
+    F. echo BAR=baz
+
+ The command 'ps -A' displays an ordered list of all running processes, with the right-justifed process ID in the first space-separated field. Suppose you would like to display to screen a list of the five most recently launched processes (those with the highest process IDs). Which of the following commands will display the desired items?*************************
+    A. ps -A | tail -5 | cut -f 1 -d " "
+    B. ps -A | tail -5 | sed 's/[ ]*[0-9]*//'
+    C. ps -A | head -5 | nl
+    D. ps -A | tac | head -5 | cut -b 1-5 ####
+
+
+
+ Suppose that a file 'names' contains a list of names in the form, "firstname lastname", one per line. These names are unsorted, and you would like them sorted by lastname; however, the format of names on each line should remain the same. Which ONE of the following commands will NOT output an appropriately sorted list of names to the console? *****************
+    A. cut -f 2 -d " " names | paste names - | sort -k 3 | cut -f 1
+    B. sort -k 2 names
+    C. sed 's/\(\w*\) \(\w*\)/\2 \1 \2/' names | sort | cut -f 2-3 -d " "
+    D. cut -f 2 -d " " names | sort
+    E. cut -f 2 -d " " names | paste - names | sort | cut -f 2 # 
+
+
+    D. *
+
+
+
+
+
+
+
+Question 9 of 25 *************
+Which of the following will take you back to your home directory (select all that apply)?
+cd HOME
+cd $HOME # 
+cd USER
+cd $USER
+cd ~ ##
+
+Question 17 of 25 **********
+What command can be used to poweroff a Linux computer first notifying logged in users about the planned event?
+Just enter the command without any options.
+Answer:shutdown 
+
+
+
+Question 18 of 25
+Question 20 of 25 **********************
+What option is used on the rpm command so that a dependency check is not peformed before installing or upgrading a package?
+Just include the option, do not include the command.
+Answer: --nodeps
+
+
+Question 21 of 25 - REPASAR TEMA 
+Which of the following is a configuration file that the ldconfig file uses when checking for shared libraries available.
+Question 24 of 25 **********
+If using the xargs command in a pipeline, what is the effect of using the -0 option?
+Do not run the program
+Only run if earlier program in the pipe failed
+Only run if earlier program in the pipe succeeded
+Treat the input strings as Null separated not space separated ###
+
+
+Question 1 of 25 ***
+What option on the rm command will prompt for confirmation before each file is deleted?
+--ask 
+--noclobber
+-r
+-f
+-i #
+
+Question 16 of 25 *********
+What command can be used to merge together two files line-by-line based on a common field? Enter then name of the command only, no path.
+Answer: join 
+
+
+Answer:Question 18 of 25??????
+When typing at the shell, what character can be used to split a command across multiple lines.
+
+Question 24 of 25 *********
+What command can be run in the bash shell, to prevent accidentally overwriting a file. E.g. to prevent you from overwriting a file using a > redirect in the current shell. 
+Answer: set -o noclobber 
+
+
+
+
+Question 25 of 25 *******************
+Question 13 of 25 ********************
+What is the option that can be used on the uniq command to only show duplicate lines in a file.
+uniq _______ filename
+Answer: -d o --repeated 
+
+
+Question 14 of 25
+Which of the following commands can be used to install a debian package? Choose all that apply.

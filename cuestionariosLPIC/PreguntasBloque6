@@ -419,7 +419,65 @@ Answer:inittab
 
 
 
+Question 13 of 25 ********************
+What is the option that can be used on the uniq command to only show duplicate lines in a file.
+uniq _______ filename
+Answer: -d o --repeated 
 
 
+Question 14 of 25
+Which of the following commands can be used to install a debian package? Choose all that apply.
+dpkg # 
+debian-add
+aptget  
+apt-get # 
+rpm 
+
+
+Question 15 of 25
+Which of the following will update package.rpm, only if an earlier version is already installed?
+rpm -u package.rpm
+rpm -U package.rpm
+rpm -F package.rpm # 
+rpm -f package.rpm
+
+
+
+Question 17 of 25 - REPASAR TEMA 
+What command is used to remove a variable from the bash shell?
+Answer: unset
+
+
+Question 20 of 25
+The command man -k will search the man database for a command. What other command can be used to search the whatis database? There are two possible answers, only enter one.
+Answer: apropos or whatis
+
+
+Question 22 of 25
+What option on the grep command will result in a case insensitive match?
+grep -v
+grep -V
+grep -I
+grep -i # 
+grep --ignore-caps
+
+
+
+Question 8 of 25
+Which command has been run to show the following output (command only - no path or switches)
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 006 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 005 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 004 Device 006: ID 040d:6205 VIA Technologies, Inc. USB 2.0 Card Reader
+Bus 004 Device 005: ID 0d8c:000c C-Media Electronics, Inc. Audio Adapter
+Bus 004 Device 004: ID 05e3:0608 Genesys Logic, Inc. USB-2.0 4-Port HUB
+Bus 004 Device 003: ID 5543:0004 UC-Logic Technology Corp. Genius MousePen 5x4 Tablet
+Bus 004 Device 002: ID 09da:0006 A4 Tech Co., Ltd Optical Mouse WOP-35 / Trust 450L Optical Mouse
+Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 001 Device 062: ID 10df:0500 In-Win Development, Inc. iAPP CR-e500 Card reader
+Bus 001 Device 003: ID 059b:0275 Iomega Corp. 
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Answer:lsusb 
 
 
