@@ -1,0 +1,145 @@
+Cuestionario ( http://gnosis.cx/publish/programming/exam101.html)
+
+
+
+
+Suppose that you have an application whose behavior depends on the environment variable BAR. Which of the following command lines may be used in a bash shell to configure the application? ******
+    A. export $BAR=baz; echo $BAR
+    B. set BAR=baz
+    C. BAR=baz ; export BAR ##
+    D. echo $BAR=baz
+    E. declare -x BAR=baz ###
+    F. echo BAR=baz
+
+
+Comando 	Descripcion	Alcance 
+set	Este comando se utiliza para establecer o modificar variables de shell en la sesión actual. También puede mostrar todas las variables y funciones de shell.	Sesión actual
+export	Se utiliza para marcar una variable de shell para que sea accesible a todos los procesos hijos de la sesión actual. Esto permite que otras aplicaciones la usen.	Procesos hijos
+
+
+
+ Which of the following commands can be used to assure that a file 'myfile' exists?
+    A. cp myfile /dev/null
+    B. touch myfile # 
+    C. create myfile
+    D. mkfile myfile
+
+
+ Which of the following command lines can be used to convert a file containing DOS-style CR-LF line endings into Unix-style LF line endings? Assume for this question that the DOS-style file is called 'dosfile', and we want the modified contents in 'unixfile' ********* ?????????
+    A. sed 's/\n//' dosfile > unixfile
+    B. tr -d '\r' < dosfile > unixfile
+    C. dos2unix dosfile unixfile
+    D. strip '\r' < dosfile > unixfile
+
+
+
+
+ Suppose for this question that you have a file called 'wordlist' that contains a number of words, one per line. You would like to produce an ad-hoc report that contains a numbered list of the first five words, according to alphabetical order. Which of the following command lines can be used to produce this report to the console?
+    A. sort wordlist | nl | head -5 # 
+    B. split -1 wordlist ; cat xa? | head -5
+    C. nl wordlist | sort | sed '/^     [^12345]/d'
+    D. nl wordlist | sort | head -5
+
+
+
+
+ The command 'ps -A' displays an ordered list of all running processes, with the right-justifed process ID in the first space-separated field. Suppose you would like to display to screen a list of the five most recently launched processes (those with the highest process IDs). Which of the following commands will display the desired items?*************************
+    A. ps -A | tail -5 | cut -f 1 -d " "
+    B. ps -A | tail -5 | sed 's/[ ]*[0-9]*//'
+    C. ps -A | head -5 | nl
+    D. ps -A | tac | head -5 | cut -b 1-5 ####
+
+
+
+
+ Suppose that a file 'names' contains a list of names in the form, "firstname lastname", one per line. These names are unsorted, and you would like them sorted by lastname; however, the format of names on each line should remain the same. Which ONE of the following commands will NOT output an appropriately sorted list of names to the console? *****************
+    A. cut -f 2 -d " " names | paste names - | sort -k 3 | cut -f 1
+    B. sort -k 2 names
+    C. sed 's/\(\w*\) \(\w*\)/\2 \1 \2/' names | sort | cut -f 2-3 -d " "
+    D. cut -f 2 -d " " names | sort
+    E. cut -f 2 -d " " names | paste - names | sort | cut -f 2 # 
+
+
+Assume that your current working directory is '/tmp' and your home directory is '/home/jane'. Which of the below commands will copy all the content of '/tmp/test/' to a 'test' subdirectory of your home directory?
+    A. cp -r test/* /home/jane
+    B. cp -r ./test ~ ###
+    C. cp -r ~/test .
+    D. cp -r /tmp/test /home/jane/test
+
+
+
+
+ Which of the following Linux utilities does NOT include the capability to list the process IDs of running applications?
+    A. jobs
+    B. ps
+    C. nice # 
+    D. top
+
+
+Suppose that you have several files matching the filename pattern 'file[0-9]'. You would like to visually compare the contents of all such files, in a side-by-side fashion. Which of the following commands would let you view the desired ad hoc report?
+    A. ls file[0-9] | xargs paste | less #
+    B. paste `ls file[0-9]` > report ; vi report ; rm report #
+    C. cat file[0-9] | paste - | more | less
+    D. ls file[0-9] | tee fnames | paste `cat fnames` # 
+    E. ls file[0-9] | tee fnames | xargs paste | more # 
+    F. ls *word* > fnames ; paste < xargs `cat fnames` | vi
+
+
+
+
+    # jobs -l
+    [1]   5110 Running                 kedit &
+    [2]-  5382 Stopped (signal)        pine
+    [3]+  5457 Stopped (tty output)    vi
+Given the 'jobs' display in the exhibit, which command could you use to switch display focus to the application 'vi'?
+    A. bg %3
+    B. fg %3 # 
+    C. top -p 5457
+    D. switch %5457
+
+
+
+    # jobs -l
+    [1]   5110 Running                 kedit &
+    [2]-  5382 Stopped (signal)        pine
+    [3]+  5457 Stopped (tty output)    vi
+Given the 'jobs' display in the exhibit, which command could you use to terminate the application 'vi'?
+    A. bg %3
+    B. kill -9 5457 # 
+    C. term -i %3
+    D. fg 5457
+
+
+
+ Suppose you have a running program called 'myprog', that is a child of the current shell. You would like to decrease the CPU usage of this program. Which of the following command lines can you use to make 'myprog' yield more CPU resources?
+    A. nice +1 myprog
+    B. ps h -o pid -C myprog | xargs nice +1 -
+    C. renice +1 -u `whoami` myprog
+    D. renice +1 -p `ps -a | grep myprog | cut -b 1-6` # 
+
+
+
+ Some tools that use regular expressions support so-called "extended" regular expressions. For example, GNU 'grep' with the '-E' option uses extended regular expressions. Other tools like 'sed' only support "basic" regular expressions. As a consequence, one must be careful in selecting the right regular expression syntax. Which of the following characters have a special meaning in extended regular expressions, but not in basic regular expressions. That is, which of the following is an extended regular expression "meta-character", but only a regular character in basic regular expressions?
+    A. ^
+    B. [
+    C. +     ###
+    D. *
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
