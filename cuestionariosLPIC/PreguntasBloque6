@@ -1,0 +1,425 @@
+Cuestionario (http://www.penguintutior.com/quiz/index.php)
+
+Question 1 of 25
+What is the name of the command that gives the following output? [command name only, no path and no options]
+Filesystem           1K-blocks      Used Available Use% Mounted on
+/dev/sda5             19307400  15745868   2580768  86% /
+udev                    513296       388    512908   1% /dev
+none                    513296       548    512748   1% /dev/shm
+none                    513296       540    512756   1% /var/run
+none                    513296         0    513296   0% /var/lock
+none                    513296         0    513296   0% /lib/init/rw
+none                  19307400  15745868   2580768  86% /var/lib/ureadahead/debugfs
+/dev/sdb1             38448276  25272824  11222352  70% /home
+
+Answer: ls 
+
+
+
+
+Question 2 of 25
+What umask value would ensure that, by default, new files and directories created would not give any permissions except to the owner?
+Answer:0077
+
+
+Question 3 of 25
+Which of the following are commands used for managing jobs, allowing them to be moved to and from the foreground and background.
+Choose the two most appropriate answers
+fg #
+foreground
+job-fg
+bg # 
+background
+job-bg
+
+
+Question 4 of 25
+What command can be used to save standard input into a file as well as send it to standard output? Enter the command name only.
+Answer: tee
+
+
+Question 5 of 25
+What is the name of the directory containing special device files for hardware devices?
+/media
+/dev #
+/devices
+/hardware
+
+
+Question 6 of 25
+After creating a new SWAP partition (of the correct type), what is the next step towards making it active?
+swapon #
+swapoff
+newswap
+mkfsswap
+mkswap
+
+
+Question 7 of 25
+Which of the following command is most suitable for creating an ISO image from a CD-ROM? Choose the most appropriate answer.
+cc
+cp
+cpio
+dd ##
+tar 
+
+
+Question 8 of 25
+After editing a file in vi you want to save and exit the file, which of the following will perform this after pressing the ESCAPE key.
+:q!
+:wq #
+:sq
+:qa
+
+
+(Continuacion de cuestionario)
+Question 1 of 25
+Which of the following can be used to determine how long a computer has been running for (without entering any options)? [select two answers]
+starttime
+uptime ##
+reboottime
+systime
+top ##
+iostat
+vmstat
+
+
+Question 2 of 25
+Would a user (not root) other than the owner be able to change to a directory with permissions r-xr--r--
+yes
+no # sto por que no hay permisos de ejecucion, que es el que permite acceder al directorio
+
+
+
+Question 3 of 25
+What is the octal value for the chmod command to set a file so that it can be read and written to by the owner, and read by the group and all other users? It should not be executable.
+Answer: 644
+
+
+Question 4 of 25
+Which of the following is true when comparing the ext2 and ext3 filesystems, in normal use? Select the two most appropriate answers.
+ext3 is the same as ext2 with added journaling # 
+ext3 is faster than ext2
+ext2 is faster than ext3 # 
+ext3 can handle bigger disks than ext2
+ext2 and ext3 are completely different filesystems
+
+
+
+
+uestion 5 of 25
+What is the minimal octal value for the chmod command to set a binary program file so that it can be updated and executed by the owner, and executed and read by the group and all other users? 
+Answer:755
+
+
+Question 6 of 25
+What command can be used to save standard input into a file as well as send it to standard output? Enter the command name only.
+Answer:tee
+
+
+
+Question 7 of 25
+Which of the following commands will create a ext3 filesystem on /dev/hda1? Select the three most appropriate answers.
+mkfs -t ext3 /dev/hda1 # 
+mke2fs -j /dev/hda1 #
+format -t -ext3 /dev/hda1
+mkfs.ext3 /dev/hda1 # 
+newfs -ext3 /dev/hda1
+
+
+Question 8 of 25
+What is the numerical value of the SIGHUP signal, often used with the kill command to cause a daemon to reload its configuration file?
+Answer:1 
+
+
+
+Question 9 of 25 *************
+Which of the following will take you back to your home directory (select all that apply)?
+cd HOME
+cd $HOME # 
+cd USER
+cd $USER
+cd ~ ##
+
+
+Question 10 of 25
+Which of the following will copy the directory dir1, including all files and subdirectories below it into a new directory called copyofdir1?
+cp dir1 copyofdir1
+cp -d dir1 copyofdir1
+cp -f dir1 copyofdir1
+cp -r dir1 copyofdir1 #
+
+
+
+Question 11 of 25
+What umask value would ensure that, by default, new files and directories created would not give any permissions except to the owner?
+Answer:0077
+
+
+
+Question 12 of 25
+Starting from /home/user1, which of the following will finish in /var/log? Select all that apply:
+cd ../var/log
+cd ../../var/log # 
+cd /var/log # 
+cd ./../var/log
+cd /../var/../log
+
+
+
+Question 13 of 25
+What is the environment variable that determines what directories are searched by the man command?
+Answer:$MANPATH
+
+
+
+Question 14 of 25
+What is the name of the directory containing special device files for hardware devices?
+/media
+/dev # 
+/devices
+/hardware
+
+
+
+Question 15 of 25
+What is the environment variable that holds the normal bash prompt?
+Answer:$PS1
+
+
+
+Question 16 of 25
+Which of the following entries will run the command "runme" putting the output into the file "output.txt"
+runme > output.txt # 
+runme < output.txt
+runme | output.txt
+output.txt > runme
+
+
+
+Question 17 of 25 **********
+What command can be used to poweroff a Linux computer first notifying logged in users about the planned event?
+Just enter the command without any options.
+Answer:shutdown 
+
+
+
+Question 18 of 25
+Which of the following will create a tar file containing all the files of the directory /home into a file backup.tar?
+tar -xf backup.tar /home
+tar -xf /home backup.tar
+tar -cf backup.tar /home #
+tar -cf /home backup.tar
+tar /home backup.tar
+
+
+
+
+Question 19 of 25
+Which of the following can the touch command not do? [select one option]
+Create a new file
+Create a new file with a different modification date
+Change the modification time on an existing file
+Change permissions on a file # 
+
+
+Question 20 of 25 **********************
+What option is used on the rpm command so that a dependency check is not peformed before installing or upgrading a package?
+Just include the option, do not include the command.
+Answer: --nodeps
+
+
+Question 21 of 25 - REPASAR TEMA 
+Which of the following is a configuration file that the ldconfig file uses when checking for shared libraries available.
+/etc/ld.so.conf # 
+/etc/ldd.conf
+/etc/ldconfig.so.conf
+/etc/ldconfig.conf  
+/etc/lib/ld.conf
+
+
+
+
+Question 22 of 25
+Which standard Linux commands show the amount of free memory available on the system.
+Select the two most appropriate answers.
+top # 
+jobs
+memfree
+free # 
+lsmem
+
+
+
+Question 23 of 25
+What option on the tail command will cause it to keep displaying new lines as they are written to the file (e.g. when viewing current log files)?
+-o
+-r
+-i
+-l
+-f # 
+
+
+
+
+
+Question 24 of 25 **********
+If using the xargs command in a pipeline, what is the effect of using the -0 option?
+Do not run the program
+Only run if earlier program in the pipe failed
+Only run if earlier program in the pipe succeeded
+Treat the input strings as Null separated not space separated ###
+
+
+
+
+Question 25 of 25
+What is the name of the file normally used to control which static file systems are mounted or to allow users to mount static file systems (assuming appropriate permissions assigned)?
+Answer: /etc/fstab
+
+
+
+Question 1 of 25 ***
+What option on the rm command will prompt for confirmation before each file is deleted?
+--ask 
+--noclobber
+-r
+-f
+-i #
+
+
+Question 2 of 25
+True or false: A normal user can provide a negative nice value on a command to allow it to run more favourably.
+true
+false # 
+
+
+Question 4 of 25
+Choose the appropriate missing word.
+A ______ link cannot span across different filesystems.
+hard # 
+symbolic
+
+
+
+Question 5 of 25
+What is the name of the file which lists the filesystems that are to be mounted during startup? Provide the full path and filename.
+Answer:fstab
+
+
+Question 6 of 25
+Will the following command create a hard or a symbolic link?
+ln file1 linktofile1
+hard # 
+symbolic
+
+
+Question 7 of 25
+What command can be used to alter the scheduling priority of a running process.
+Just enter the name of the command, no path or parameters.
+Answer:renice 
+
+
+Question 9 of 25
+Is the following statement true or false?
+The grub shell provides direct interactive access to the grub bootloader.
+true 
+false ### false. The grub shell is an emulator; it doesn't run under the native environment.
+
+
+Review answered questions
+Question 12 of 25
+Which of the following commands will provide a breakdown of how the disk space is used within a filesystem?
+dd
+df
+ds
+du # 	du shows filesystem usage.
+		dd is used to convert and copy files
+		df displays the filesystem usage, but not a breakdown within the filesystem
+		ds is not a normal shell command
+
+
+
+Question 13 of 25
+Which of the following permissions have the SUID value set?
+4755 # 
+2755
+1755
+
+
+Question 14 of 25
+Would a user (not root) other than the owner be able to read a file with permission 744
+yes # 
+no 
+
+
+
+Question 15 of 25
+Using fdisk in interactive mode, what key is pressed to create a new partition?
+a
+c
+l
+n # 
+p 
+
+
+
+
+Question 16 of 25 *********
+What command can be used to merge together two files line-by-line based on a common field? Enter then name of the command only, no path.
+Answer: join 
+
+
+Answer:Question 18 of 25??????
+When typing at the shell, what character can be used to split a command across multiple lines.
+
+
+
+Question 19 of 25
+Which of the following contains the list of operating systems that grub will display at boot time (on pre grub.d distributions).
+/etc/grub.cfg
+/etc/grub/menu.lst
+/boot/grub.cfg
+/boot/grubmenu.lst
+/boot/grub/menu.lst # 
+
+
+Question 20 of 25 ******** 
+Is the following statement true or false? The e2fsck command with the -c option will run the badblock command.
+true #
+false  
+
+
+Question 22 of 25
+What command can be used to view the loaded modules formatted into a readable format.
+Answer:lsmod 
+
+
+Question 23 of 25
+Which of the following will run command2, only if command1 is successful.
+command1 > command2
+command1 & command2
+command1 && command2 ##
+command1 | command2
+command1 || command2
+
+
+
+
+Question 24 of 25 *********
+What command can be run in the bash shell, to prevent accidentally overwriting a file. E.g. to prevent you from overwriting a file using a > redirect in the current shell. 
+Answer: set -o noclobber 
+
+
+
+
+Question 25 of 25 *******************
+In what configuration is the default runlevel set? (filename only - no path)
+Answer:inittab
+
+
+
+
+
+
+
