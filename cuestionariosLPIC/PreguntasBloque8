@@ -1,0 +1,79 @@
+https://www.edusum.com/lpi/lpi-lpic-1-101-500-certification-sample-questions
+
+
+
+01. A faulty kernel module is causing issues with a network interface card. Which of the following actions ensures that this module is not loaded automatically when the system boots?
+a) Using lsmod --remove --autoclean without specifying the name of a specific module
+b) Using modinfo -k followed by the name of the offending module
+c) Using modprobe -r followed by the name of the offending module
+d) Adding a blacklist line including the name of the offending module to the file /etc/modprobe.d/blacklist.conf    --- Answer
+e) Deleting the kernel module's directory from the file system and recompiling the kernel, including its modules
+ 
+02. When considering the use of hard links, what are valid reasons not to use hard links?
+a) When a hard linked file is changed, a copy of the file is created and consumes additional space
+b) Hard links are specific to one filesystem and cannot point to files on another filesystem  --- Answer
+c) If users other than root should be able to create hard links, suln has to be installed and configured
+d) Each hard link has individual ownership, permissions and ACLs which can lead to unintended disclosure of file content
+e) Hard links are not available on all Linux systems because traditional filesystems, such as ext4, do not support them
+ 
+03. In compliance with the FHS, in which of the directories are man pages found?
+a) /opt/man/
+b) /usr/doc/
+c) /usr/share/man/  --- Answer
+d) /var/pkg/man
+e) /var/man/
+ 
+04. You need to update all the packages on a production system, and have already make the repository information current. Which of the following commands should you use?
+a) sudo apt-get upgrade  --- Answer 
+b) sudo get-apt upgrade
+c) sudo get-apt dist-update
+d) sudo apt-get dist-update
+e) sudo apt-get dist-upgrade
+f) sudo get-apt dist-upgrade
+ 
+05. The shutdown command allows you to shut down and power off the system and send a wall message to users. What other commands allow you to send wall messages to users? ***
+a) systemctl isolate rescuse
+b) poweroff
+c) reboot
+d) halt
+e) wall  --- Answer
+f) mesg  -- 
+ 
+06. Which of the following commands kills the process with the PID 123 but allows the process to "clean up" before exiting?
+a) kill -PIPE 123
+b) kill -KILL 123
+c) kill -STOP 123
+d) kill -TERM 123 --- Answer 
+ 
+07. What does the command grub-install /dev/sda do?
+a) GRUB creates partitions on the device/dev/sdato be used with Linux.
+b) GRUB sets the default BIOS boot device to/dev/sda.
+c) GRUB installs all required files and configures the boot loader on device/dev/sda.   --- Answer
+d) GRUB recompiles the Linux Kernel and installs it on the Master Boot Record of device/dev/sda.
+ 
+08. When redirecting the output of find to the xargs command, what option to find is useful if the filenames contain spaces?
+a) -rep-space
+b) -printnul
+c) -nospace
+d) -ignore-space
+e) -print0  --- Answer
+ 
+09. A Debian package creates several files during its installation. Which of the following commands searches for packages owning the file /etc/debian_version? ******
+a) apt-get search /etc/debian_version
+b) apt -r /etc/debian_version
+c) find /etc/debian_version -dpkg
+d) dpkg -S /etc/debian_version   ---- Answer
+e) apt-file /etc/debian_version
+ 
+10. Immediately after deleting 3 lines of text in vi and moving the cursor to a different line, which single character command will insert the deleted content below the current line?
+a) i (lowercase)
+b) p (lowercase) --- Answer 
+c) P (uppercase)
+d) U (uppercase)
+e) u (lowercase)
+
+
+
+
+
+
