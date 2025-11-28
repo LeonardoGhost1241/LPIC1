@@ -140,25 +140,112 @@ grub-install --boot-directory=/mnt/tmp /dev/sda -  Instalacion para una particio
 
 grub-install --boot-directory=/boot /dev/sda - > Instalacion que no tiene una particion de arranque, sino solo un directorio /boot en el sistema de archivos raiz
 
+update-grub - Comando usado para generar e lmenu.lst usado por /boot, cada cambio en la configuracion del grub, ejecutar este comando
+
+#### Arranque del sistema desde la consola grub
+    * Buscar la particion de arranque o donde este la carpeta /boot
+    * set root=(hd0,msdos1)
+    * linux /vmlinux root=/dev/sda1
+    * initrd /initrd.img 
+    * boot
+
+####  Arranque desde la consola de rescate 
+    * Descubrir que particion es la de arranque
+    * set prefix=(hd0,msdos)/boot/grub
+    * insmod  normal
+    * insmod linux 
+    * Despues de ello seguimos los pasos del anterior punto (set root=(hd0,msdos), linux.... , etc )
+
+
+## GRUB LEGACY 
+grub-install /dev/sda - instalador de grub legacy (tenga en cuante que debe de especificar el device donde se instalara, NO la particion /dev/sda1)
+
+#### Instalacion grub legacy desde grub shell
+    * Buscar la particion de arranque (puede usar: find /boot/grub/stage1)
+    * root (hd0,0)
+    * setup (hd0)
+    * Cuando termine, reiniciar 
+
+Nota: Puede omitir la instruccion root si  especifica el dispositivo de arranque antes de la ruta en el contenido kernel
+    kernel (hd0,0)/vmlinuz root=/dev/hda1
+
 
 ## fdisk 
 fdisk - manipulador de tablas de particiones para linux 
 
 
 
+## ldconfig
+ldconfig - Actualiza la cache de bibliotecas compartidad (/etc/ld.so.cache) y  crear enlaces simbolicos necesatios
+    -v, --verbose muestra los numeros de version de la biblioteca, el nombre de cada directorio y los enlaces que se crean 
+    -p, --print-cache Imprime las listas de directorios ybibliotecas candidatas almacenadas en la cache actual
+
+## lld
+ldd $(which ls) - Usado para buscar las bibliotecas compartidas requeridas por un programa especifico, seguido de la ruta absoluta de un programa 
+    -u, --unused imprime las dependencias directas no utilizadas (si existen)
+
+## readelf 
+readelf - muestra informacion sobre archivos ELF (ELF significa executable and linkable format)
+
+## objdump
+objdump - imprime informacion de archivos de objetos 
 
 
 
 
+## Paquetes Debian 
+dpkg [opciones] paquete.deb - utilidad especial para instalar, configurar, mantener y eliminar paquetes de softwrae en sistemas basados en debian 
+    -i instalar un paquete 
+    -r elimina un paquete 
+    -P purga los archivos dejados por un paquete eliminado con -r
+    --force forza la instalacion o eliminacion de un paquete a travez de dpkg 
+    -I Obtiene informacion sobre un paquete
+    --get-selections Obtener una lista de cada paquete instalado en su sistema
+    -L Obtener una lista de cada archivo instalado por un paquete en el sistema
+
+Nota:
+    1. dkg verifica si las dependencias de un paquete estan instaladas, y no podra instalar el paquete si no lo estan. (No puede resolver las pedendencias por si mismo. Depende del usuario encontrar los paquetes .deb con las dependencias correspondientes  )
+    2. La operacion de eliminacion tambien ejecuta una verificacion de dependencias y un paquete no se puede eliminar a menos que tambien se elimina cualquier otro paquete que dependeda de el 
+    3. Cuando se elimina un paquete, los arhcivos de confiuracion correspondientes se dejan en el sistema, para eliminarlos se tienn que purgar
+
+
+dpkg-query -S paquete -  Saber que paquete posee un arhcivo especifico en su sistema
+    
+dpkg-reconfigure paquete  - Volver a reconfigurar un paquete 
 
 
 
+## Paqueteria avanzada (APT)
+
+apt-get [opcion] paquete - Se utiliza para descargar, instalar, actualizar o eliminar paquetes del sistema
+    update  Actualizar el indice de paquetes para recuperar informacion sobre paquetes nuevos y actualizados 
+    install instalar un paquete 
+    remove remover un pauete 
+    --purge/purge elimina todos los arrchivos instalados por un paquete
+    upgrade actualizar automaticamente cualquier paquete instalado a las ultimas versiones disponibles desde los repositorios (puede instalar un solo paquete agregando el nombre de este, seguido de upgrade )
+
+
+apt-get install -f   -  Esto intentara arreglar los paquetes rotos instalando las dependencias que faltan, asegunrado que todos los paquetes sean consistentes nuevamente 
+
+
+apt-cache  [opciones] paquete- Se utiliza para realizar operaciones, como busquedas, en el indice de paquetes
+    search  se usa para buscar un paquete
+    show mostrar la informacion completa de un paquete 
+
+apt clean  -- para limpiar la cache de apt
+
+apt-file  -  Se utiliza para buscar archivos dentro de los paquetes 
+    update   Despues de instalarlo es bueno actualizar la cache
+    list   Para enumerar el contenido de un paquete
 
 
 
-
-
-
+Notas:
+1. Tenga en cuenta que al instalar o eliminar paquetes, APT hará una resolución de dependencias automática. Esto significa que cualquier paquete adicional que necesite el paquete que está instalando también se instalará, y que los paquetes que dependen del paquete que está eliminando también se eliminarán. APT siempre mostrará lo que se instalará o eliminará y le preguntará si desea continuar
+2. Tenga en cuenta que cuando se elimina un paquete, los archivos de configuracion correspondientes quedan en el sistema. Para eliminar cualquier archivo hay que purgarlo
+3. A medida que instalar paquetes la cache en el archivo /var/cache/apt/archives o /var/cache/apt/archives/partial se hacen grandes, por lo que hay que limpiarlos 
+4. En la busqueda de paquetes puede usar expresiones regulares
+5. apt-file debe de instalarse ya que es posible que no este disponible en el dispositivo (apt-get install apt-file )
 
 
 
