@@ -249,7 +249,22 @@ Notas:
 
 
 
+## RPM
+rpm [opciones] paquete- herramienta para administrar paquetes de software en sistemas basdos en red hat
+    -i instalar un paquet 
+    -U Si hay una version anterior de un paqeute en el sistema, puede actualizar a una version mas nueva utilizando este parametro 
+    -F Si no hay instalada una version anterior al paquete, se instalara una. Para evitar esto y solo actualizar un paquete, usaremos esta opcion 
+    -v obtener una salida detallada
+    -h para poder ver el progreso de la instalacion con signos "#"
+    -e Para eliminar un paquete instalado (puede pasar varios parametros (paquetes))
+    -qa obtener una lista de todos los paquetes instalados en el sistema (piense en query all)
+    -qi obtener informacion de un paquete instalado (piense en query info)
+    -ql Obtener una lista de todos los archivos que estan dentro de un paquete instalado
 
+
+Nota:
+1. Es lo mismo hacer rpm -i -v -h que rpm -ivh
+2. Si un paquete instalado depende del paquete que se esta eliminando, recibira un mensaje de error, por lo que primero hay que eliminar los paquetes que dependen del que desea eliminar
 
 
 
