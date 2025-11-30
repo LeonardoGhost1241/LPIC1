@@ -250,8 +250,9 @@ Notas:
 
 
 ## RPM
+### No solo se usa con Red Hat Enterprise Linux, sino tambien con Fedora, CentOS y Oracle Linux, y otras distribuciones como OpenSuse, incluso en sistemas operativos Como AIZ de IMB
 rpm [opciones] paquete- herramienta para administrar paquetes de software en sistemas basdos en red hat
-    -i instalar un paquet 
+    -i instalar un paquete 
     -U Si hay una version anterior de un paqeute en el sistema, puede actualizar a una version mas nueva utilizando este parametro 
     -F Si no hay instalada una version anterior al paquete, se instalara una. Para evitar esto y solo actualizar un paquete, usaremos esta opcion 
     -v obtener una salida detallada
@@ -260,6 +261,8 @@ rpm [opciones] paquete- herramienta para administrar paquetes de software en sis
     -qa obtener una lista de todos los paquetes instalados en el sistema (piense en query all)
     -qi obtener informacion de un paquete instalado (piense en query info)
     -ql Obtener una lista de todos los archivos que estan dentro de un paquete instalado
+    -p ---> hacer un query a un paquetes AUN NO INSTALADO (Podemos usar esta opcion en los pasados 3 comandos como rpm -qip filename o rpm -qlp filename)
+    -qf Averiguar que archivo posee un paquete instalado, piense en query file 
 
 
 Nota:
@@ -267,8 +270,53 @@ Nota:
 2. Si un paquete instalado depende del paquete que se esta eliminando, recibira un mensaje de error, por lo que primero hay que eliminar los paquetes que dependen del que desea eliminar
 
 
+## YellowDog Updater Modificado (YUM)
+### Este administrador de paquetes evoluciono para administrar paquetes en otros sistemas basados en RPM, como Fedora, CentOS, RedHat Enterprise Linux y Oracle Linux (su funcion es similar a la utilidad apt)
+
+yum [opciones] NombrePaquete/PATTERN
+    search PATTERN Para buscar un paquete. El resultado es una lista de paquetes cuyos nombres o resumentes contienen el patron de busqueda especificado
+    install para instalar un paquete 
+    update Para actualizar un paquete (Si se omite el nombre del paquete, se actualizara cada paquete en el sistema si existen actualizacions disponibles)
+    check-update Para verificar si hay actualizacion disponible para un paquete especifico
+    remove  Para eliminar un paquete instalado
+    whatprovides  (rpm muestra que archivos faltan, pero NNOO lista el nombre de los paquetes que los proporcionan), por lo que para ver que paquete proporciona una dependencia usamos esta opcion, seguido del nombre del archivo que se esta buscando (ESTO TAMBIEN FUNCIONA PARA ARCHIVOS QUE YA ESTAN EN SU SISTEMA, POR EJEMPLO, SI QUEREMOS SABER DE DONDE PROVIENE EL ARCHIVO /etc/host, usamos, yum whatprovides /etc/host)
+    info Para buscar informacion sobre un paquete
+    repolist all  Lista de todos los repositorios disponibles
+        En este comando nos mostrara la lista de repositorios que estan hbailitados o deshabilitados, para poder activar o desactivar uno, usaremos yum-config-manager,y lo señalaremos con la parte que le antecede al "/" en la parte del repo id, ejemplo "yum-config-manager --disable updates" o "yum-config-manager --enable updates"
+
+    clean  Se usa para limpiar la cache y recuperar espacio en el disco de los paquetes descargados y los metadatos en el directorio /var/cache/yum
+        Los parametros mas utiles de este parametro son:
+            packages  Elimina los paquetes descargados y  la metadata
+            metadata  Para eliminar los metadatos asociados
+
+yum-config-manager [opcion] URL  -  Nos permite agregar de forma correcta repositorios
+     --add-repo  Agregara el repositorio a un archivo .repo en /etc/yum.repos.d/ o al final de /etc/yum.conf
+    
+     
+## DNF
+### Herramienta de administracion usada en FEDORA y es una BIFURCACION de YUM
+Buscar paquetes    dnf search PATTERN, donde PATTERN es lo que está buscando. Por ejemplo, dnf search unzip mostrará todos los paquetes que contienen la palabra unzip en el nombre o la descripción.
+Obtener información de un paquete    dnf info PACKAGENAME
+Instalar paquetes    dnf install PACKAGENAME, donde PACKAGENAME es el nombre del paquete que desea instalar. Puede encontrar el nombre realizando una búsqueda.
+Eliminar paquetes    dnf remove PACKAGENAME
+Actualizar paquetes     dnf upgrade PACKAGENAME para actualizar solo un paquete. Omita el nombre del paquete para actualizar todos los paquetes en el sistema.
+Encontrar qué paquete proporciona un archivo específico    dnf provides FILENAME
+Obtener una lista de todos los paquetes instalados en el sistema    dnf list --installed
+Listar el contenido de un paquete    dnf repoquery -l PACKAGENAME
+
+dnf tiene un sistema de ayuda incorporado, que muestra informacion, como dnf help install
 
 
+dnf repolist   Para listar solo los repositorios habilitados/deshabilitados, agregamos la opcion (--enabled/--disabled)
+
+dnf config-manager --add-repo URL    Agregar un repositorio
+dnf config-manager --set-enabled REPO_ID   Para habilitar un repositorio
+dnf config-manager --set-disabled REPO_ID   Para deshabilitar un repositorio
+    ++ Los repositorios agregados estan habilitados por defecto
+    ++ Los repositorios se almacenan en archivos .repo  en el directorio /etc/yum.repos.d/, con la misma sintaxis que yum
+
+
+## 
 
 
 

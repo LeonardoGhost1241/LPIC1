@@ -77,7 +77,7 @@ Compendio de direcciones utiles
 
 
 11. Paquetes y repositorios 
-    * /etc/yum.repos.d/: Archivos .repo para repositorios YUM
+    * /etc/yum.repos.d/: Archivos .repo para repositorios YUM (El usuario puede agregar repositorios adicionales agregando un archivo .repo en el directorio mencionado anteriormente, o al final de /etc/yum.conf. Sin embargo, la forma recomendada de agregar o administrar repositorios es con la herramienta yum-config-manager)
     * /etc/yum.conf : Configuracion global de YUM
     * /var/cache/yum: Cache de paquetes descargados por YUM
     * /etc/apt: Configuracion de apt
