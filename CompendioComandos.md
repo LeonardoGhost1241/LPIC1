@@ -316,10 +316,35 @@ dnf config-manager --set-disabled REPO_ID   Para deshabilitar un repositorio
     ++ Los repositorios se almacenan en archivos .repo  en el directorio /etc/yum.repos.d/, con la misma sintaxis que yum
 
 
-## 
+## Zypper
+### Es la herramienta que utiliza en SUSE linux y OpenSUSE, es muy similar a apt y yum, con resolucion de dependencias automatizada
+
+zypper [opciones] NAMEPAKAGE
+    refresh  al igual que otras herramientas, zypper funciona con repositorios que contienen paquetes y metadatos, estos deben de actualizarse de vez en cuando
+    search (o simplemente se)  busca un paquete
+        search tambien se puede usar para obtener una lista de todos los paquetes instalados en el sistema, con la opcion -i, como zypper search -i o zypper se -i O simplemente para ver el paquete instalado
+            Para buscar solo entre paquetes no-instalados, agregue el parametro -u al operador se 
+            --provides para ver que paquetes contiene un archivo especifico, seguido del nombe del archivo (o la ruta completa)
+
+    instalar (o simplemente in)
+    update  para actualizar los paquetes instalados en el sistema 
+    list-updates    Si solo deseas listar las actualizaciones disponibles, sin nada
+    remove (o simplemente rm) Para eliminar un paquete (Tenga en cuenta que eliminar un paquete tambien elimina cualquier otro paquete que dependa de el )
+    info    Para ver los metadatos asociados con un paquete
+    repos   Para ver la lista de todos los repositorios actualmente registrados en su sistema
+    modifyrepo  (-e|-d) Si quiere habilitar un repositorio, debera ocupar este comando, seguido del alias
+    modifyrepo (-F|-f)  Cuando esta habilitado, este indicador hara que zypper ejecute una operacion de actualizacion (lo mismo que ejecutar zypper refresh)
+            # zypper modifyrepo -F repo-non-oss
+                Autorefresh has been disabled for repository 'repo-non-oss'.
+            # zypper modifyrepo -f repo-non-oss
+                Autorefresh has been enabled for repository 'repo-non-oss'.
+    addrepo URL Para agregar un nuevo repositorio
+        (Al gregar un repositorio, puede habilitar las actualizaciones con el parametro -f. Los repositorios agregados están habilitados de manera predeterminada, pero puede agregar y deshabilitar un repositorio al mismo tiempo utilizando el parámetro -d.)
+    removerepo ALIASREPO Para eliminar el repositorio agregado
 
 
-
-
+Nota:
+    * zypper puede usarse para instalar un paquete RPM en disco, mientras intenta satisfacer sus dependencias usando paquetes de los repositorios 
+    
 
 
