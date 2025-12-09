@@ -347,4 +347,151 @@ Nota:
     * zypper puede usarse para instalar un paquete RPM en disco, mientras intenta satisfacer sus dependencias usando paquetes de los repositorios 
     
 
+# Tema 103
+pwd - Obtener informacion de la ruta donde esta ubicado
+
+touch - creacion de un archivo vacio 
+    -a cambia solamente la hora de acceso
+    -m solo cambia la hora de modificacion
+
+cp - copiar archivos 
+
+mv - mover archivos 
+    -i pedir confirmacion
+    -f sobreescribira forzosamente
+
+mkdir - creacion de directorios
+    -p creacion de directorios multiples
+
+rmdir - borra un direcotrio SI esta vacio
+    -p elimina un directorio con su subdirectorio SI esta vacio
+
+rm - eliminar un arhcivo/direcotrio
+    -r borrar de forma recursiva
+    -i pedira confirmacion antes de eliminar un archivo
+
+ls - listar
+    -R listar de forma recursiva
+
+history - ver historial de comandos 
+
+
+---
+#### wildcars
+rm *    Elimina todos los archivos en el directorio de trabajo actual.
+ls l? st    Lista todos los archivos con nombres que comienzan con l seguidos de cualquier caracter indiv
+idual y terminan con st.
+rmdir [a-z] *  Elimina todos los directorios cuyos nombres comienzan con una letra.
+
+
+EL ASTERICSO (*)
+coincide con cero, una o mas apariciones de cualquier carcater
+
+ejemplos:
+        $> find /home -name *.png
+        $> ls lpic-*.txt
+        $> cp -r animal/* forest
+El asterisco, como cualquier otro wildcard, podria usarse repetitidamente en el mismo comando y el cualqu
+ier posicion 
+ejem: rm *ate* 
+
+
+EL SIGNO DE INTERROGACION (?)
+coincide con una UNICA aparicion de un carcater
+
+si consideramos que en un directorio tengan:
+last.txt    lest.txt    list.txt    third.txt   past.txt
+
+ejemplos:
+$> ls l?st.txt
+        last.txt    lest.txt    list.txt
+
+$> ls ??st.txt
+        last.txt    lest.txt    list.txt    past.txt
+
+LOS CARCATERES ENTRE CORCHETES ([])
+Los wildcard entre corchetes coinciden con cualquier aparicion de los carcateres entre corchetes
+
+$> ls l[aef]st.txt
+        last.txt    lest.txt
+
+tambien se puede usar rango 
+
+$> l[a-z]st.txt
+        last.txt    lest.txt    list.txt
+
+tambien se pueden aplicar varios rangos de corchetes, como:
+$> ls
+        student-1A.txt  student-2A.txt  student-3.txt
+$> ls student-[0-9][A-Z].txt
+        student-1A.text student-2A.txt
+
+---
+
+
+echo - Imprime cadenas de entrada y variables.
+env - Entiende y modifica sus variables de entorno.
+export - Pasa una variable de entorno a los shells secundarios.
+unset - Borra valores y atributos de variables y funciones de shell. (Para eliminar una variable, no debe de antecederle el "$", ejem: unset PATH)
+et - generara todas las variables y funciones en el entorno
+
+
+**(Tenga en cuenta que las comillas simples conservarán el valor literal de todos los caracteres, mientras que las comillas dobles conservarán todos los caracteres excepto para $, `, \ y, en ciertos casos, !.)** 
+
+cat - Se usa para combinar o leer archivos de texto sin formato.
+    cat > file    Redirigira toda entrada en el file
+    > sobresscribe archivo
+    >> agrega al final del archivo 
+
+diff - compara dos archivos 
+
+less - navegacion comoda dentro de archivos 
+
+head - muestra las primeras 10 lineas
+    -n N  Puede mostrar un numero exacto de lineas, donde N es el numero a mostrar
+
+tail - muestra las ultimas 10 lineas 
+    -n N  Puede mostrar un numero exacto de lineas, donde N es el numero a mostrar
+    -f con esta opcion nos permite seguir al archivo mientras se agrega mas contenido 
+
+nl - enumera las lineas
+
+wc -l  - cuenta las lineas
+
+zcat - leer archivos gzip sin descomprimirlos
+bzcat - leer archivos bzip2 sin descomprimirlos
+xzcat - leer archivos xz sin descomprimirlos
+
+
+
+
+
+
+
+sort - Se utiliza para organizar la salida de una lista alfabéticamente, alfabéticamente inversa o en orden aleatorio.
+
+uniq - Se usa para enumerar (y contar) cadenas coincidentes.
+
+od - El comando “octal dump” se utiliza para mostrar un archivo binario en notación octal, decimal o hexadecimal.
+
+
+sed - El editor de flujo se puede usar para encontrar ocurrencias coincidentes de cadenas usando Expresiones regulares, así como editar archivos usando patrones predefinidos.
+
+tr - El comando traducir puede reemplazar caracteres y también elimina y comprime caracteres repetidos.
+
+cut - Este comando puede imprimir columnas de archivos de texto como campos basados en el delimitador de caracteres de un archivo.
+
+paste - Unir archivos en columnas según el uso de separadores de campo.
+
+split - Este comando puede dividir archivos más grandes en archivos más pequeños según los criterios establecidos por las opciones del comando.
+
+
+
+
+md5sum - Se utiliza para calcular el valor hash MD5 de un archivo. También se utiliza para verificar un archivo contra un valor hash existente para garantizar la integridad de un archivo.
+
+sha256sum - Se utiliza para calcular el valor hash SHA256 de un archivo. También se utiliza para verificar un archivo contra un valor hash existente para garantizar la integridad de un archivo.
+
+sha512sum - Se utiliza para calcular el valor hash SHA512 de un archivo. También se utiliza para verificar un archivo contra un valor hash existente para garantizar la integridad de un archivo.
+
 
