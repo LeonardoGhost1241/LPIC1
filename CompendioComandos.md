@@ -463,7 +463,14 @@ bzcat - leer archivos bzip2 sin descomprimirlos
 xzcat - leer archivos xz sin descomprimirlos
 
 
+grep - muestra coincidencias de una string dentro de un archivo 
+    -v indica al comando que muestre las lineas que NO coinciden
 
+
+sed - editor de glujo para filtrar u trasformar texto
+    se debe de redirigir el archivo al comando como sed .. < file
+    -n instruye a sed para que no produzca salida (a menos por las instrucciones posteriores del comando p)
+        (https://www.ionos.mx/digitalguide/servidores/configuracion/comando-sed-de-linux/)
 
 
 
@@ -473,9 +480,6 @@ sort - Se utiliza para organizar la salida de una lista alfabéticamente, alfab�
 uniq - Se usa para enumerar (y contar) cadenas coincidentes.
 
 od - El comando “octal dump” se utiliza para mostrar un archivo binario en notación octal, decimal o hexadecimal.
-
-
-sed - El editor de flujo se puede usar para encontrar ocurrencias coincidentes de cadenas usando Expresiones regulares, así como editar archivos usando patrones predefinidos.
 
 tr - El comando traducir puede reemplazar caracteres y también elimina y comprime caracteres repetidos.
 
@@ -487,11 +491,96 @@ split - Este comando puede dividir archivos más grandes en archivos más peque�
 
 
 
-
 md5sum - Se utiliza para calcular el valor hash MD5 de un archivo. También se utiliza para verificar un archivo contra un valor hash existente para garantizar la integridad de un archivo.
 
 sha256sum - Se utiliza para calcular el valor hash SHA256 de un archivo. También se utiliza para verificar un archivo contra un valor hash existente para garantizar la integridad de un archivo.
 
 sha512sum - Se utiliza para calcular el valor hash SHA512 de un archivo. También se utiliza para verificar un archivo contra un valor hash existente para garantizar la integridad de un archivo.
+
+
+ls - listar contenido de un directorio
+
+touch - crear archivos nuevos vacios
+        --> TAMBIEN PUEDE USARLO PARA CAMBIAR MARCAS DE TIEMPO, ES DECIR, LA HORA DE MODIFICACION DE LOS ARHIVOS Y DIRECTORIOS EXISTENTES 
+        sin opciones, crear un archivo
+        -a cambia solo la hora de acceso
+        -m solo cambia la hora de modificacion 
+            ejem: (touch -am file3)
+
+cp - copiar un archivo a otro
+    -r (-R o --recursive) permite copiar un directorio junto con todos sus subdirectorios y arhcivos 
+
+Nota:
+Cuando una ruta comienza con el carcater "/" es una ruta absoluta, de lo contrario es una ruta relativa 
+
+
+mv - mover o renombrar archivos 
+    De manera predeterminada, mv no buscara confirmacion
+    -i hace que el sistema solicite confirmacion, utilizando la opcion -i
+    -f sobreescribira forzosamente el archivo, sin pedir ningun permiso 
+
+rm - elimina archivos
+    -i hace que el sistema solicite confirmacion, utilizando la opcion -i ejem: rm -ri mydir/
+    -f eliminara forzosamente el archivo, sin pedir ningun permiso 
+    -r eliminacion recursiva 
+
+mkdir - creacion de directorios 
+    -p crear un directorio junto con sus subdirectorios ejem: mkdir -p parents/children
+
+rmidr - borra un directorio SI esta vacio
+    -p elimina un directorio con sus subdirectorios ejem: rmdir -p parents/children
+
+
+En linux, las opciones -r o -R o --recursive generalmente estan asociadas con la recursividad
+
+
+ls - listar contenido de un directorio
+    -R enumerar contenido de undirectorio junto con sus subdirectorios y archivos 
+
+nota: agregar una barra inclinada al final del directorio, no tiene ningun efecto, es lo mismo ls -R animal que ls -R animal/
+
+
+
+\* - Coincide con 0 o mas carcateres de cualquier tipo 
+    rm -rf * -> Todos los archivos 
+    ls *.txt -> Todos los txt
+    ls ab*cd  -> cualquier cosa que empiece con ab y termine con cd 
+
+\? - Coincide con exactamente un carcater
+    ls l?st.txt -> last.txt, lest.txt, list.txt
+    ls ??st.txt -> Dos carcateres + "st.txt"
+        perfecto para patrones de longitud fija
+
+\[] - Conunto o rangos de carcateres
+    Permite definir:
+        - Un conjunto: [abc]
+        - Un rango: [a-z]
+        - Combinaciones: [0-9A-Z]
+            ejemplos:
+                ls l[aef]st.tx -> last.txt y lest.txt
+                ls student-[0-9][A-Z].txt -> 1A, 2A, 3B, etc (Permite controlar exactamente que carcateres son validos en cada posicion )
+
+* Globbing no usa expresiones regulares
+* Un wildcard puede usarse en cualquier parte del nombre
+    ejemplo:
+        *abc*
+        [a-z]*.conf
+        ???.txt
+* Los wildcards trabajan con el nombre del archivo, no con el  contenido 
+    Si quiees buscar dentro del archivo, usa grep
+
+* Los patrones se expanden antes de ejecutar el comando
+    ejemplo:
+        rm *.png  -> El shell genera rm foto.png fondo.png icono.png, y esta lista se pasara al comando rm
+
+* Si un patron no coincide con nada  
+    En bash queda literal (a menos que tengas nullglob activado)
+        Ejemplo: ls *.xyz --> Dara error porque "*.xyz" queda literal como argumento
+
+
+Wildcard	Significa	Ejemplo	Resultado
+\*	0 o más caracteres	*.txt	todos los .txt
+?	1 carácter	file?.log	file1.log, fileX.log
+[ ]	1 carácter del conjunto o rango	[a-z]*	archivos que empiezan con a–z
 
 
