@@ -584,3 +584,288 @@ Wildcard	Significa	Ejemplo	Resultado
 [ ]	1 carácter del conjunto o rango	[a-z]*	archivos que empiezan con a–z
 
 
+
+find - busca arhivos en todo el servidor 
+    sintaxis: find starting\_path options expression
+    -name "nombre" busqueda literalmente ejem: find / -name "*.png"
+    -iname "Nombre" busca sin distinguir entre mayusculas y minusculas
+    -type f/d/l busca archivos, directorios o enlaces simbolicos respectivamente
+    -not  devuelve los resultados que no coinciden con el caso de prueba ejemplo: find . -iname "file*" -not -type d     ,   find . -type 
+    -maxdepth N Busca en el directorio actual asi como en los subdirectorios N niveles de profundidad
+    -mtime N Donde N representa el numero de dias desde la ultima modificacion  
+    -size N(c/k/M/G) ejemplos:
+        -size 100c archivos de exactamente 100 bytes
+        -size +100k archivos de mas de 100 kylobytes
+        -size -20M archivos de menos de 20 megabytes
+        -size +2G archivos de mas de 2 gigabytes
+        -size 0c  o simplemente find . -empty  para buscar archivos vacios
+    -exec comand {} \;  donde command es el comando a ejecutar sobre los resultados y {} es el listado de find 
+    -print usado para imprimir resultados que coincidan con considiones
+        ejem: find . -type f -exec grep "lpi" '{}' \; -print  las llaves {} estan en comillas simples para evitar pasar archivos grep con nombres que contengan carcateres especiales
+        ejem: find . -name "*.bak" -delete  -delete borrara los archivos que encuentre, para eso debe de estar seguro que las coincidencias de lo que busque sean los correctos
+    -print0 se usa con xargs, y este se usa cuando las rutas tienen carcateres de espacion, le indica a find que use un carcater nulo entre cada entrada para que la lista pueda ser analizada correctamente por xargs      ejemplo: find . -name '*avi' -print0 -o -name '*mp4' -print0 -o -name '*mkv' -print0 | xargs -0 du | sort -n
+
+
+
+
+tar - tape archive, se utiliza para crear archivos tar convirtiendo un grupo de archivos en un archivo 
+    sintaxis: tar [operation_and_options] [archive_name] [file_names(s)]
+
+OPERATION
+    Solo se permite y requiere un argumento de operación. Las operaciones más utilizadas son:
+    --create (-c)
+        Crea un nuevo archivo tar.
+    --extract (-x)
+        Extrae todo el archivo o uno o más archivos de un archivo.
+    --list (-t)
+        Muestra una lista de los archivos incluidos en el archivo.
+
+OPTIONS
+    Las opciones más utilizadas son:
+    --verbose (-v)
+        Muestra los archivos que se están procesando con el comando tar.
+    --file=archive-name (-f archive-name)
+        Especifica el nombre del archivo de almacenamiento.
+
+ARCHIVE_NAME
+    El nombre del archivo.
+
+FILE_NAME (S)
+    Una lista de nombres de archivos separados por espacios que se extraerán. Si no se proporciona, se extrae todo el archivo
+
+
+        ejem: tar -xvf archive.tar  este comando estraira los archivos en el directorio actuao
+    -C extrae el contenido en un directorio diferente
+        ejem: tar -xvf archive.tar -C /tmp
+    
+    Para comprimir con tar usamos cualquiera de las dos siguientes opciones
+    -z para gzip  ejem: tar -czvf file.tar.gz file   
+    -j para bzip2  ejem: tar -cjfv file.tar.bz file 
+        --> para descomprimir, solo sustituimos c por x 
+            gzip es más rápido, pero generalmente se comprime un poco menos, por lo que se obtiene un archivo algo más grande. bzip2 es más lento, pero se comprime un poco más, por lo que se obtiene un archivo algo más pequeño
+
+
+gzip - compresion con algoritmo gzip 
+    sintaxis: gzip Fike-to-Compress
+
+nota:
+    * gzip crea el arhcivo comprimido con el mismo nombre pero con un final .gz 
+    * gzip elimina los archivos originales despues de crear el archivo comprimido 
+
+
+bzip2 - compresion con algoritmo bgzip2
+    sintaxis: bgzip2 Fike-to-Compress
+
+nota:
+    * bgzip2 crea el arhcivo comprimido con el mismo nombre pero con un final .bz2
+    * bgzip2 elimina los archivos originales despues de crear el archivo comprimido 
+
+
+
+cpio - significa  "copy in, copy out". Se utiliza para procesar archivos de almacenamiento como archivo *.cpio o *.tar
+        Este comando realiza las siguientes acciones:
+            - copiar archivos a un archivo
+            - Extraer archivos de un archivo 
+    -o le indica a cpio que cree una salida
+    -i realiza un extracto 
+    -d crea una carpeta destino 
+    
+    ejemplos:   
+        ls | cpio -o > archivo.cpio  la salida de ls se archivara en el archivo archivo.cpio
+        cpio -id < archive.cpio  se extraera la informacion creando al mismo tiempo un espacio para los mismos archiovs, el archivo .cpio se pasa por redireccion 
+
+
+
+
+
+dd - copia datos de una ubicacion a otra
+    sintaxis: dd if=oldfile of=newfile  --> esto copiara el contenido de oldfile a newfile
+    status=progess muestra una barra de progreso
+
+
+
+Por defecto > redirige el contenido que llea a stdout 
+1> redirige la salida stdout, equivalente a  ">"
+2> redirige la salida stdout 
+&> o >& Se redirige tanto stdout como stderr 
+1>&2 redirige stdout a stderr 
+2>&1 redirige stderr a stdout 
+< este simbolo tambien es una redireccion donde los datos fluyen hacia la derecha, este se usa para redirigir el contenido de un archivo al stdin de un proceso ejemplo: uniq -c < file.txt
+Una redireccion sin doble ">>" sobreescribe un archivo, a menos que la opcion bash "noclobber" este habilitada, lo que puede hacer para la sesion actual con el comando set -o noclobber o set -C y para desactivarlo usamos set +o noclobber o set +C
+
+
+Here document - Es una forma de redireccion de varias lineas
+sintaxis: command <<EOF
+>
+>
+> EOF 
+	
+ejemplo: 
+wc -l <<EOF
+> how may word I wrote?
+> EOF
+
+
+Here document - Es otra forma de redireccion de UNA sola linea
+sintaxis: echo -n "Strings" | command 
+
+ejemplo:
+echo -n "How many characters in this here string?" | wc -l 
+
+
+tee - lee desde la salida estandar y escribe en un archivo la salida estandar
+    sintaxis: ... | tee name.File.txt
+    -a Para agregar en un archivo y no sobreescribirlo 
+
+
+
+Sustitucion de comando
+Puede sustituir la salida estandar de un comando encerrandolo entre comillas simples inversas
+    ejemplo: mkdir 'date +%Y-%m-%d'
+Se puede obtener un resultado similar con $()
+    ejemplo:mkdir $(date +%Y-%m-%d)
+    
+
+xargs - usa la salida de un comando como argumento de otro programa 
+    -n N esta opcion hace que xargs ejecute el comando dado con N argumentos a la vez
+    -L puede usarse para limitar cuantas lineas se usaran como argumentos por ejecucion de comando 
+    -0 le dice a xargs que el carcater nulo debe usarse como separador
+
+notas:
+    por defecto xargs coloca los argumentos del comando ejecutado en ultimo lugar, para cambiar ese comportamiento debe usar la opcion -I 
+        ejemplo: find . -mindepth 2 -name '*avi' -print0 -o -name '*mp4' -print0 -o -name '*mkv' -print0 | xargs -0 -I PATH mv PATH ./
+
+
+
+
+
+jobs - muestra los procesos que se han iniciado de forma interactiva a travez de un terminal
+    -l se muestran los ID del proceso (PID) justo antes del estado
+    -n muestra solo los procesos que han cambiado desde la ultima notificacion (posibles estados, Running, Stopped, Terminated o Done)
+    -r lista los procesos en ejecucion
+    -s lista solamente los trabajos detenido 
+
+
+notas: 
+    si el comando no muestra ninguna salida, no hay trabajos en segundo plano 
+    ejemplo de salida:
+        jobs 
+        [1]+ Stopped    sleep 60
+            [1] es el ID del trabajo y se puede utilizar, precedido por un simbolo de porcentaje (%) 
+            +/- si es +, es el trabajo actual predeterminado (el ultimo suspendido), el trabajo anterior esta marcado con un signo menos -
+            Stop Descripcion del estado del trabajo
+            sleep 60  comando o trabajo en ejecucion
+    Especificar trabajos:
+        %n  trabajo cuyo numero de identificacion es n 
+        %str    trabajo cuya linea de comando comienza con str
+        %?str   trabajo cuya linea de comando contiene str
+        %+ o %% trabajo actual (el ultimo que se inicio o suspendio del primer plano)
+        %-  Trabajo anterior
+
+Despues de poner en segundo plano 
+
+fg - llevar el proceso a primer plano
+    ejemplo: fg %1
+
+bg - llevar el proceso a segundo plano
+    ejemplo: bg %1
+notas:
+    El simbolo & se usa para poner en segundo plano un comando, como: sleep 100 & 
+
+kill  - mata un proceso en ejecucion
+    ejemplo: kill %2
+    Las señales se pueden especificar por:
+        kill -SIGHUP 1234  nombre
+        kill -1 1234   numero
+        kill -s SIGHUP 1234  opciones
+    puede hacer la misma funcion que killall, como kill -1 $(pgrep sleep)
+
+
+notas(fg, bg y kill): 
+    Si no se especifica ningun trabajo, fg y bg actuaran sobre el actual, predeterminado, mientras que kill necesita una especificacion de trabajo 
+
+
+nohup - sepra los trabajos de las sesiones y hace que se ejecuten incluso despues de cerrar la sesion
+    sintaxis: nohup COMMAND &
+
+notas: 
+    nohup.out es el nombre del archivo predeterminado donde se guardan stdout y stderr
+
+
+watch - nos permite mirar el cambio de salida del programa con el tiempo
+    -n N  o  --interval donde N es el intervalo de segundos para el cual watch se actualizara
+
+notas:
+    Por defecto el tiempo periodico se ejecuta 2 segundos
+
+
+
+pgrep - Averigua el PID de un proceso
+    sintaxis: pgrep comando
+    El identificador de un proceso se puede cubrir a travez del comando pidof ejemplo: pidof sleep
+
+pkill - mata un proceso en su nombre 
+
+killall  -  matar varias instancias del mismo proceso
+    ejemplo: killall sleep
+
+
+top  - herramienta que monitorea los procesos de forma dinamica
+Ya dentro de l ainterfaz de top podemos usar alguna de las sisguientes opciones:
+    M   Ordena por uso de memoria
+    N   Ordena por numero de ID
+    T   Ordena por porcentaje de uso en CPU
+    R   Ordena entr orden descendente/ascendente 
+    ? o h    Ayuda.
+    k    Mata un proceso. top solicitará que se elimine el PID del proceso y que se envíe la señal (por defecto, SIGTERM o 15).
+    r    Cambiar la prioridad de un proceso (renice). top le pedirá el valor nice. Los valores posibles oscilan entre -20 y 19, pero solo el superusuario (root) puede establecerlo en un valor negativo o inferior al actual.
+    u    Lista de procesos de un usuario en particular (de forma predeterminada se muestran los procesos de todos los usuarios).
+    c    Muestra las rutas absolutas de los programas y diferencia entre procesos de espacio de usuario y procesos de espacio de kernel (entre corchetes).
+    V    Vista de bosque/jerarquía de procesos.
+    t y m    Cambia el aspecto de las lecturas de CPU y memoria respectivamente en un ciclo de cuatro etapas: las dos primeras pulsaciones muestran barras de progreso, la tercera oculta la barra y la cuarta la recupera.
+    W   Guardar ajustes de configuración en ~/.toprc.
+
+
+ps  - herramienta que monitorea los procesos de forma estatica      
+    a   mostrar procesos que estan conectados a un tty o terminal
+    u   Mostrar formato orientado al usuario
+    x   Mostrar procesos que no estan conectados a un tty o terminal
+
+
+Puede aceptar tres estilos diferentes:
+    BSD
+        ps p 811 (las opciones no siguen ningun guion inicial)
+    UNIX
+        ps -p 811 (las opciones siguen un guion inicial)
+    GNU
+        ps --pid 811 (las opciones van seguidas de guiones dobles iniciales)
+
+por ejemplo:
+    ps U carol 
+    ps -u carol
+    ps --user carol
+
+Notas:
+    USER    Dueño del proceso.
+    PID    Identificador de proceso.
+    %CPU    Porcentaje de CPU utilizado.
+    %MEM    Porcentaje de memoria física utilizado.
+    VSZ    Memoria virtual de procesos en KiB.
+    RSS    Memoria física no intercambiada utilizada por el proceso en KiB.
+    TT    Terminal (tty) que controla el proceso.
+    STAT    Código que representa el estado del proceso. Además de S, R y Z (que vimos al describir la salida de top), otros valores posibles incluyen: D (suspensión ininterrumpida — generalmente esperando E/S), T (detenido — normalmente por una señal de control). Algunos modificadores adicionales incluyen: < (alta prioridad — no agradable para otros procesos), N (baja prioridad — agradable para otros procesos) o + (en el grupo de procesos en primer plano).
+    STARTED    Hora a la que comenzó el proceso.
+    TIME    Tiempo de CPU acumulado.
+    COMMAND    Comando que inició el proceso.
+
+
+
+
+
+
+
+
+
+
+
+
