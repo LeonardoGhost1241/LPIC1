@@ -860,12 +860,47 @@ Notas:
 
 
 
+| Accion | tmux | screen |
+|--------|------|--------|
+|iniciar | tmux | screen |
+|iniciar sesion con nombre | tmux  new -s session (agregamos -n para dar nombre a la primera pestaña)| screen -S session |
+|Listar sesiones | tmux ls  | screen  -ls|
+|Adjuntarse a una sesion | tmux attach-session -t  session | screen -r  session |
+|Adjuntarse a una sesion (cuando es la unica sesion) | tmux  attach-sessipm | screen -r |
+| Matar una sesion | tmux kill-session -t session  | screen -S session -X quit|
+| Desadjuntarse de la sesion  | ctrl+b d | ctrl+a d  |
+|  | **VENTANAS** | |
+|ver todas las ventanas | ctrl+b w | ctrl+a w |
+| Crear una nueva ventana | ctrl+b c | ctrl+a c |
+|Pasar a la siguiente ventana | ctrl+b n | ctrl+a n |
+|Pasar a la anterior ventana | ctrl+b p (Podemos cambiar de numero de ventana con los numeros, como ctrl+a N, donde N es numero) | ctrl+a p (Podemos cambiar de numero de ventana con los numeros, como ctrl+a N, donde N es numero) |
+|Renombrar ventana actual | ctrl+b ,  | ctrl+a A |
+|Ver las sesiones en forma de lista (podemos usar las flechas en ambos casos) | ctrl+b w | ctrl+a " |
+|Deshacer una ventana | ctrl+b & | screen |
+| | **Regiones(screen)/Paneles(tmux)** | |
+| Division (horizontal) | ctrl+b " | ctrl+a S |
+|Division (vertical) | ctrl+b % | ctrl+a | |
+|Terminar todas las regiones exepto la actual | ctrl+b ! | ctrl+a Q |
+|--- | tmux | screen |
 
 
+nice - Establce el valor de prioridad antes de que se ejecute el comando
+    -n rango de -20 a 19 ejem: nice -n 15 tar -czvf files.tar.gz dir/
+
+nota: 
+- Todo proceso normal comienza con un valor nice predeterminado de 0 (prioridad 120)
+- -20 (menis agradable) y 19 (mas agradable, consumo menos de cpu)
+- Solo root puede disminuir el valor nice de un proceso por debajo de cero
+
+renice - Establece el valor de priioridad despues de que haya ejecutado el comando
+    Sintaxis: renice -N -p PID, ejemplo: renice -10 -p 2164
+    -g se usa para modificar todos los procesos de un grupo
+    -u se utiliza para modificar todos los procesos de un usuario en especifico 
+        ejemplo: renice +5 -g users (el valor nice de los procesos propiedad de los usuarios del grupo users se elevara en cinco)
 
 
-
-
+Nota: 
+- En el programa top, se puede modifcar la prioridad de los procesos presionando r y luego el numero del PID del proceso
 
 
 

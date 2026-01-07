@@ -87,4 +87,57 @@ de los usuarios del grupo users se elevara en cinco
 
 
 
+# Confusion de si hay 100 o 40 niveles de nice
+Linux usa dos escalas de prioridad:
+	- Prioridad estatica del scheduler (interna del kernel)
+	- Valor nice (lo que tu ves y cambias)
 
+1. Prioridades internas del kernel (scheduler)
+Estas no se configuran directamente, son valores internos
+Procesos en tiempo Real (RT)
+	Rango: 0-99
+	0 = mayor prioridad
+Total:100 niveles
+
+2. Procesos normales (CFS)
+	Rango: 100-139
+	100 = mayor prioridad
+Total:40 niveles
+
+Por lo tanto hay 140 niveles posibles, desde 0 hasta 140.
+Pero NO TODOS SON PARA PROCESOS NORMALES, SOLO 100-139 se usan para procesos normales.
+
+Por lo tanto, desde 100 hasta 139 son 40 niveles para procesos normales
+
+Notas:
+Cuadno ejecutamos ps -l, veremos que tenemos dos columnas que nos muestran las prioridades, ejemplo:
+F S   UID     PID    PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1000   20408    2468  0  80   0 -  2226 do_wai pts/0    00:00:00 bash
+4 R  1000   26916   20408  0  80   0 -  2471 -      pts/0    00:00:00 ps
+
+PRI y NI,
+PRI nos muestra la prioridad del proceso, pero no maneja la misma escala que nosostros, desde el -20 hasta el 19, esta prioridad es del 
+
+Los procesos RT no usan nice 
+
+
+
+Para que un valor renice para un grupo o un usuario persista en cada inicio, podemos modificar el archivo /etc/security/limits.conf 
+Este archivo se utiliza en sistemas operativos basados en linux para gestionar los limites de recursos de los usuarios o grupos de usuarios, el formato para agregar una linea es el siguiente:
+
+<dominio> <tipo> <item> <valor>
+ejem: user1 hard nice 5
+
+el tipo puede ser hard o soft: 
+-hard: limite maximo que no puede ser excedido
+-soft: limite que puede elevarse hasta el limite duro pero puede ser superado temporalmente
+
+El item, es el recurso al cual se esta asignando el limite: ejemplo, cpu, nproc,etc
+
+value: el limite especifico
+
+https://linux.die.net/man/5/limits.conf
+
+
+
+ 
