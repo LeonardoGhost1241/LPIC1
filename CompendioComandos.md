@@ -463,15 +463,44 @@ bzcat - leer archivos bzip2 sin descomprimirlos
 xzcat - leer archivos xz sin descomprimirlos
 
 
-grep - muestra coincidencias de una string dentro de un archivo 
+grep - muestra coincidencias de una string dentro de un archivo
+     - facilita la inspeccion de archivos largos, usando la exprecion regular como filtro aplicado a cada linea 
     -v indica al comando que muestre las lineas que NO coinciden
+    -c / --count Muestra cuabtas libneas tienen coincidencias ejem: fdisk -l | grep '^Disk /dev/sd[ab]' -c --> La puedes colocarr antes o despues de la expresion regular
+    -i / --ignore-case Hace que la busqueda no distinga entre mayusculas o minusculas
+    -f File / --file=FILE  Indica un archivo que contenga la expresion regular a utilizar
+    -n / --line-number  Muestra el numero de la linea
+    -v / --invert-match Selecciona todas las lineas, exepto las que contengan coincidencias
+    -H / --with-filename Imprime tambien el nombre del archivo que contiene la linea
+    -z / --null-data  En lugar de que grep trate los flujos de datos de entrada y salida como líneas separadas (usando newline por defecto), toma la entrada o salida como una secuencia de líneas. Cuando se combina la salida del comando find usando su opción -print0 con el comando grep, la opción -z o --null-data debe usarse para procesar el flujo de la misma manera
+    -N donde N es un numero, este numero especifica que incluya N lineas antes o despues cuado encuentre una coincidencia, son lineas de contexto, se puede obtener el mismo resultado con -C 1 o --context=1 
+
+egrep - es equivalente al comando grep -E, que incorpora carcateristicas adicionales ademas de las expresiones regulares basicas
+    -o Para mostrar solo las partes de un flujo de texto que coinciden con la expresion utilizada por egrep 
+
+fgrep - Es equivalente a grep -F, no analiza expresiones regulares, es util en busquedas simples donde el objetivo es hacer coincidir una expresion literal. Por lo tanto los carcateres especiales como el signo de dolar y el punto se tomaran literalmente y no por su significado en una expresion regular
 
 
-sed - editor de glujo para filtrar u trasformar texto
-    se debe de redirigir el archivo al comando como sed .. < file
+
+sed - editor de glujo para filtrar u trasformar texto, se debe de redirigir el archivo al comando como sed .. < file
+      su proposito es modificar datos basados en texto de una manera no interactiva, significa que toda la edicion se realiza mediante instrucciones predefinidas
+
+    Su sintaxis basica es: sed -f SCRIPT Cuando las intrucciones de edicion se almacenan en el archivo SCRIPT
+    sed -e COMMADS para ejecutar COMMADS directamente desde la linea de comandos
+    Si no hay -e ni -f, sed utiliza el primer parametro que no es ina opcion de script
     -n instruye a sed para que no produzca salida (a menos por las instrucciones posteriores del comando p)
         (https://www.ionos.mx/digitalguide/servidores/configuracion/comando-sed-de-linux/)
+    Ejemplos:
+        - Eliminar la primera linea: ... | sed 1d
+        - Eliminar un rango de lineas: ... | sed 1,7d
+        - Ejecutar mas de una instruccion: ...|  sed "1,7d;11d"
+        - ... | sed "1d;/:.*2.*/d"    La expresión regular :.*2.* coincide con cualquier aparición del número 2 en cualquier lugar después de dos puntos, lo que provoca la eliminación de las líneas correspondientes a los números con 2 como factor. Con sed, cualquier cosa colocada entre barras (/) se considera una expresión regular y, por defecto, se admiten todos los RE básicos
 
+
+
+
+
+factor - numeros factores 
 
 
 
@@ -604,8 +633,8 @@ find - busca arhivos en todo el servidor
         ejem: find . -type f -exec grep "lpi" '{}' \; -print  las llaves {} estan en comillas simples para evitar pasar archivos grep con nombres que contengan carcateres especiales
         ejem: find . -name "*.bak" -delete  -delete borrara los archivos que encuentre, para eso debe de estar seguro que las coincidencias de lo que busque sean los correctos
     -print0 se usa con xargs, y este se usa cuando las rutas tienen carcateres de espacion, le indica a find que use un carcater nulo entre cada entrada para que la lista pueda ser analizada correctamente por xargs      ejemplo: find . -name '*avi' -print0 -o -name '*mp4' -print0 -o -name '*mkv' -print0 | xargs -0 du | sort -n
-
-
+    -regex permite probar cada ruta en una jerarquia de directorios contra una expresion regular, ejemplo: find $HOME -regex '.*/\..*' -size +100M (sólo en rutas dentro del directorio de inicio del usuario que contienen una coincidencia con .*/\..*, es decir, un /. rodeado por cualquier otro número de caracteres. En otras palabras, sólo se enumerarán los archivos ocultos o los archivos dentro de los directorios ocultos, independientemente de la posición de /. en la ruta correspondiente)
+    -iregex Para expresiones regulares que no distinguen entre mayusculas y minusculas
 
 
 tar - tape archive, se utiliza para crear archivos tar convirtiendo un grupo de archivos en un archivo 
@@ -901,6 +930,65 @@ renice - Establece el valor de priioridad despues de que haya ejecutado el coman
 
 Nota: 
 - En el programa top, se puede modifcar la prioridad de los procesos presionando r y luego el numero del PID del proceso
+
+. Coincide con cualquier carcater
+^ Coincide con el comienzo de una linea
+$ coincide con el final de una linea
+[] Usado para especificar rangos de carcateres 
+* Cuantificador, el atomo aparece cero o mas veces, y es un carcater literal si aparece al principio
+{} Usado para especificar limites 
+
+
+
+
+
+
+vim - Es un editor estandar en el entorno shell
+    Para saltar a una linea especifica: vim +N file.txt, donde N es el numero
+
+Hay diferentes modos de comportamiento, pero los mas comunes son: modo insercion y modo normal (Para regresar al modo "normal"(modo predeterminado) hay que apretar la tecla ESC)
+
+Modo normal (modo predeterminado)
+0,$ Va al principio o al final respectivamente
+1G,G Val al principio o al final del documento
+( , ) Vaya al principio y al final de la oracion
+{ , } Vaya al principio y al final del parrafo
+w , W Saltar palabra y saltar palabra, incluida la puntucacion
+Modo insercion: el texto aparece en pantalla a medida que se escribe en el teclado
+h,j,k,l izquierda, abajo, arriba, derecha
+e , E ir al final de la palabra actual
+/ , ? Busca hacia adelante y hacia atras
+i, I    Ingrese al modo de inserción antes de la posición actual del cursor y al comienzo de la línea actual.
+a, A    Ingrese al modo de inserción después de la posición actual del cursor y al final de la línea actual.
+o, O    Agregue una nueva línea e ingrese al modo de inserción en la línea siguiente o en la línea anterior.
+s, S    Borre el carácter debajo del cursor o toda la línea e ingrese al modo de inserción.
+c    Cambie el (los) carácter (es) debajo del cursor.
+r    Reemplaza el carácter debajo del cursor.
+x    Elimina los caracteres seleccionados o el carácter debajo del cursor.
+v, V    Inicie una nueva selección con el carácter actual o la línea completa.
+y, yy    Copia (tira) los caracteres o la línea completa.
+p, P    Pega el contenido copiado, antes o después de la posición actual.
+u    Deshace la última acción.
+Ctrl-R    Rehace la última acción.
+ZZ    Cerrar y guardar.
+ZQ    Cerrar y no guardar.
+
+
+Si esta precedido por un numero, el comando se ejecutara el mismo numero de veces, ejemplo: 3yy para copiar la linea actual 3 veces, o d5w para eliminar la palabra actual y las 4 palabras siguientes
+
+Comando Colon (los comandos de dos puntos)
+Estos comandos permiten al usuario realizar busquedas, guardar, salir, ejecutar comandos de shell, cambiar la configuracion de vi, algunos comandos mas comunes son:
+:s/REGEX/TEXT/g     Reemplaza todas las apariciones de la expresión regular REGEX por TEXT en la línea actual. Acepta la misma sintaxis del comando sed, incluidas las direcciones.
+:!    Ejecutar el comando de shell especificado a continuación.
+:quit o :q    Salir del programa.
+:quit! o :q!     Salir del programa sin guardar.
+:wq    Guardar y Salir.
+:exit o :x o :e    Guardar y salir, si es necesario.
+:visual    Volver al modo de navegación
+
+
+
+
 
 
 
