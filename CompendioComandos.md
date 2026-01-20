@@ -987,8 +987,111 @@ Estos comandos permiten al usuario realizar busquedas, guardar, salir, ejecutar 
 :visual    Volver al modo de navegación
 
 
+fdisk - administrar articiones mbr en linux 
+    Sintaxis: fidisk /dev/sda (Debe especificar el dispositivo correspondiente al disco, no una de sus particiones como /dev/sda1)
+    -w Escribir los cambios realizados
+    -q para salir sin guardar cambios 
+    -p imprimir la tabla de particiones actual
+    -n crear una particion
+    -F mostrar el espacio no asignado
+    -d eliminar particion (en caso de que solamente haya una particion en el disco, esta particion sera eliminada inmediatamente)
+    -t cambiar el tipo de particion que deseamos cambiar
+    -l ver lista de todos los codigos validos (No confunda el tipo de partición con el sistema de archivos que se utiliza en ella) 
+
+Notas:
+- Puede crear, editar, o eliminar particiones a voluntad pero no se escribira nada en el disco, a menos que utilice el comando write (w)
+- Las particiones de linux son del tipo 83(linux). Las particiones de intercambio son del tipo 82(linux swap)
 
 
+gdisk - administrar particiones GUID en linux 
+    -p imprimir la tabla de particiones actual
+    -n Crear una particion (Pude especificar el tipo de particion durante la creacion)
+    -l ver lista de todos los tipos
+    -d Eliminar particion del disco (A diferencia de fdisk, la primera particion no se seleccionara automaticamente si es la unica en el disco)
+    -s reordenar la numeracion de las particiones (util si se elimina una particion y se quiere mantener el ornden dentro de ella)
+    -r acceder a la reconstruccion de un encabezado GPT corrupto o una tabla de particiones con b y c respectivamente
+        -Usar el encabezado
+    -f Convertir un MBR a GPT
+    -g Convertir GPT a MBR 
+
+Nota:
+- El espacio libre aparece en la ultima linea, por lo que no es necesario un equivalente del comando F
+- Las particiones se pueden reordenar u ordenar facilmente para evitar huecos en la secuencia de numeracion, para ello solamente usar "s"
+
+
+
+
+mke2fs - Las utilidades mkfs.ext2, mkfs.ext3 y mkfs.ext4 se utilizan para crear sistemas de archivos ext2, ext3 y ext4 respectivamente. De hecho, todas estas “utilidades” existen sólo como enlaces simbólicos a otra utilidad llamada mke2fs
+    Ejemplo de compatibilidad: mkfs.ext4 /dev/sdb1 y mke2fs -t et4 /dev/sdb1 harian la misma funcion
+    Los siguientes parametros se aplican a las utilidades mkfs.ext{2..4}
+    -b SIZE Establece el tamaño de los bloques de datos en el dispositivo en  SIZEm, que puede ser de 1024, 2048 o 4096 bytes por bloque
+    -c Comprueba el dispositivo de destino en busca de bloques defectuosos antes de crear el sistema de archivos, puede parar el parametro varias veces para una comprobacion completa pero mucho mas lenta, como mkfs.ext4 -c -c TARGET
+    -d Copia el cntenido del directorio especificado en la raiz del nuevo sistema de archivos. Util si necesita rellenar previamente el disco con un conjunto predefinido de archivos
+    Establece el tamaño de los bloques de datos en el dispositivo en  SIZEm, que puede ser de 1024, 2048 o 4096 bytes por bloque
+    -c Comprueba el dispositivo de destino en busca de bloques defectuosos antes de crear el sistema de archivos, puede parar el parametro varias veces para una comprobacion completa pero mucho mas lenta, como mkfs.ext4 -c -c TARGET
+    -d Copia el cntenido del directorio especificado en la raiz del nuevo sistema de archivos. Util si necesita rellenar previamente el disco con un conjunto predefinido de archivos
+    -F Forzara mke2fs a crear un sistema de archivos, incluso si las otras opciones pasadas a el o al objetivo son peligrosas o no tienen ningun sentido, se puede pasar el parametro varias veces, incluso si este esta montado
+    -L Establece la etiqueta de volumen, esta etiqueda debera tener un maximo de 16 carcateres
+    -n Esta opcion SIMULA la creacion de archivos
+    -q Modo silencioso. me2fs se ejecutara normalmente, pero no producira ninguna salida en la terminal
+    -U ID Establecera un UUID de una particion en el valor especificado como ID, el formato sera 8-4-4-4-12 donde los numeros son los digitos, de igual manera,  en lugar de un UUID se puede especificar clear para borrar el UUID, random para generar un UUID o time para crear un UUID basado en el tiempo
+    -V modo detallado, imprime mucha informacion
+
+    
+Nota:
+- Cuando se ejecuta el comando sin especificar un tipo, el tipo por defecto sera mkfs.ext2
+
+
+
+mkfs.xfs - creacion de un sistema de archivos XFS 
+    -b size=VALUE Establece el tamaño de bloque en el sistema de archivos, en bytes, al especificar en VALUE. EL valor predeterminado es 4096 (4KiB), el minimo es 512 y el maximo es 65536 (64 KiB)
+    -m crc=VALUE    Los parámetros que comienzan con -m son opciones de metadatos. Éste habilita (si VALUE es 1) o deshabilita (si VALUE es 0) el uso de comprobaciones CRC32c para verificar la integridad de todos los metadatos en el disco. Esto permite una mejor detección de errores y recuperación de fallas relacionadas con problemas de hardware, por lo que está habilitado de forma predeterminada. El impacto en el rendimiento de esta comprobación debería ser mínimo, por lo que normalmente no hay razón para desactivarlo
+    -m uuid=VALUE   Establece el UUID de la partición al especificado como VALUE. Recuerde que los UUID son números de 32 caracteres (128 bits) en base hexadecimal, especificados en grupos de 8, 4, 4, 4 y 12 dígitos separados por guiones, como 1E83E3A3-3AE9-4AAC-BF7E-29DFFECD36C0
+    -f Forza la creacion de un sistema de archivos en el dispositivo de destino inclus si se detecta un sistema de archivos en el
+    -l logdev=DEVICE  Esto colocara la seccion de registro del sistema de archivos en el dispositivo especificado, en lugar de dentro de la seccion de datos
+    -q Modo silencioso, no imprimira nada de informacion
+    -L LABEL  Establece la etiqueta del sistema de arhcivos, que puede tener un maximo de 12 carcateres
+    -N Similar al parametro -n de mke2fs, hara qe mkfs.xfs imprima todos los parametros para la creacion del sistema de archivos, sin crearlo realmente
+
+Nota:
+- La herramientas para administrar sistemas de archivos XFS son parte del paquete xfsprogs,
+- Los sistemas de archivos XFS se dividen en almenos 2 partes, una seccion de registro donde se mantiene un registro de toda las operaciones del sistema de archivos (comunmente llamado Journal) y la seccion de datos. La sección de registro puede estar ubicada dentro de la sección de datos (el comportamiento predeterminado), o incluso en un disco separado por completo, para un mejor rendimiento y confiabilidad
+
+
+
+mkfs.fat - Es el comando basico para la creacion de un sistema de archivos FAT
+    -c Comprueba el dispositivo de destino en busca de bloques defectuosos antes de crear el sistema de archivos 
+    -C FILENAME BLOCK_COUNT   Creará el archivo especificado en FILENAME y luego creará un sistema de archivos FAT dentro de él, creando efectivamente una “imagen de disco” vacía, que luego puede escribirse en un dispositivo usando una utilidad como dd o montarse como un loopback dispositivo.   
+    -F SIZE  Selecciona el tamaño de la FAT, entre 12, 16 o 32, es decir, entre FAT12, FAT16 o FAT32
+    -n NAME  Establece la etiqueta de volumen o el nombre para el sistema de archivos 
+    -v Modo detallado, imprime mucha informacion 
+ 
+Nota:
+- VFAT es una extension del formato FAT16 que admite nombres de archivo largos (hasta 255 carcateres). Ambos sistemas de archivos sistemas de arhcivos son manejados por la misma utilidad, mkfs.fat. mkfs.vfat es un alias
+- El sistema de archivos FAT tiene importantes inconvenientes que restringen su uso en discos grandes. FAT16, por ejemplo, admite volúmenes de 4 GB como máximo y un tamaño de archivo máximo de 2 GB
+
+
+
+
+mkfs.exfat - utilidad para la creacion de archivos exFAT
+    Sintaxis: mkfs.extfat TARGET
+    -i VOL_ID  Establece el ID de volumen en el valor especificado en VOL_ID, Este es un numero hexadecimal de 32 bits. Si no esta definido, se establece una ID basada en la hora actual
+    -n NAME  Establece la etiqueta de volumen o el nombre. Puede tener hasta 15 carcateres y el valor predeterminado es sin nombre
+    -p SECTOR  Especifica el primer sector de la primera particion del disco. Este es un valor opcional y el predeterminado es cero
+    -s SECTORS Define el numero de sectores fisicos por grupo de asignacion. Debe ser una potencia de dos, como 1,2,4,8,etc
+
+Nota:
+- Es un sistema de archivos creado por Microsoft que aborda una de las limitaciones mas importantes de FAT32: el tamaño del archivo y el disco
+- La utilidad predeterminada para crear sistemas de archivos exFAT es mkfs.exfat, que es un enlace a mkexfatfs
+
+
+mkfs.btrfs - 
+
+
+
+Nota:
+- Con este sistema, se puede encontrar el soporte para multiples dispositivos (incluyendo la creacion de bandas, la duplicacion y la creacion de bandas+duplicacion, como en una configuracion RAID), compresion transparente, optimizaciones de SSD, copias de seguridad incrementales, instantaneas, desfragmentacion en linea, comprobaciones fuera de linea, compatibilidad con subvolumenes (con cuotas), deduplicacion y mucho mas
+- Es muy resistente a los bloqueos 
 
 
 
