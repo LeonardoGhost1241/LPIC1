@@ -1100,12 +1100,43 @@ Nota:
 
 
 parted - es un editor de particiones muy poderoso, que se puede usar para crear, eliminar, mover, redimensionar, rescatar y copiar particiones
+    Puede iniciarlo simplemente con parted y dentro de la interfaz usar el comando parted DEVICE donde ddevice es el disco
+    O simplemente puede usar parted DEVICE donde device es el disco a usar
+    Comandos:
+    select  selecciona un disco
+    print   imprime la informacion de un disco
+    print devices   obtener lista de dispositivos conectados o puede usar print all
+    mklabel msdos   Crear tabla de particiones MBR
+    mklabel gpt     Crear tabla de particiones GPT
+    mkpart PARTTYPE FSTYPE START END    Creacion de una particion, donde PARTTYPE es el tipo de particion, ya sea primaria, logica o extendida si es el caso de un disco MBR, FSTYPE es el sistema de archivos(parted no creara el sistema de archivos), START especifica el punto donde comienza la particion, puede especificarlo como 2s que indica que inicie en el segundo sector o 1m que inicie del primer megabyte, Otras unidades comunes son B (bytes) y % (porcentaje del disco)
+    rm N    Elimina una particion, donde N es el numero de la particion
+    rescue START END    Recuperacion de una particion, donde START es la ubicacion aproximada donde comenzo la particion y END la ubicacion aproximada donde termino (ejem: rescue 90m 210m)
+
+    resizepart PARTITION SIZE parted puede cambiar el tamaño de las particiones y hacerlas mas grandes o pequeñas, sin embargo es importante saber que para hacerlo, durante el cambio de tamaño, la particion debe estar sin usar y sin montar y necesita suficiente especio libre despues de la particion para hacerla crecer al tamaño que desee, ejemplo si tenemos la particion 3 con 300 MB y que tiene mas espacio delante, podemos redimensionarla como resize 3 350m
+    Sin embargo lo anterior fue el primer paso, por que necesitamos ajustar el tamaño del sistema de archivos, para sistemas ext2,3,4 se usa resize2fs
+    resize2fs DEVICE SIZE   En el anterior caso seria resize2fs /dev/sdb3 y hasta ahi, para que ocupe todo el espacio, si quisieramos encojer la particion, simplemente haremos el proceso inverso, primero redimensionando el sistema de archivos con resize2fs y despues encojiendo el espacio con parted resizepart PARTTITION SIZE
+
+Nota:
+- A diferencia de fdisk y  gdisk, parted realiza inmediatamente los cambios despues de que se emita el comando
+- Si no selecciona un disco, por defecto seleccionara el primer disco principal
 
 
 
+mkswap - Para la creacion del swap
+    sintaxis: mkswap PARTITION, ejem: mkswap /dev/sda2
 
+swapon - Habilitar la particion de intercambio
+    sintaxis: swapon PARTITION, ejem: swapon /dev/sda2
 
+swapoff - Deshabilitar particion de intercambio
+    sintaxis: swapoff PARTITION, ejem: swapoff /dev/sda2
 
+Crear un archivo swap con dd: dd if=/dev/zero of=myswap bs=1M count=1024
+
+Nota:
+- Para seleccionar la etiqueta de swap en fdisk usamos t y el tipo es 82 y es gdisk usamos igualmente t y el codigo es 82000
+- Si se esta usando parted, usamos mkpart primary linux-swap .....
+- Tanto mkswap como swapon no podran iniciar si en dado caso de tener un archivo de intercambio no tiene permisos sseguros, el recomendable es 0600
 
 
 
