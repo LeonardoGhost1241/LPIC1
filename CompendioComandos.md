@@ -1085,13 +1085,31 @@ Nota:
 - La utilidad predeterminada para crear sistemas de archivos exFAT es mkfs.exfat, que es un enlace a mkexfatfs
 
 
-mkfs.btrfs - 
-
-
+mkfs.btrfs - Sistema de archivos Butter FS o Butterfuss
+    -L para establecer una etiqueta (o nombre) para su sistema de archvos
+    -m Para establecer como se distribuiran los metadatos en la matriz del disco, use el parametro -m, los parametros validos, son raid0, raid1, raid5, raid6, raid10, single y dup
+    - manejo de subvolumenes
+    -manejo de instantaneas
 
 Nota:
 - Con este sistema, se puede encontrar el soporte para multiples dispositivos (incluyendo la creacion de bandas, la duplicacion y la creacion de bandas+duplicacion, como en una configuracion RAID), compresion transparente, optimizaciones de SSD, copias de seguridad incrementales, instantaneas, desfragmentacion en linea, comprobaciones fuera de linea, compatibilidad con subvolumenes (con cuotas), deduplicacion y mucho mas
 - Es muy resistente a los bloqueos 
+- Si no tienes la utilidad, se instala con el paquete btrfs.progsi
+- puede manejar subvolumenes
+
+
+
+parted - es un editor de particiones muy poderoso, que se puede usar para crear, eliminar, mover, redimensionar, rescatar y copiar particiones
+
+
+
+
+
+
+
+
+
+
 
 
 
