@@ -1140,6 +1140,191 @@ Nota:
 
 
 
+du - use to check how much space is being used and how much is left on a file y cuanto queda en el sistema
+    -h solicitar la salida legible por humanos (en Kilos, )
+    -a mostrar un recuento individual de todos los archivos en el directorio
+    -S Para directorios que no incluya el tamaño de los subdirectorios
+    -c Producir un total general
+    -d N  (Donde N, es el nivel de profundidad ), ejemplo -d 1 solo mostrara el directorio actual y sus subdirectorios 
+    --exclude="Pattern", donde patter es el patron con el que desea comparar
+
+Nota: 
+- El comportamiento predeterminado es mostrar el uso de cada subdirectorio, luego el uso total del directorio actual, incluyendo subdirectorios (-S)
+- du funciona a nivel de archiovs
+
+
+df - para mostrar el uso del disco (Mostrara el uso del disco y la cantidad de espacio disponible a nivel del sistema de archivos)
+    -h mostrar el sistema legible para humamos
+    -i mostrar inodos usados/disponibles en lugar de bloques
+    -T imprimira el tipo de cada sistema de archivos
+    -t TYPE mostrar solo un sistema de archivos de un tipo dado, -x TYPE excluye sistemas de archivos de un tipo dato
+    Personalizar la salida de df: df --output=opcion1,opcion2,etc... algunas de las opciones son: (source, fstype, size, used, avail, pcent, target), puedes ocupar tambine las opciones de inodo (itotal, iused, iavail,ipcent)
+
+Nota:
+- df muestra el uso del disco y la cantidad de espacio disponible a nivel de sistema de archivos 
+
+
+
+fsck - Comando para comprobar un sistema de archivos en busca de errores (y con suerte corregirlos) (file system check), para sistemas de archivos ext2,3,4
+    -A Esto comprobara todos los sistemas de archivos listados en /etc/fstab
+    -C Muestra una barra de progreso al comprobar un sistema de archivos. Actualmente slo funciona en sistema de archivos ext2/3/4
+    -N Con esta opcion se imprime si lo haria, sin realmente el verificar el sistema de archivos
+    -R Cuando se usa junto con -A, esto omitira la verificacion del sistema de arhcivos raiz
+    -V Modo detallado, imprime mas informacion de lo habitual durante el funcionamiento. Util para depurar
+
+    opciones para modo NO intractivo
+    -p Intentara corregir automaticamente cualquier error encontrado, saldra si un erro requiere la intervension del admin
+    -y respondera yes a todas las preguntas
+    -n lo contrario de -y, esto hara que el sistema de archivos se monte como de solo lectura
+    -f obligara a e2fsck a comprobar un sistema de archivos
+
+Nota:
+- Nunca ejecute fsck (o utilidades relacionada) en un sistema de archivos montado. Si lo hace de todos modos, es posible que pierda datos
+- Por si mismo no verificara el sistema de archivos, simplemente llamara a la utilidad apropiada para el tipo de distema de archivos para hacerlo
+- Si no se especifico un tipo de sistema de archivos, fsck asumio un sistema de archivos ext2/3/4 y por defecto llamo e2fsck
+- La utilidad especifica para sistemas ext2/3/4 es e2fsck, tambien llamado fsc.ext2, fsck.3, fsck.4, son enlaces a e2fsck
+- De forma predetemrinada se ejecuta en modo interactivo, cuando encuentra un error, se detiene y pregunta al usurio
+
+
+tune2fs - Utilizada para modificar o mostrar parametros. Los sistemars de archivois ext2/3/4 tienen una serie de parametros que el administrados del sistema puede ajustar o "afinar" para adaptarse a la necesidad del sistema
+
+    -l ver parametros actuales para cualquier sistema de archivos
+    -c N Establecer el numero maximo de montajes, donde N es el numero de veces que se puede ontar el sistema de archivos SIN comprobarlo
+    -C N establece el numero de veces que se ha montado el sistema en el valor de N 
+    -i N(d,m,y) Define un intervalo de tiempo entre comprobaciones, seguido de un numero y letras, el cual d es para el dia, m para meses y y para años, ejemplo: -i 10d, use 0 para desactivar esta funcion 
+    -L para establecer  una etiqueta para el sistema de archivos, puede tener hasta 16 carcateres
+    -U establece un UUID para el sistema de archivos
+    -e BEHAVIOUR define el compórtamiento del kernel cuando se encuetra un erro en el sistema de archivos, los posibles comportamientos son: (continue: ejecutara la ejecucion normalmente), (remount-ro: volvera a montar el sistema de archivos como de solo lectura), (panic: causara kernel panic)
+    -j agregar journaling al sistema de arhivos (cuando se usa esta opcion con ext2 practicamente se esta convirtiendo a ext3, ya que ext3 es ext2 con journaling)
+    -f obligara a completar una operacion incluso si se encuentran errores (usar con precausion)
+
+    Cuando el sistema de arhcivos tiene jounrnaling, algunas de sus opciones son:
+    -J le permite usar parametros adicionales para usar opciones del jounral, como:
+         -J size=  establece el tamaño del journal (en megabytes)
+         -J location= especificar donde el journal debe almacenarse (ya sea en un bloque especifico o en una posicion especifica en el disco conn sufijos como M o G)
+         -J device= poner el journal en un dispositivo externo
+        Podemos usar varios, como: -J size=10,location=100M,device=/dev/sdb1 
+
+Nota:
+- El comportamiento predeterminado es  continue, remount-ro podria ser util en aplicaciones sensibles a los datos, ya que detendria inmediatamente las escrituras en el disco, evitando errores potenciales
+
+
+xfs_repair - es el equivalente de fsck pero para sistemas xfs
+    -n El parametro -n significa "no modificar": se comprobara el sistema de archivos, se informaran los errores pero no se realizaran reparaciones, ejemplo: xfs_repair -n /dev/sda1
+    -l LOGDEV y -r RTDEV     Estos son necesarios si el sistema de archivos tiene un registro externo y secciones en tiempo real. En este caso, reemplace LOGDEV y RTDEV con los dispositivos correspondientes.
+    -m N Se utiliza para limitar el uso de memoria de xfs_repair a N megabytes, algo que puede ser útil en la configuración del servidor. Según la página del manual, de forma predeterminada, xfs_repair escalará su uso de memoria según sea necesario, hasta el 75% de la RAM física del sistema.
+    -d    El modo “dangerous” permitirá la reparación de sistemas de archivos que estén montados como de solo lectura.
+    -v    Puede que lo haya adivinado: modo detallado. Cada vez que se usa este parámetro, la “verbosidad” aumenta (por ejemplo,-v -v imprimirá más información que solo -v).
+
+
+Nota:
+- Para ver la informacion del sistema de archivos podemos usar la utilidad: xfs_info
+- Tenga en cuenta que xfs_repair no puede reparar sistemas de archivos con un registro “sucio”. Puede “poner a cero” un registro corrupto con el parámetro -L, pero tenga en cuenta que este es un último recurso ya que puede provocar la corrupción del sistema de archivos y la pérdida de datos
+- Para depurar un sistema de archivos xfs, se usa la utilidad xfs_db /dev/.., esto para inspeccionar varios elementos y parametros del sistema de archivos
+- Tambien se puede reorganizar ("desfragmentar") un sistema de archivos XFs, esto se hace con la utilidad xfs_fsr
+- Es posible que deba de instalarla, ya que no se encuentra instalada por defecto
+
+
+
+
+mount - Comando para montar manualmenmte un sistema dearchivos 
+    Sintaxis: mount -t TYPE DEVICE MOUNTPOINT (Puede especificar el dispositivo con el label o el uudi, como mount uuid=.. o mount label="...")
+    Sin opciones: el comando mostrara una lista de todos los sistemas de archivos actualmente montados en su sistema, para filtrar la salida, puede usar -t, como mount -t ext4 o mount -t ext4,xfs
+    -a Montara todos los sitemas de archivos listados en el archiov /etc/fstab 
+    -o/--opcionts Pasara una lista separada de opciones de montaje como: (ver /etc/fstab en el archivo de  CompendiosDirecciones.md)
+    -r/-ro  Esto montara el sistema de archivos como de solo lectura
+    -w/-rw  Esto montara el sistema de archivos, pero haciendo que el sistema de archivos sea escribible     
+
+
+Notas:
+- Puede montar el sistema donde sea, sin mebargo, el contenido sera inaccesible por su nombre mientras el sistema de archivos este montado
+
+
+umount - Comando para desmontar sistemas de archivos 
+    -a    Esto desmontará todos los sistemas de archivos listados en /etc/fstab.
+    -f    Esto forzará el desmontaje de un sistema de archivos. Esto puede resultar útil si ha montado un sistema de archivos remoto que se ha vuelto inalcanzable.
+    -r    Si el sistema de archivos no se puede desmontar, esto intentará convertirlo en solo lectura.
+
+
+lsof - enumera archivos abiertos (usado si cuando queremos desmontar un sistema nos aparece, "device is busy")
+
+
+lsblk - Consultar informacion sobre un sistema de archivos y averiguar la etiqueta y el UUID
+    -f muestra informacion sobre un sistema de archivos, ejemplo: lsblk -f /dev/sda1
+
+```
+Puede especificar una unidad de tipo mount para montarlo en el arranque del sistema
+
+
+[Unit]
+Description=
+
+[Mount]
+What=
+Where=
+Type=
+Options=
+
+[Install]
+WnatedBy=
+
+
+
+Description=    Breve descripción de la unidad de montaje, algo así como Monta el disco de respaldo.
+What=           Qué se debe montar. El volumen debe especificarse como /dev/disk/by-uuid/VOL_UUID donde VOL_UUID es el UUID del volumen.
+Where=          Debe ser la ruta completa hacia donde se debe montar el volumen.
+Type=           El tipo de sistema de archivos.
+Options=        Las opciones de montaje que desee pasar, son las mismas que se utilizan con el comando mount o en /etc/fstab.
+WantedBy=       Se utiliza para la gestión de dependencias. En este caso, usaremos multi-user.target, lo que significa que siempre que el sistema se inicie en un entorno multiusuario (un inicio normal), se montará la unidad.
+
+
+
+Ejemplo:
+[Unit]
+Description=External data disk
+
+[Mount]
+What=/dev/disk/by-uuid/56C11DCC5D2E1334
+Where=/mnt/external
+Type=ntfs
+Options=defaults
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+```
+
+Nota: 
+- Para que la unidad funcione corrctamente, la unidad de montaje debe tener el MISMO NOMBRE QUE EL PUNTO DE MONTAJE, en este ejemlo el punto de  montaje es /mnt/external, por lo que el nombre sera: mnt-external.mount 
+- Despues reiniciar el demonio systemd con el comando systemctl, e iniciar la unidad com (systemctl daemon-reload && systemctl start mnt-external.mount)
+- Para habilitarlo en cada arranque, usamos: systemctl enable mnt-external.moun
+
+Las unidades de montaje se pueden montar automaticamente siempre que se acceda al punto de montaje, para hacer esto se necesita un archivo .automount, junto al archivo .mount 
+
+
+el formato basico es: 
+
+```
+[Unit]
+Description=
+
+[Automount]
+Where=
+
+[Install]
+WantedBy=multi-user.target
+
+```
+- Debe de tener el mismo nombre que la ruta
+
+y finalmente se hace el mismo proceso con systemd
+
+
+
+
+
 
 
 
