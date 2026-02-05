@@ -920,6 +920,7 @@ nota:
 - Todo proceso normal comienza con un valor nice predeterminado de 0 (prioridad 120)
 - -20 (menis agradable) y 19 (mas agradable, consumo menos de cpu)
 - Solo root puede disminuir el valor nice de un proceso por debajo de cero
+- Cuando no ESPECIFICAMOS UN NUMERO EN NICE, EL VALOR POR DEFECTO SERA 10 (ejemplo: nice ping 8.8.8.8), el valor nice sera de 10
 
 renice - Establece el valor de priioridad despues de que haya ejecutado el comando
     Sintaxis: renice -N -p PID, ejemplo: renice -10 -p 2164
@@ -1391,4 +1392,81 @@ getent - Ver que grupos existen dentro del sistema
 NOTA:
 - Puedes ver los grupos a los que pertenece un usuario con: groups leonardo
 - Pueder ver a los usuarios que pertenecen a un grupo con: groupmems -g kali -l
-- Loas anteriores comandos solo los puede ejecutar el root 
+- Los anteriores comandos solo los puede ejecutar el root 
+
+
+umask - Establece los permisos predeterminados para cada archivo creado 
+    por si solo muestran los valores que se le restaran a los valores, 666 para archivos y 777 para directorios
+    Por defecto muestra los valores en modo octal
+    -S para que muestre los valores en modo simbolico 
+
+    Para cambiar los valores de la sesion actual (SIN RESTARLOS), umask u=rwx,g=rwx,o=    --> Lo cual nos dara para los directorios rwxrwx--- y para los archivos sera rw-rw----
+
+Nota:
+- Cuando los defines en modo simbolico, esos seran los permisos, pero cuando los defines en modo octal, estos se van a restar (DIFERENCIA ENTRE MODO OCTAL Y MODO SIMBOLICO)
+
+
+---
+#### Permisos especiales
+
+#### Bit adhesivo (bandera de eliminacion restringida)
+- Tiene valor octal de 1 (1755) y en modo simbolico se representa como una "t" (+t)
+- Se aplica solo a directorios Y NO TIENE NINGUN EFECTO EN LOS ARCHIVOS NORMALES
+- Evita que los usuarios eliminen o cambien el nombre de un archivo en un directorio a menos que sean propietarios de ese archivo o directorio
+- Los directorios con el bit adhesivo establecido muestran una t remplazando la x en los permisos de otros en la salida de "ls -l"
+
+Ejemplo:Si mi usuario principal crea un directorio con el bit adhesivo, y viene otro usuario a crear un archivo; el dueño de la carpeta y otros usuarios no podran escribir sobre el
+
+
+#### Set group ID (SGID) 
+- Tiene vlor octal de 2 (2755) y en modo simbolico esta representado por una "s" (+s)
+- Esto se aplican a archivos o directorios ejecutables
+- Cuando se aplica a archivos, hara que el proceso se ejecute con los privilegios del grupo propietario del archivo (Aunque un usuario no sea parte del grupo)
+- cuando se aplica a directorios, hara que cada archivo o directorio creado bajo el herede el grupo del directorio principal
+
+Ejemplo: Si un arhcivo tiene un grupo diferente al que tiene un usuario, con permisos 2770, este lo podra ejecutar si es el caso, manteniendo temporalmente los permisos de grupo y si es un directorio, hara que cada archivo que este dentro herede el grupo del directorio principal, si hay una carpeta con el grupo de kali, todos los archivos heredaran el grupo. Si alguien crea un archivo, dentro de la carpeta, se vera como algien:kali, donde alguien creo el archivo y kali es el grupo que hereda de la carpeta principal
+
+
+
+#### Set user ID (SUID) 
+- Tiene valor octal de 4 (4755) y en modo simbolico esta representado por una "s" (+s)
+- SOLO se aplica a archivos y no tiene ningun efecto en los directorios 
+- El archivo se ejecutara con los privilegios del usuario propietario del archivo
+
+
+
+Nota: 
+- PUEDE COMBINAR VARIOS PERMISOS ESPECIALES EN UN PARAMETRO COMO: (4755) o (7755)  
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
