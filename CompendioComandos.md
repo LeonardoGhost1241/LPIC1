@@ -1325,7 +1325,70 @@ y finalmente se hace el mismo proceso con systemd
 
 
 
+ls -l muestra los permisos de un archivo    
+    -a muestra los archivos ocultos
+
+Permisos en archivos
+- r, tiene un valor octal de 4 y permite abrir un archivo y leer su contenido
+- w, valor octal de 2 y permite editar o eliminar un archivo
+- x, tiene un valor octal de 1 y se puede ejecutar como ejecutable o script
+
+Permisos en directorios
+- r, tiene un valor octal de 4 y permite, listar los archivos del directorio, pero no leer u contenido
+- w, tiene un valor octal de 2 y permite, crear o borrar archivos en un directorio, para hacer estos cambios necesitas tambien permisos de ejecucion para cambiar al directorio  
+- x, tiene valor octal de 1 y permite, ingresar a un directorio pero no para listar sus archivos (para eso necesitaremos r)
+
+
+chmod - usado para modificar permisos de un archivo 
+    sintaxis:chmod permisos archivo   -  ejemplo: chmod +x file.txt
+        -R : modo recursivo, cambia los permisos de todos los archivos dentro de un dirextorio y a sus subdirectorios
+
+modo simbolico:
+    chmod ug+rw-x,o-rwx text.txt    
+        Puede otorgar un permiso(+), revocar un permiso(-) o establecerlo en un valor especifico (=)
+            chmod +r file   le da permiso de escritura para toda la tercia
+            chmod -r file   le quita permiso toda la tercia
+            chmod u=r file  le da permiso solo al usuario, borra todos los que tenia y solo le da el de lectura -r--
+            chmod u+w file  le agrega el permiso de escritura al grupo de usuario -rwx
+            chmod a=rw-     le da a TODOS estos mismos permisos, como las dos primeras opciones de arriba
+            chmod u+rwx,g-x text.txt    o puede especificar a varios grupos de esta manera, para el usuario y para el grupo 
+
+
+modo octal:
+    chmod 660 text.txt
+    - Si un valor de permiso es impar, el archivo seguramente es ejecutable
 
 
 
 
+
+Nota:
+- Es muy comun escuchar que los permisos de los "otros" les nombran, "permisos de mundo", como en "todo el mundo tiene estos permisos" 
+- Si un archivo que tiene permisos de ejecucion pertenece a un usuario en especifico y esta dentro de una carpeta que este usuario no puede acceder, este podra acceder por que hay un archivo que contiene permisos de ejecucion y por eso los permisos del directorio no importan mucho
+- Primero, el sistema verifica si el usuario actual es el propietario del archivo y, si esto es cierto, solo aplica el primer conjunto de permisos. De lo contrario, comprueba si el usuario actual pertenece al grupo propietario del archivo. En ese caso, solo aplica el segundo conjunto de permisos. En cualquier otro caso, el sistema aplicará el tercer conjunto de permisos. Esto significa que si el usuario actual es el propietario del archivo, solo los permisos de propietario son efectivos, incluso si el grupo u otros permisos son más permisivos que los permisos del propietario
+- Solo el propietario o el root pueden cambiar los permisos de un archivo
+- usar modo simbolico si quieres modificar solo un permiso de un grupo (mas minucioso)
+
+
+chown -  usado para modificar la propiedad de un archivo o directorio
+    sintaxis: chown USERNAME:GROUPNAME FILENAME
+        chown leonardo:kali file.md
+        Si desea cambiar solo el propietario, usamos: chown leonardo: file.md
+        O si desea cambiar solamente el grupo del archivo, usaremos: chown :kali file.md    ---> Alternativamente puede usar el comando chgrp, para cambiar el grupo del archivo  
+
+
+NOTA:
+- Tenga en cuenta que el usuario propietario no necesita ser miembro del grupo, por ejemplo, leonardo no necesariamente debe de ser parte del grupo de kali
+- Si intentas cambiar la propiedad de un archivo a otro usuario o grupo, YYYY no eres el propietario ni tienes privilegios de root, recibiras este mensaje "Operation not permitted "
+
+
+
+getent - Ver que grupos existen dentro del sistema 
+    group - ver lista de grupos 
+    passwd - ver la lista de los usuarios
+    .... etc ver pagina man
+
+NOTA:
+- Puedes ver los grupos a los que pertenece un usuario con: groups leonardo
+- Pueder ver a los usuarios que pertenecen a un grupo con: groupmems -g kali -l
+- Loas anteriores comandos solo los puede ejecutar el root 
