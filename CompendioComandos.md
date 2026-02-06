@@ -618,6 +618,13 @@ find - busca arhivos en todo el servidor
     sintaxis: find starting\_path options expression
     -name "nombre" busqueda literalmente ejem: find / -name "*.png"
     -iname "Nombre" busca sin distinguir entre mayusculas y minusculas
+    -user USERNAME   Coincide con los archivos propiedad del usuario
+    -group GROUP  coincide con archivos propiedad del grupo
+    -redadable  Coincide con archivos que son legibles por el usuario actual
+    -writable  Coincide con acrhivos en los que el usuario actual puede escribir 
+    -executable Coincide con archivos que el archivo puede ejecutar, en caso de directorios, esto coincidira con cualquier directorio que el usuario pueda ingresar (permiso x)
+    -perm NNNN  Coincidira con cualquier archivo que tenga exactamente el permiso NNNN, como -perm 0664
+    -empty  Coincidira con archivos y directorios vacios 
     -type f/d/l busca archivos, directorios o enlaces simbolicos respectivamente
     -not  devuelve los resultados que no coinciden con el caso de prueba ejemplo: find . -iname "file*" -not -type d     ,   find . -type 
     -maxdepth N Busca en el directorio actual asi como en los subdirectorios N niveles de profundidad
@@ -1466,6 +1473,11 @@ Nota:
 - Dado a que los enlaces duros se tratan como arhcivos normales, se pueden eliminar con rm y renomobrarlos o moverlos por el sistem de archivo con mv. Y dado que un enlace fijo apunta al mismo inodo del objetivo, se puede mover libremente, sin miedo a "romper" el enlace
 - Generalmente se pueden perder en todo el sistema, para ello, usaremos la opcion -inum del comando find, por ejemplo: find -inum 35445 2>/dev/null
 
+
+
+---
+QUEDA PENDIENTE LA PRIMERA PARTE CONCEPTUAL DE LECCION 104.7 - LECCION 1 (JERARQUIA DEL SISTEMA DE ARCHIVOS Y ARCHIVOS TEMPORALES )
+---
 
 
 
