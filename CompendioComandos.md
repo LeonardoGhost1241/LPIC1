@@ -1438,26 +1438,33 @@ Ejemplo: Si un arhcivo tiene un grupo diferente al que tiene un usuario, con per
 Nota: 
 - PUEDE COMBINAR VARIOS PERMISOS ESPECIALES EN UN PARAMETRO COMO: (4755) o (7755)  
 
-
-
-
-
-
-
-
-
-
-
-
-
 ---
 
 
 
 
+Enlaces simbolicos: Tambien llamado enlace suaves, apuntan a la ruta de otro archivo. Si borra el archivo al que apunta el enlace (llamado target), el enlace seguira existiendo, pero "deja de funcionar", ya que ahora apunta a la "nada"
+ln -s TARGET LINK_NAME
+
+Nota:
+- Se puede omitir el nombre del enlace para crear un enlace con el mismo nombre que el destino en el directorio actual
+- Se pueden crear enlaces suaves a archivos y directorios, incluso en diferentes particiones 
+- Al igual que los enlaces fisicos, los enlaces simbolicos pueden eliminarse usando rm y moverse o renombrarse usando mv. Sin embargo, se debe tener especial cuidado al crearlos, para evitar "romper" el enlace si se mueve de ubicacion original
+- Al crear enlaces simbólicos, debe tener en cuenta que, a menos que se especifique completamente una ruta, la ubicación del objetivo se interpreta como relativa a la ubicación del enlace. Esto puede crear problemas si se mueve el vínculo o el archivo al que apunta. (Si se mueve de lugar, debe de especificar la RUTA ABSOLUTA del archivo, por ejemplo: ln -s /home/carol/Documents/original.txt softlink, de esta manera no importara donde se mueva el link, seguira funcionando por que apunta a la ubicacion absoluta del objetivo )
 
 
+Enlaces duros: Piense en un enlace fisico como un segundo nombre oara el archivo original. No son duplilcados, sino que son una entrada adicional en el sistema de archivos que apunta al mismo lugar (inodo) en eldisco
+ln TARGET LINK_NAME
+    Ejemplo: ln target.txt /home/carol/Documents/hardlink
 
+Nota:
+- Si omite el ultimo parametro (LINK_NAME), se creara un vinculo con el mismo nombre que el objetivo en el directorio actual
+- Tienen el mismo numero de inodo, si borra uno, el otro seguira funcionado con normalidad
+- Cada enlace fijo que apunta a un archivo aumenta el conteo de enlaces del archivo 
+- De forma predeterminada, cada archivo tiene un recuento de enlaces de 1 (los directorios tienen un recuento de 2), y cada vinculo fisico a el aumenta el recuento en uno
+- A diferencia de los enlaces simbolicos, solo puede crear enlaces fisicos a archivos, y tanto el enlace como el destino deben residir en el MISMO SISTEMA DE ARCHIVOS 
+- Dado a que los enlaces duros se tratan como arhcivos normales, se pueden eliminar con rm y renomobrarlos o moverlos por el sistem de archivo con mv. Y dado que un enlace fijo apunta al mismo inodo del objetivo, se puede mover libremente, sin miedo a "romper" el enlace
+- Generalmente se pueden perder en todo el sistema, para ello, usaremos la opcion -inum del comando find, por ejemplo: find -inum 35445 2>/dev/null
 
 
 
