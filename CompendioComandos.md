@@ -628,6 +628,9 @@ find - busca arhivos en todo el servidor
     -type f/d/l busca archivos, directorios o enlaces simbolicos respectivamente
     -not  devuelve los resultados que no coinciden con el caso de prueba ejemplo: find . -iname "file*" -not -type d     ,   find . -type 
     -maxdepth N Busca en el directorio actual asi como en los subdirectorios N niveles de profundidad
+        -mindepth N funciona de manera opuesta buscando solo en directorios al menos N niveles hacia abajo
+    -mount para evitar que find caiga dentro de los sistemas de archivos montados
+    -fstype TYPE buscara dentro de los sistemas de archivos especificos (ejem: find /mnt -fstype extfat) --> Buscara dentro de los sistemas de archivos exFAT montados en /mnt
     -mtime N Donde N representa el numero de dias desde la ultima modificacion  
     -size N(c/k/M/G) ejemplos:
         -size 100c archivos de exactamente 100 bytes
@@ -642,6 +645,11 @@ find - busca arhivos en todo el servidor
     -print0 se usa con xargs, y este se usa cuando las rutas tienen carcateres de espacion, le indica a find que use un carcater nulo entre cada entrada para que la lista pueda ser analizada correctamente por xargs      ejemplo: find . -name '*avi' -print0 -o -name '*mp4' -print0 -o -name '*mkv' -print0 | xargs -0 du | sort -n
     -regex permite probar cada ruta en una jerarquia de directorios contra una expresion regular, ejemplo: find $HOME -regex '.*/\..*' -size +100M (sólo en rutas dentro del directorio de inicio del usuario que contienen una coincidencia con .*/\..*, es decir, un /. rodeado por cualquier otro número de caracteres. En otras palabras, sólo se enumerarán los archivos ocultos o los archivos dentro de los directorios ocultos, independientemente de la posición de /. en la ruta correspondiente)
     -iregex Para expresiones regulares que no distinguen entre mayusculas y minusculas
+
+    -amin N , -cmin N , -mmin N  Coincidira con los archivis  a los que se han accedido, se han cambiado los atributos o se han modificado (respectivamente) N MINUTOS ATRAS
+    -atime N , -ctime N , -mtime N   Coincidira con los arhcivos a los que se accedio, se cambiaron los atributos o se modificaron N*24 HORAS ATRAS
+        Ejemplo: find . -mtime -1 -size +100M  Coincidira con cualquier archivo del directorio actual que se haya modificado hace menos de 24 horas y tenga un tamaño superior a 100 MiB
+
 
 
 tar - tape archive, se utiliza para crear archivos tar convirtiendo un grupo de archivos en un archivo 
@@ -1479,13 +1487,40 @@ Nota:
 QUEDA PENDIENTE LA PRIMERA PARTE CONCEPTUAL DE LECCION 104.7 - LECCION 1 (JERARQUIA DEL SISTEMA DE ARCHIVOS Y ARCHIVOS TEMPORALES )
 ---
 
+ VER LINEA 617 PARA VER OPCIONES DEL COMANDO FIND 
 
 
+location y updatedb   --  Son comandos que pueden suarse para encontrar rapidamente un arhcivo que coincida con un patron dado
+    sintaxis: locate PATTERN   ejemplo: locate jpg (buscara todas las COINCIDENCIAS (NO EXTENSION) JPEG)
+    -i No distinguir entre mayusculas o minusculas (ejemplo: locate -i .jpg   o  locate -i zip jpg)
+    -A mostrara todos los arhcivos que COINCIDAN CON TODOS (EJEMPLO: locate -A .jpg .zip, nos mostrara algo como file.jpg.zip)
+    -c Contara el numero de archivos que coinciden con un patron dado en lugar de mostrar su ruta completa (ejemplo: locate -c .jpg)
+
+Nota: 
+- A diferencia de find, locate no buscara el patron en el sistema de archivos, en su lugar lo buscara en una base de datos construida ejecutando el comando updatedb 
+- Por defecto el patron distingue entre mayusculas y minusculas 
+- (IMPORTANTEE) Un problema con locate es que solo muestra las entradas presentes en la base de datos generada por updatedb (ubicada en /var/lib/mlocate.db). Si la base de datos está desactualizada, la salida podría mostrar archivos que se han eliminado desde la última vez que se actualizó. Una forma de evitar esto es agregar el parámetro -e, que hará que verifique si el archivo todavía existe antes de mostrarlo en la salida. Por supuesto, esto no resolverá el problema de los archivos creados después de que la última actualización de la base de datos no aparezca. Para ello tendrá que actualizar la base de datos con el comando updatedb. El tiempo que llevará esto dependerá de la cantidad de archivos de su disco
+
+updatedb - Actualiza la base de datos para locate
+    puede controlar su comportamiento desde el archivo /etc/updatedb.conf 
+
+PRUNEFS= Cualquier tipo de sistema de archivos indicado después de este parámetro no será escaneado por updatedb. La lista de tipos debe estar separada por espacios y los tipos en sí no distinguen entre mayúsculas y minúsculas, por lo que NFS y nfs son lo mismo.
+PRUNENAMES= Esta es una lista de nombres de directorios separados por espacios que no deberían ser escaneados por updatedb.
+PRUNEPATHS= Esta es una lista de nombres de ruta que deben ser ignorados por updatedb. Los nombres de las rutas deben estar separados por espacios y especificados de la misma manera que se mostrarían con updatedb (por ejemplo, /var/spool/media)
+PRUNE_BIND_MOUNTS=  Esta es una variable simple sí o no. Si se establece en yes, los montajes de enlace (los directorios montados en otro lugar con el comando mount --bind) serán ignorados.
 
 
+which - muestra la ruta completa a un ejecutable 
+    ejem: which bash 
+    -a mostrara TODOS los nombres de ruta que coincidan con el ejecutable 
 
+type - mostrara la informacion sobre un binario, incluyendo donde se encuentra y su tipo
+    ejem: type locate 
+    -a mostrara TODOS los nombres de ruta que coinciden con el ejecutable 
+    -t mostrara el tipo de archivo del comando, que puede ser, alias, keyword, function, buildin o file 
 
-
-
-
-
+whereis - Es mas versatil y ademas de los binarios, tambien se puede usar para mostrar la ubicacion de las paginas de manual o incluso el codigo fuente de un programa (i esta disponible en su sistema)
+    ejem: whereis locate
+    -b limitara la busqueda solo a los binarios 
+    -m paginas de manual
+    -s limitara al codigo fuente  
